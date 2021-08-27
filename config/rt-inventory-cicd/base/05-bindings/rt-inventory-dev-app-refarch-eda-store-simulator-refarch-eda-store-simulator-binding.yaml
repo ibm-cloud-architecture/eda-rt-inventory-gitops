@@ -1,0 +1,13 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  creationTimestamp: null
+  name: rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding
+  namespace: rt-inventory-cicd
+spec:
+  params:
+  - name: imageRepo
+    value: quay.io/boyerje/eda-store-simulator
+  - name: tlsVerify
+    value: "true"
+status: {}

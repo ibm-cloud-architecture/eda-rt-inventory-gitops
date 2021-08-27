@@ -1,0 +1,6 @@
+resources:
+- argo-app.yaml
+- cicd-app.yaml
+- rt-inventory-dev-app-refarch-eda-store-simulator-app.yaml
+- rt-inventory-dev-env-app.yaml
+- rt-inventory-stage-env-app.yaml

@@ -1,0 +1,29 @@
+config:
+  argocd:
+    namespace: openshift-gitops
+  pipelines:
+    name: rt-inventory-cicd
+environments:
+- apps:
+  - name: app-refarch-eda-store-simulator
+    services:
+    - name: refarch-eda-store-simulator
+      pipelines:
+        integration:
+          bindings:
+          - rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding
+          - github-push-binding
+      source_url: https://github.com/jbcodeforce/refarch-eda-store-simulator.git
+      webhook:
+        secret:
+          name: webhook-secret-rt-inventory-dev-refarch-eda-store-simulator
+          namespace: rt-inventory-cicd
+  name: rt-inventory-dev
+  pipelines:
+    integration:
+      bindings:
+      - github-push-binding
+      template: app-ci-template
+- name: rt-inventory-stage
+gitops_url: https://github.com/jbcodeforce/rt-inventory-gitops.git
+version: 1

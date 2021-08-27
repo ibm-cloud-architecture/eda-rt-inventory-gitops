@@ -1,0 +1,48 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  creationTimestamp: null
+  name: cicd-event-listener
+  namespace: rt-inventory-cicd
+spec:
+  namespaceSelector: {}
+  podTemplate: {}
+  resources: {}
+  serviceAccountName: pipeline
+  triggers:
+  - bindings:
+    - ref: github-push-binding
+    interceptors:
+    - github:
+        secretRef:
+          secretKey: webhook-secret-key
+          secretName: gitops-webhook-secret
+    - cel:
+        filter: (header.match('X-GitHub-Event', 'push') && body.repository.full_name
+          == 'jbcodeforce/rt-inventory-gitops')
+        overlays:
+        - expression: body.ref.split('/')[2]
+          key: ref
+    name: ci-dryrun-from-push
+    template:
+      ref: ci-dryrun-from-push-template
+  - bindings:
+    - ref: rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding
+    - ref: github-push-binding
+    interceptors:
+    - github:
+        secretRef:
+          secretKey: webhook-secret-key
+          secretName: webhook-secret-rt-inventory-dev-refarch-eda-store-simulator
+    - cel:
+        filter: (header.match('X-GitHub-Event', 'push') && body.repository.full_name
+          == 'jbcodeforce/refarch-eda-store-simulator')
+        overlays:
+        - expression: body.ref.split('/')[2]
+          key: ref
+    name: app-ci-build-from-push-refarch-eda-store-simulator
+    template:
+      ref: app-ci-template
+status:
+  configuration:
+    generatedName: ""

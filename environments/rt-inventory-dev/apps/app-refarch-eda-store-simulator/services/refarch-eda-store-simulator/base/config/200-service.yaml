@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: refarch-eda-store-simulator
+    app.kubernetes.io/part-of: app-refarch-eda-store-simulator
+  name: refarch-eda-store-simulator
+  namespace: rt-inventory-dev
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: refarch-eda-store-simulator
+    app.kubernetes.io/part-of: app-refarch-eda-store-simulator
+status:
+  loadBalancer: {}
