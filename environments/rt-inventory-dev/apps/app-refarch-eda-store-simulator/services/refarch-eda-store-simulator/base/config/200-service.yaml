@@ -1,20 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
+  annotations:
+    app.quarkus.io/commit-id: 0cc3c462729e0fcca9e889d0ca7907d370a7da9e
+    app.quarkus.io/build-timestamp: 2021-08-27 - 02:02:54 +0000
   labels:
-    app.kubernetes.io/name: refarch-eda-store-simulator
+    app.kubernetes.io/name: store-simulator
+    app.kubernetes.io/version: 1.0.0
     app.kubernetes.io/part-of: app-refarch-eda-store-simulator
-  name: refarch-eda-store-simulator
+  creationTimestamp: null
+  name: store-simulator
   namespace: rt-inventory-dev
 spec:
   ports:
-  - name: http
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
   selector:
-    app.kubernetes.io/name: refarch-eda-store-simulator
+    app.kubernetes.io/name: store-simulator
+    app.kubernetes.io/version: 1.0.0
     app.kubernetes.io/part-of: app-refarch-eda-store-simulator
+  type: ClusterIP
 status:
   loadBalancer: {}

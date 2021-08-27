@@ -2,31 +2,73 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
+  annotations:
+    app.quarkus.io/commit-id: 0cc3c462729e0fcca9e889d0ca7907d370a7da9e
+    app.quarkus.io/build-timestamp: 2021-08-27 - 02:02:54 +0000
   labels:
-    app.kubernetes.io/name: refarch-eda-store-simulator
+    app.kubernetes.io/name: store-simulator
+    app.kubernetes.io/version: 1.0.0
     app.kubernetes.io/part-of: app-refarch-eda-store-simulator
-  name: refarch-eda-store-simulator
+  name: store-simulator
   namespace: rt-inventory-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: refarch-eda-store-simulator
+      app.kubernetes.io/name: store-simulator
+      app.kubernetes.io/version: 1.0.0
       app.kubernetes.io/part-of: app-refarch-eda-store-simulator
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
+      annotations:
+        app.quarkus.io/commit-id: 0cc3c462729e0fcca9e889d0ca7907d370a7da9e
+        app.quarkus.io/build-timestamp: 2021-08-27 - 02:02:54 +0000
       labels:
-        app.kubernetes.io/name: refarch-eda-store-simulator
+        app.kubernetes.io/name: store-simulator
+        app.kubernetes.io/version: 1.0.0
         app.kubernetes.io/part-of: app-refarch-eda-store-simulator
     spec:
       containers:
-      - image: nginxinc/nginx-unprivileged:latest
-        imagePullPolicy: Always
-        name: refarch-eda-store-simulator
-        ports:
-        - containerPort: 8080
-        resources: {}
-      serviceAccountName: default
-status: {}
+        - command:
+            - java
+            - -Dquarkus.http.host=0.0.0.0
+            - -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+            - -jar
+            - /deployments/quarkus-run.jar
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: JAVA_APP_JAR
+              value: /deployments/quarkus-run.jar
+          image: quay.io/boyerje/eda-store-simulator
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: store-simulator
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+      serviceAccount: store-simulator
