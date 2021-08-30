@@ -1,0 +1,7 @@
+namespace: rt-inventory-dev
+resources:
+# Do we need to intall operator?
+# - github.com/jbcodeforce/eda-gitops-catalog/kafka-strimzi/operator/overlay/stable?ref=main
+  - kafka-cluster.yaml
+  - kafka-users.yaml
+  - kafka-topics.yaml
