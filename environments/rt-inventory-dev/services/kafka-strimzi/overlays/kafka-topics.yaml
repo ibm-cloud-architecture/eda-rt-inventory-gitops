@@ -3,7 +3,7 @@ kind: KafkaTopic
 metadata:
   name: item-inventory
   labels:
-    strimzi.io/cluster: dev-kafka
+    strimzi.io/cluster: devkafka
 spec:
   partitions: 1
   replicas: 3
@@ -15,7 +15,7 @@ kind: KafkaTopic
 metadata:
   name: items
   labels:
-    strimzi.io/cluster: dev-kafka
+    strimzi.io/cluster: devkafka
 spec:
   partitions: 1
   replicas: 3
@@ -27,7 +27,7 @@ kind: KafkaTopic
 metadata:
   name: store-inventory
   labels:
-    strimzi.io/cluster: dev-kafka
+    strimzi.io/cluster: devkafka
 spec:
   partitions: 1
   replicas: 3

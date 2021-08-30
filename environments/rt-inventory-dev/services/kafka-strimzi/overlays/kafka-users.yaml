@@ -4,7 +4,7 @@ kind: KafkaUser
 metadata:
   name: tls-user
   labels:
-    strimzi.io/cluster: dev-kafka
+    strimzi.io/cluster: devkafka
 spec:
   authentication:
     type: tls
@@ -42,7 +42,7 @@ kind: KafkaUser
 metadata:
   name: scram-user
   labels:
-    strimzi.io/cluster: dev-kafka
+    strimzi.io/cluster: devkafka
 spec:
   authentication:
     type: scram-sha-512
