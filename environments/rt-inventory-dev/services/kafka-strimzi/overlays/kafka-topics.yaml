@@ -2,8 +2,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: item-inventory
+  namespace: rt-inventory-dev
   labels:
-    strimzi.io/cluster: devkafka
+    strimzi.io/cluster: dev
 spec:
   partitions: 1
   replicas: 3
@@ -14,8 +15,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: items
+  namespace: rt-inventory-dev
   labels:
-    strimzi.io/cluster: devkafka
+    strimzi.io/cluster: dev
 spec:
   partitions: 1
   replicas: 3
@@ -26,8 +28,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   name: store-inventory
+  namespace: rt-inventory-dev
   labels:
-    strimzi.io/cluster: devkafka
+    strimzi.io/cluster: dev
 spec:
   partitions: 1
   replicas: 3

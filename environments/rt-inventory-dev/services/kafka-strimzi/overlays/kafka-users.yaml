@@ -3,8 +3,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
   name: tls-user
+  namespace: rt-inventory-dev
   labels:
-    strimzi.io/cluster: devkafka
+    strimzi.io/cluster: dev
 spec:
   authentication:
     type: tls
@@ -41,8 +42,9 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
   name: scram-user
+  namespace: rt-inventory-dev
   labels:
-    strimzi.io/cluster: devkafka
+    strimzi.io/cluster: dev
 spec:
   authentication:
     type: scram-sha-512
