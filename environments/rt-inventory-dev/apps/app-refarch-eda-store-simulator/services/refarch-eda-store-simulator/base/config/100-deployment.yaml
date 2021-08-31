@@ -68,7 +68,7 @@ spec:
                   name: tls-user
           envFrom:
             - configMapRef:
-              name: store-simulator-cm
+                name: store-simulator-cm
           image: quay.io/boyerje/eda-store-simulator
           imagePullPolicy: Always
           livenessProbe:
