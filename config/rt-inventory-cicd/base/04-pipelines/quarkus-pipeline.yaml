@@ -15,7 +15,7 @@ spec:
     default: src/main/docker/Dockerfile.jvm
   - name: IMAGE_NAME
     type: string
-    default: quay.io/ibmcase/edademo
+    default: quay.io/boyerje/edademo
   - name: GOALS
     type: string
     default: -DskipTests, clean, package
