@@ -1,2 +1,2 @@
 bases:
-- kafka-strimzi/overlays
+- ./kafka-strimzi/overlays
