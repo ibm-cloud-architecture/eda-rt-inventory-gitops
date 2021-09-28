@@ -27,7 +27,7 @@ spec:
     template:
       ref: ci-dryrun-from-push-template
   - bindings:
-    - ref: rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding
+    - ref: rt-inventory-dev-store-simulator-binding
     - ref: github-push-binding
     interceptors:
     - github:
