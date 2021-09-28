@@ -7,7 +7,7 @@ metadata:
 spec:
   params:
   - name: imageRepo
-    value: quay.io/boyerje/eda-store-simulator
+    value: image-registry.openshift-image-registry.svc.cluster.local:5000/rt-inventory/store-aggregator
   - name: tlsVerify
-    value: "true"
+    value: "false"
 status: {}

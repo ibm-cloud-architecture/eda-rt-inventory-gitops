@@ -36,7 +36,7 @@ spec:
           secretName: webhook-secret-rt-inventory-dev-refarch-eda-store-simulator
     - cel:
         filter: (header.match('X-GitHub-Event', 'push') && body.repository.full_name
-          == 'jbcodeforce/refarch-eda-store-simulator')
+          == 'ibm-cloud-architecture/refarch-eda-store-simulator')
         overlays:
         - expression: body.ref.split('/')[2]
           key: ref
