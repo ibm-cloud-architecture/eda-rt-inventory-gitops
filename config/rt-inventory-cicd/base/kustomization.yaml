@@ -10,7 +10,7 @@ resources:
 - 04-pipelines/quarkus-pipeline.yaml
 - 04-pipelines/ci-dryrun-from-push-pipeline.yaml
 - 05-bindings/github-push-binding.yaml
-- 05-bindings/rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding.yaml
+- 05-bindings/rt-inventory-dev-store-simulator-binding.yaml
 - 06-templates/app-ci-build-from-push-template.yaml
 - 06-templates/ci-dryrun-from-push-template.yaml
 - 07-eventlisteners/cicd-event-listener.yaml
