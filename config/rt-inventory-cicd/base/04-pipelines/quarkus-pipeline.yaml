@@ -13,9 +13,14 @@ spec:
   - name: DOCKERFILE
     type: string
     default: src/main/docker/Dockerfile.jvm
-  - name: IMAGE_NAME
-    type: string
-    default: quay.io/boyerje/edademo
+  - name: image-server
+    default: quay.io
+  - name: image-namespace
+    default: jbcodeforce
+  - name: image-repository
+    default: ""
+  - name: image-tag
+    default: ""
   - name: GOALS
     type: string
     default: -DskipTests, clean, package
@@ -53,20 +58,24 @@ spec:
           workspace: maven-settings
     - name: build-image
       taskRef:
-        name: buildah
-        kind: ClusterTask
+        name: build-dr-image
+        kind: Task
       runAfter:
         - build-quarkus-app
       params:
-        - name: IMAGE
-          value: '$(params.IMAGE_NAME)'
+        - name: image-server
+          value: $(params.image-server)
+        - name: image-namespace
+          value: $(params.image-namespace)
+        - name: image-repository
+          value: $(params.image-repository)
+        - name: image-tag
+          value: $(params.image-tag)
         # since pushing to internal registry we skip TLS verify
         - name: TLSVERIFY
           value: 'false'
         - name: DOCKERFILE
           value: '$(params.DOCKERFILE)'
-      securityContext:
-        privileged: true
       workspaces:
         - name: source
           workspace: build-ws
