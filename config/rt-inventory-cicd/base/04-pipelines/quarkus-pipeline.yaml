@@ -78,4 +78,7 @@ spec:
           value: '$(params.DOCKERFILE)'
       workspaces:
         - name: source
-          workspace: build-ws
+          workspace: shared-data
+    workspaces:
+      - name: source
+        workspace: build-ws
