@@ -65,6 +65,8 @@ spec:
           value: 'false'
         - name: DOCKERFILE
           value: '$(params.DOCKERFILE)'
+      securityContext:
+        privileged: true
       workspaces:
         - name: source
           workspace: build-ws

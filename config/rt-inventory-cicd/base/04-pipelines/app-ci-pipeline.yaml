@@ -87,6 +87,8 @@ spec:
     taskRef:
       kind: ClusterTask
       name: buildah
+    securityContext:
+      privileged: true
     workspaces:
     - name: source
       workspace: shared-data
