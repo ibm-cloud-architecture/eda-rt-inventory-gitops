@@ -38,7 +38,7 @@ spec:
   steps:
     - name: build
       image: quay.io/buildah/stable:v1.15.0
-      workingDir: $(params.source-dir)
+      workingDir: $(workspaces.source.path)
       env:
         - name: REGISTRY_USER
           valueFrom:
@@ -67,4 +67,6 @@ spec:
         fi
         set -x
         buildah --storage-driver=$(params.STORAGE_DRIVER) push --tls-verify=$(params.TLSVERIFY) --digestfile ./image-digest ${APP_IMAGE} docker://${APP_IMAGE}
-
+  workspaces:
+    - description: The workspace with dockerfile and built jars
+      name: source
