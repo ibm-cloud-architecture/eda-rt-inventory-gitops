@@ -29,6 +29,9 @@ spec:
   - name: TLSVERIFY
     type: string
     default: 'false'
+  - name: BUILD_EXTRA_ARGS
+    type: string
+    default: ''
   - name: image-server
     default: quay.io
   - name: image-namespace
