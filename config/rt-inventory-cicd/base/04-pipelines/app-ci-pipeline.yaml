@@ -28,8 +28,7 @@ spec:
     type: string
   - name: TLSVERIFY
     type: string
-  - name: BUILD_EXTRA_ARGS
-    type: string
+    default: 'false'
   - name: image-server
     default: quay.io
   - name: image-namespace
@@ -82,11 +81,7 @@ spec:
     params:
     - name: TLSVERIFY
       value: $(params.TLSVERIFY)
-    - name: BUILD_EXTRA_ARGS
-      value: --label=io.openshift.build.commit.author='$(params.COMMIT_AUTHOR)' --label=io.openshift.build.commit.date='$(params.COMMIT_DATE)'
-        --label=io.openshift.build.commit.id='$(params.COMMIT_SHA)' --label=io.openshift.build.commit.message='$(params.COMMIT_MESSAGE)'
-        --label=io.openshift.build.commit.ref='$(params.GIT_REF)'
-    - name: image-server
+     - name: image-server
       value: $(params.image-server)
     - name: image-namespace
       value: $(params.image-namespace)

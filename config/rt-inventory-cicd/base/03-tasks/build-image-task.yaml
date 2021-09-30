@@ -36,7 +36,7 @@ spec:
       - name: source
         mountPath: $(params.source-dir)
   steps:
-    - name: build
+    - name: build-image
       image: quay.io/buildah/stable:v1.15.0
       workingDir: $(workspaces.source.path)
       env:
