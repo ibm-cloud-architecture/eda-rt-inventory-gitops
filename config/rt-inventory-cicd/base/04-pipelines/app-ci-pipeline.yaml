@@ -81,7 +81,7 @@ spec:
     params:
     - name: TLSVERIFY
       value: $(params.TLSVERIFY)
-     - name: image-server
+    - name: image-server
       value: $(params.image-server)
     - name: image-namespace
       value: $(params.image-namespace)
