@@ -2,12 +2,12 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
   creationTimestamp: null
-  name: rt-inventory-dev-store-simulator-binding
+  name: rt-inventory-dev-store-inventory-store-inventory-binding
   namespace: rt-inventory-cicd
 spec:
   params:
   - name: imageRepo
-    value: image-registry.openshift-image-registry.svc.cluster.local:5000/rt-inventory/eda-store-simulator
+    value: image-registry.openshift-image-registry.svc.cluster.local:5000/rt-inventory/eda-store-inventory
   - name: tlsVerify
-    value: "false"
+    value: "true"
 status: {}

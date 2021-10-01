@@ -3,5 +3,6 @@ resources:
 - cicd-app.yaml
 - rt-inventory-dev-app-refarch-eda-store-simulator-app.yaml
 - rt-inventory-dev-env-app.yaml
-# - rt-inventory-stage-env-app.yaml
-- rt-inventory-dev-services.yaml
+- rt-inventory-dev-item-inventory-app.yaml
+- rt-inventory-dev-store-inventory-app.yaml
+- rt-inventory-stage-env-app.yaml

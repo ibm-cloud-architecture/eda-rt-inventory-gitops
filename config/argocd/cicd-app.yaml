@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   creationTimestamp: null
-  name: rt-cicd-app
+  name: cicd-app
   namespace: openshift-gitops
 spec:
   destination:

@@ -43,6 +43,40 @@ spec:
     name: app-ci-build-from-push-refarch-eda-store-simulator
     template:
       ref: app-ci-template
+  - bindings:
+    - ref: rt-inventory-dev-store-inventory-store-inventory-binding
+    - ref: github-push-binding
+    interceptors:
+    - github:
+        secretRef:
+          secretKey: webhook-secret-key
+          secretName: webhook-secret-rt-inventory-dev-store-inventory
+    - cel:
+        filter: (header.match('X-GitHub-Event', 'push') && body.repository.full_name
+          == 'ibm-cloud-architecture/refarch-eda-store-inventory')
+        overlays:
+        - expression: body.ref.split('/')[2]
+          key: ref
+    name: app-ci-build-from-push-store-inventory
+    template:
+      ref: app-ci-template
+  - bindings:
+    - ref: rt-inventory-dev-item-inventory-item-inventory-binding
+    - ref: github-push-binding
+    interceptors:
+    - github:
+        secretRef:
+          secretKey: webhook-secret-key
+          secretName: webhook-secret-rt-inventory-dev-item-inventory
+    - cel:
+        filter: (header.match('X-GitHub-Event', 'push') && body.repository.full_name
+          == 'ibm-cloud-architecture/refarch-eda-item-inventory')
+        overlays:
+        - expression: body.ref.split('/')[2]
+          key: ref
+    name: app-ci-build-from-push-item-inventory
+    template:
+      ref: app-ci-template
 status:
   configuration:
     generatedName: ""

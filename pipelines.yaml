@@ -11,12 +11,38 @@ environments:
       pipelines:
         integration:
           bindings:
-          - rt-inventory-dev-app-refarch-eda-store-simulator-refarch-eda-store-simulator-binding
+          - rt-inventory-dev-store-simulator-binding
           - github-push-binding
-      source_url: https://github.com/jbcodeforce/refarch-eda-store-simulator.git
+      source_url: https://github.com/ibm-cloud-architecture/refarch-eda-store-simulator.git
       webhook:
         secret:
           name: webhook-secret-rt-inventory-dev-refarch-eda-store-simulator
+          namespace: rt-inventory-cicd
+  - name: store-inventory
+    services:
+    - name: store-inventory
+      pipelines:
+        integration:
+          bindings:
+          - rt-inventory-dev-store-inventory-store-inventory-binding
+          - github-push-binding
+      source_url: https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory.git
+      webhook:
+        secret:
+          name: webhook-secret-rt-inventory-dev-store-inventory
+          namespace: rt-inventory-cicd
+  - name: item-inventory
+    services:
+    - name: item-inventory
+      pipelines:
+        integration:
+          bindings:
+          - rt-inventory-dev-item-inventory-item-inventory-binding
+          - github-push-binding
+      source_url: https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory.git
+      webhook:
+        secret:
+          name: webhook-secret-rt-inventory-dev-item-inventory
           namespace: rt-inventory-cicd
   name: rt-inventory-dev
   pipelines:

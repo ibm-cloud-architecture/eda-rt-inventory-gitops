@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: item-inventory
+  name: rt-inventory-dev-item-inventory
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: rt-inventory-dev
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: environments/rt-inventory-dev/apps/item-inventory/overlays
+    repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+status:
+  health: {}
+  summary: {}
+  sync:
+    comparedTo:
+      destination: {}
+      source:
+        repoURL: ""
+    status: ""

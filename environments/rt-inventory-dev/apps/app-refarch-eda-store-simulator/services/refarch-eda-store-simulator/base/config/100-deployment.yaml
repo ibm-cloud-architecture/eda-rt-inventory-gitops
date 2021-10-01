@@ -69,7 +69,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: store-simulator-cm
-          image: quay.io/boyerje/eda-store-simulator
+          image: image-registry.openshift-image-registry.svc.cluster.local:5000/rt-inventory/eda-store-simulator
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
