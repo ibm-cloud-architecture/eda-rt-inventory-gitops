@@ -50,6 +50,9 @@ spec:
     type: string
   - name: GIT_REPO
     type: string
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings
   tasks:
   - name: set-pending-status
     params:
@@ -97,7 +100,7 @@ spec:
         - name: source
           workspace: shared-data
         - name: maven-settings
-          workspace: shared-data
+          workspace: maven-settings
   - name: build-image
     params:
     - name: TLSVERIFY
@@ -118,6 +121,3 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
-  workspaces:
-  - description: This workspace will receive the cloned git repo.
-    name: shared-data

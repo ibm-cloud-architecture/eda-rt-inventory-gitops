@@ -25,7 +25,7 @@ spec:
     type: string
     default: -DskipTests, clean, package
   workspaces:
-    - name: build-ws
+    - name: shared-workspace
     - name: maven-settings
   tasks:
     - name: fetch-source
@@ -34,7 +34,7 @@ spec:
         kind: ClusterTask
       workspaces:
       - name: output
-        workspace: build-ws
+        workspace: shared-workspace
       params:
       - name: url
         value: $(params.repo-url)
@@ -53,7 +53,7 @@ spec:
             - package
       workspaces:
         - name: source
-          workspace: build-ws
+          workspace: shared-workspace
         - name: maven-settings
           workspace: maven-settings
     - name: build-image
@@ -78,4 +78,4 @@ spec:
           value: '$(params.DOCKERFILE)'
       workspaces:
         - name: source
-          workspace: build-ws
+          workspace: shared-workspace
