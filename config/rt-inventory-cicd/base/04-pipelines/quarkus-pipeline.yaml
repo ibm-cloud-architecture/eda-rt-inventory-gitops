@@ -16,7 +16,7 @@ spec:
   - name: image-server
     default: quay.io
   - name: image-namespace
-    default: jbcodeforce
+    default: ibmcase
   - name: image-repository
     default: ""
   - name: image-tag
