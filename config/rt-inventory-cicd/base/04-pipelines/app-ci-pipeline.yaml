@@ -105,6 +105,8 @@ spec:
     params:
     - name: TLSVERIFY
       value: $(params.TLSVERIFY)
+    - name: DOCKERFILE
+      value: src/main/docker/Dockerfile.jvm
     - name: image-server
       value: $(params.image-server)
     - name: image-namespace
@@ -114,7 +116,7 @@ spec:
     - name: image-tag
       value: $(params.image-tag)
     runAfter:
-    - clone-source
+    - build-quarkus-app
     taskRef:
       kind: Task
       name: build-dr-image
