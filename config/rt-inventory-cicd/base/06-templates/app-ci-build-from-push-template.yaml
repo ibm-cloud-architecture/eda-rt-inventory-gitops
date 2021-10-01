@@ -69,5 +69,16 @@ spec:
               requests:
                 storage: 1Gi
           status: {}
+      - name: maven-settings
+        volumeClaimTemplate:
+          metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+          status: {}
     status: {}
 status: {}
