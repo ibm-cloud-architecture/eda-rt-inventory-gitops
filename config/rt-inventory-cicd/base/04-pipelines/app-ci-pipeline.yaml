@@ -51,7 +51,7 @@ spec:
   - name: GIT_REPO
     type: string
   workspaces:
-    - name: shared-workspace
+    - name: shared-data
     - name: maven-settings
   tasks:
   - name: set-pending-status
