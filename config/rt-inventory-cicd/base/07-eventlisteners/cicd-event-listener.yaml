@@ -42,7 +42,7 @@ spec:
           key: ref
     name: app-ci-build-from-push-refarch-eda-store-simulator
     template:
-      ref: app-ci-template
+      ref: uiapp-ci-template
   - bindings:
     - ref: rt-inventory-dev-store-inventory-store-inventory-binding
     - ref: github-push-binding

@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   creationTimestamp: null
-  name: app-ci-pipeline
+  name: uiapp-ci-pipeline
   namespace: rt-inventory-cicd
 spec:
   finally:
@@ -92,6 +92,8 @@ spec:
       - name: GOALS
         value:
           - -DskipTests
+          - -Dui.deps 
+          - -Dui.dev
           - clean
           - package
     workspaces:

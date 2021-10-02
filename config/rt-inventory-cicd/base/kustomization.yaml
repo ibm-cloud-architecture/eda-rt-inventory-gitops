@@ -10,6 +10,7 @@ resources:
 - 04-pipelines/app-ci-pipeline.yaml
 - 04-pipelines/ci-dryrun-from-push-pipeline.yaml
 - 04-pipelines/quarkus-pipeline.yaml
+- 04-pipelines/uiapp-ci-pipeline.yaml
 - 05-bindings/github-push-binding.yaml
 - 05-bindings/rt-inventory-dev-item-inventory-item-inventory-binding.yaml
 - 05-bindings/rt-inventory-dev-store-inventory-store-inventory-binding.yaml
