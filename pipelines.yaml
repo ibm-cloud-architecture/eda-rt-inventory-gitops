@@ -49,6 +49,9 @@ environments:
     integration:
       bindings:
       - github-push-binding
+      - rt-inventory-dev-item-inventory-item-inventory-binding
+      - rt-inventory-dev-store-inventory-store-inventory-binding
+      - rt-inventory-dev-store-simulator-binding
       template: app-ci-template
 - name: rt-inventory-stage
 gitops_url: https://github.com/jbcodeforce/rt-inventory-gitops.git

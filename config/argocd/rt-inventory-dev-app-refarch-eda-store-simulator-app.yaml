@@ -10,7 +10,7 @@ spec:
   destination:
     namespace: rt-inventory-dev
     server: https://kubernetes.default.svc
-  project: default
+  project: rt-inventory
   source:
     path: environments/rt-inventory-dev/apps/app-refarch-eda-store-simulator/overlays
     repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git

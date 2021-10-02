@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   creationTimestamp: null
-  name: cicd-app
+  name: rt-inventory-cicd-app
   namespace: openshift-gitops
 spec:
   destination:
@@ -29,7 +29,7 @@ spec:
     jsonPointers:
     - /spec/host
     kind: Route
-  project: default
+  project: rt-inventory
   source:
     path: config/rt-inventory-cicd/overlays
     repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git

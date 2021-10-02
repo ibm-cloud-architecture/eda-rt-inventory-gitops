@@ -8,7 +8,7 @@ spec:
   destination:
     namespace: rt-inventory-stage
     server: https://kubernetes.default.svc
-  project: default
+  project: rt-inventory
   source:
     path: environments/rt-inventory-stage/env/overlays
     repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git
