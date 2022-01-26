@@ -16,4 +16,5 @@ spec:
     targetPort: 8080
   selector:
     app.kubernetes.io/name: item-inventory
+    app.kubernetes.io/version: 0.0.7
   type: ClusterIP

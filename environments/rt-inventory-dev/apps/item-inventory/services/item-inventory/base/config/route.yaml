@@ -3,7 +3,6 @@ kind: Route
 metadata:
   labels:
     app.kubernetes.io/name: item-inventory
-    app.openshift.io/runtime: quarkus
   name: item-inventory
 spec:
   host: ""
