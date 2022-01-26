@@ -1,13 +1,12 @@
 # Real time inventory demo GitOps
 
-This gitops uses OpenShift GitOps and OpenShift Pipelines to manage the deployment and build
-of the solution.
+This gitops uses OpenShift GitOps to manage the deployment of the real-time inventory solution.
 
 ## Scenario presentation
 
-This scenario implements a simple real time inventory management solution based on some real life MVPs we developed in 2020. 
+This scenario implements a simple real-time inventory management solution based on some real life MVPs we developed in 2020. 
 
-Stores are sending their sale transactions to a central messaging platform, based on queues or topics.
+Stores are sending their sale transactions to a central messaging platform, based on queues or Kafka topics.
 
 As illustrated by the following figure, we are using Kafka / Event Streams to support
 the events pub/sub and then need to have aggregators to compute store inventory and 
@@ -45,18 +44,18 @@ Each service docker images are in the `quay.io/ibmcase` image registry.
 * Start local kafka and service
 
 ```sh
-cd demo/kstreams
+cd local-demo/kstreams
 docker compose up
 ```
 
 * Create topics
 
 ```sh
-# under demo/kstreams
+# under local-demo/kstreams
 ./createTopics.sh
 ```
 
-* Execute the demo: see script here :[refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
+* Execute the demonstration using the script in :[refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
 
 Then for the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/), and
 follow the demo script defined in [this article](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution).
@@ -75,22 +74,107 @@ docker compose down
 
 ### Run the Flink implementation
 
+To be done.
 
-## GitOps Bootstrap
+## GitOps 
 
-To start the CI/CD management with ArgoCD, just executing the following should work.
+### How this repository was created
+
+We used KAM CLI to create the project with the following parameters:
+
+Get Github access token, to be used in the KAM bootstrap command, in future steps.
+
+![](./docs/github-access-tk.png)
+
+
+```sh
+kam bootstrap \
+--service-repo-url https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory \
+--gitops-repo-url  https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops \
+--image-repo image-registry.openshift-image-registry.svc:5000/ibmcase/ \
+--output eda-rt-inventory-gitops \
+--git-host-access-token <a-github-token> \
+--prefix edademo --push-to-git=true
+```
+
+### What was added
+
+* Added a bootstrap folder to define gitops and operator declaration and to create an ArgoCD project
+* Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
+* Added scripts to deploy the gitops, pipelines operators: `scripts/installOperators.sh`
+
+
+### Bootstrap
+
+* Login to the OpenShift Console, and get login token to be able to use `oc cli`
+* If not done already, use the script to install GitOps and Pipeline operators: 
+
+    ```sh
+    cd bootstrap/scripts/
+    ./installGitOpsOperators.sh
+    ```
+    
+Once the operators are running the command: `oc get pods -n openshift-gitops` should return
+a list of pods like:
+
+    ```sh
+    NAME                                                          READY   STATUS    RESTARTS   AGE
+    openshift-gitops-application-controller-0                     1/1     Running   0          4h5m
+    openshift-gitops-applicationset-controller-6948bcf87c-jdv2x   1/1     Running   0          4h5m
+    openshift-gitops-dex-server-64cbd8d7bd-76czz                  1/1     Running   0          4h5m
+    openshift-gitops-redis-7867d74fb4-dssr2                       1/1     Running   0          4h5m
+    openshift-gitops-repo-server-6dc777c845-gdjhr                 1/1     Running   0          4h5m
+    openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
+    ```
+
+* If not done already, install IBM product catalog
+
+  ```sh
+  ./bootstrap/scripts/installIBMCatalog.sh
+  ```
+
+* Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key)
+* Update the [OCP global pull secret of the `openshift-operators` project](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#update-the-ocp-global-pull-secret)
+with the entitlement key
+
+    ```sh
+    KEY=<yourentitlementkey>
+    oc create secret docker-registry ibm-entitlement-key \
+    --docker-username=cp \
+    --docker-server=cp.icr.io \
+    --namespace=openshift-operators \
+    --docker-password=$KEY 
+    ```
+* Deploy IBM product Operators 
+
+
+  ```sh
+  ./bootstrap/scripts/installIBMOperators.sh
+  ```
+ 
+* Create ArgoCD project
+
+   ```sh
+   oc apply -k bootstrap/argocd-project
+   ```
+
+* To get the `admin` user's password use the command
+
+    ```sh
+    oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
+    ```
+
+* Get the ArgoCD User Interface URL and open a web browser
+
+   ```sh
+   chrome https://$(oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops)
+   ```
+
+
+* To start the CD management with ArgoCD, just executing the following should work.
 
 ```sh
 oc apply -k config/argocd
 ```
 
-## CI part
-
-The bootstrap should have created a rt-inventory-cicd project, with the upload
-of pipelines, tasks, triggers, event listeners... All those are defined
-in `config/rt-inventory-cicd` which could be tested directly with
-
-```sh
-oc apply -k config/rt-inventory-cicd
-```
 

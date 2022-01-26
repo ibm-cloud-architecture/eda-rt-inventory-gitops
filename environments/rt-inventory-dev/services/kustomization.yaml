@@ -1,2 +1,2 @@
 bases:
-- ./kafka-strimzi/overlays
+- ./ibm-eventstreams/overlays

@@ -8,11 +8,9 @@ metadata:
 spec:
   description: The ArgoCD project to manage the real time inventory Solution deployment
   sourceRepos: 
-  - https://github.com/jbcodeforce/rt-inventory-gitops.git
+  - https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
   # Only permit applications to deploy to the following namespace in the same cluster
   destinations:
-  - namespace: rt-inventory-cicd
-    server: https://kubernetes.default.svc
   - namespace: rt-inventory-dev
     server: https://kubernetes.default.svc
   - namespace: rt-inventory-stage

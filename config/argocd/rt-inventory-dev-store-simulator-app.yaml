@@ -3,8 +3,8 @@ kind: Application
 metadata:
   creationTimestamp: null
   labels:
-    app.kubernetes.io/name: app-refarch-eda-store-simulator
-  name: rt-inventory-dev-app-refarch-eda-store-simulator
+    app.kubernetes.io/name: store-simulator
+  name: rt-inventory-dev-store-simulator-app
   namespace: openshift-gitops
 spec:
   destination:
@@ -12,8 +12,8 @@ spec:
     server: https://kubernetes.default.svc
   project: rt-inventory
   source:
-    path: environments/rt-inventory-dev/apps/app-refarch-eda-store-simulator/overlays
-    repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git
+    path: environments/rt-inventory-dev/apps/store-simulator/overlays
+    repoURL: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
   syncPolicy:
     automated:
       prune: true

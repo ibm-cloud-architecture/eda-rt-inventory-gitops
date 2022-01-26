@@ -11,7 +11,7 @@ spec:
   project: rt-inventory
   source:
     path: environments/rt-inventory-dev/services/
-    repoURL: https://github.com/jbcodeforce/rt-inventory-gitops.git
+    repoURL: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
   syncPolicy:
     automated:
       prune: true

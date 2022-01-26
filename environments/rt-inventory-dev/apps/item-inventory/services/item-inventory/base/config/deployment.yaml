@@ -51,7 +51,7 @@ spec:
         - name: KAFKA_SSL_KEYSTORE_TYPE
           value: PKCS12
         - name: KAFKA_SECURITY_PROTOCOL
-          value: SSL
+          value: PLAINTEXT
         - name: KAFKA_USER
           value: tls-user
         - name: KAFKA_CERT_PWD
@@ -67,7 +67,7 @@ spec:
         envFrom:
         - configMapRef:
             name: item-inventory-cm
-        image: image-registry.openshift-image-registry.svc.cluster.local:5000/rt-inventory/eda-item-inventory
+        image: quay.io/ibmcase/item-aggregator
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
