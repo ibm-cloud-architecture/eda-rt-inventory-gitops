@@ -3,6 +3,7 @@ resources:
 # - cicd-app.yaml
 # dev namespace
 - rt-inventory-dev-env-app.yaml
+- rt-inventory-dev-services-app.yaml
 - rt-inventory-dev-store-simulator-app.yaml
 - rt-inventory-dev-item-inventory-app.yaml
 - rt-inventory-dev-store-inventory-app.yaml
