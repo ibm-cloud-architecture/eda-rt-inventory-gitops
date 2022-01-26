@@ -12,7 +12,7 @@ As illustrated by the following figure, we are using Kafka / Event Streams to su
 the events pub/sub and then need to have aggregators to compute store inventory and 
 item inventory cross stores. 
 
-![](./docs/hl-view.png)
+![](./docs/images/hl-view.png)
 
 
 * The store simulator injects directly sell events to Kafka to the `items` topic
@@ -84,7 +84,7 @@ We used KAM CLI to create the project with the following parameters:
 
 Get Github access token, to be used in the KAM bootstrap command, in future steps.
 
-![](./docs/github-access-tk.png)
+![](./docs/images/github-access-tk.png)
 
 
 ```sh
@@ -109,15 +109,15 @@ kam bootstrap \
 * Login to the OpenShift Console, and get login token to be able to use `oc cli`
 * If not done already, use the script to install GitOps and Pipeline operators: 
 
-    ```sh
+  ```sh
     cd bootstrap/scripts/
     ./installGitOpsOperators.sh
-    ```
+  ```
     
-Once the operators are running the command: `oc get pods -n openshift-gitops` should return
+  Once the operators are running the command: `oc get pods -n openshift-gitops` should return
 a list of pods like:
 
-    ```sh
+  ```sh
     NAME                                                          READY   STATUS    RESTARTS   AGE
     openshift-gitops-application-controller-0                     1/1     Running   0          4h5m
     openshift-gitops-applicationset-controller-6948bcf87c-jdv2x   1/1     Running   0          4h5m
@@ -125,7 +125,7 @@ a list of pods like:
     openshift-gitops-redis-7867d74fb4-dssr2                       1/1     Running   0          4h5m
     openshift-gitops-repo-server-6dc777c845-gdjhr                 1/1     Running   0          4h5m
     openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
-    ```
+  ```
 
 * If not done already, install IBM product catalog
 
@@ -177,4 +177,13 @@ with the entitlement key
 oc apply -k config/argocd
 ```
 
+The expected set of ArgoCD apps looks like:
 
+![](./docs/images/rt-inv-argoapps.png)
+
+  * Argo-app is an app of apps
+  * dev-env is for the rt-inventory-dev namespace
+  * dev-services is for event streams and mq deployment in dev-env namespace
+  * store-simulator-app is for the simulator app used in the demo.
+  * item-inventory for the item aggregator application
+  * store-inventory for the store aggregator application
