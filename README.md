@@ -41,7 +41,7 @@ We have transformed this implementation into a lab that can be read [here](https
 
 Each service docker images are in the `quay.io/ibmcase` image registry.
 
-* Start local kafka and service
+* Start local kafka and services
 
 ```sh
 cd local-demo/kstreams
@@ -110,8 +110,7 @@ kam bootstrap \
 * If not done already, use the script to install GitOps and Pipeline operators: 
 
   ```sh
-    cd bootstrap/scripts/
-    ./installGitOpsOperators.sh
+    ./bootstrap/scripts/installGitOpsOperators.sh
   ```
     
   Once the operators are running the command: `oc get pods -n openshift-gitops` should return
@@ -138,21 +137,22 @@ a list of pods like:
 with the entitlement key
 
     ```sh
-    KEY=<yourentitlementkey>
+    export KEY=<yourentitlementkey>
     oc create secret docker-registry ibm-entitlement-key \
     --docker-username=cp \
     --docker-server=cp.icr.io \
     --namespace=openshift-operators \
     --docker-password=$KEY 
     ```
-* Deploy IBM product Operators 
+
+* Deploy IBM product Operators  to monitor All Namespaces 
 
 
   ```sh
   ./bootstrap/scripts/installIBMOperators.sh
   ```
  
-* Create ArgoCD project
+* Create ArgoCD project named `rt-inventory`
 
    ```sh
    oc apply -k bootstrap/argocd-project

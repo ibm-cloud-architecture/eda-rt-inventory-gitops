@@ -1,4 +1,5 @@
 resources:
 - argocd-admin.yaml
 - rt-inventory-dev-environment.yaml
+- ibm-ek-sealedsecret.yaml
 # - rt-inventory-dev-rolebinding.yaml

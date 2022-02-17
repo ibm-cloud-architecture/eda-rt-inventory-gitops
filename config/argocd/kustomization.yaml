@@ -8,4 +8,4 @@ resources:
 - rt-inventory-dev-item-inventory-app.yaml
 - rt-inventory-dev-store-inventory-app.yaml
 # Staging
-# - rt-inventory-stage-env-app.yaml
+- rt-inventory-stage-env-app.yaml

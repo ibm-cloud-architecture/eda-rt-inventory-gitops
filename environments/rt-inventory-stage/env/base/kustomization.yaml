@@ -1,3 +1,4 @@
 resources:
 - argocd-admin.yaml
 - rt-inventory-stage-environment.yaml
+- ibm-ek-sealedsecret.yaml
