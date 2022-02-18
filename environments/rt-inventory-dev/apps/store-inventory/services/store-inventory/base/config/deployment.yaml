@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/name: store-inventory
   name: store-inventory
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/version: 0.0.1
@@ -64,7 +64,7 @@ spec:
         - configMapRef:
             name: store-inventory-cm
         image: quay.io/ibmcase/store-aggregator
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:

@@ -68,7 +68,7 @@ spec:
         - configMapRef:
             name: item-inventory-cm
         image: quay.io/ibmcase/item-aggregator
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
