@@ -1,6 +1,6 @@
 # Real time inventory demo GitOps
 
-This gitops uses OpenShift GitOps to manage the deployment of the real-time inventory solution.
+This repository uses OpenShift GitOps to manage the deployment of the real-time inventory solution.
 
 ## Scenario presentation
 
@@ -8,11 +8,11 @@ This scenario implements a simple real-time inventory management solution based 
 
 Stores are sending their sale transactions to a central messaging platform, based on queues or Kafka topics.
 
-As illustrated by the following figure, we are using Kafka / Event Streams to support
-the events pub/sub and then need to have aggregators to compute store inventory and 
-item inventory cross stores. 
+As illustrated by the following figure, we are using Kafka / Event Streams to support the events pub/sub and 
+the need to have aggregators to compute store inventory and item cross stores inventory. The following figure illustrates the expected
+components:
 
-![](./docs/images/hl-view.png)
+![](./docs/images/event-bus.png)
 
 
 * The store simulator injects directly sell events to Kafka to the `items` topic
@@ -21,7 +21,7 @@ item inventory cross stores.
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
 * The Store-aggregator computes aggregate at the store level for each items.
 
-### Two alternates for the data stream processing.
+### Two different streaming approaches
 
 We propose two approaches to develop the streaming processing. 
 
@@ -45,7 +45,7 @@ Each service docker images are in the `quay.io/ibmcase` image registry.
 
 ```sh
 cd local-demo/kstreams
-docker compose up
+docker compose up -d
 ```
 
 * Create topics
@@ -60,16 +60,39 @@ docker compose up
 Then for the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/), and
 follow the demo script defined in [this article](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution).
 
+If you run the controlled scenario the data are:
+
+| Store | Item | Action |
+| --- | --- | --- |
+| Store 1 | Item_1 | +10 |
+| Store 1 | Item_2 | +5 |
+| Store 1 | Item_3 | +15 |
+| Store 2 | Item_1 | +10 |
+| Store 3 | Item_1 | +10 |
+| Store 4 | Item_1 | +10 |
+| Store 5 | Item_1 | +10 |
+| Store 1 | Item_2 | -5 |
+| Store 1 | Item_3 | -5 |
+       
+Inventory should be at the store level: `{"stock":{"Item_3":10,"Item_2":0,"Item_1":10},"storeName":"Store_1"}` and at the item level:
+
+| Item | Stock |
+| --- | --- |
+| Item_1 | 50 |
+| Item_2 | 0 |
+| Item_3 | 10 |
+
+
 The store inventory API is at [http://localhost:8082](http://localhost:8082/q/swagger-ui)
 
 The item inventory API is at [http://localhost:8081](http://localhost:8081/q/swagger-ui)
 
-Kafdrop UI to see messages in topics is at [http://localhost:9000](http://localhost:9000)
+Kafdrop UI to see messages in `items`, `store.inventory` and `item.inventory` topics is at [http://localhost:9000](http://localhost:9000)
 
 * Stop the demo
 
 ```sh
-docker compose down
+docker-compose down
 ```
 
 ### Run the Flink implementation
@@ -103,6 +126,9 @@ kam bootstrap \
 * Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
 * Added scripts to deploy the gitops, pipelines operators: `scripts/installOperators.sh`
 
+### What is deployed
+
+  ![](./docs/images/hl-view.png)
 
 ### Bootstrap
 
@@ -173,13 +199,13 @@ with the entitlement key
 
 * To start the CD management with ArgoCD, just executing the following should work.
 
-```sh
-oc apply -k config/argocd
-```
+   ```sh
+   oc apply -k config/argocd
+   ```
 
 The expected set of ArgoCD apps looks like:
 
-![](./docs/images/rt-inv-argoapps.png)
+  ![](./docs/images/rt-inv-argoapps.png)
 
   * Argo-app is an app of apps
   * dev-env is for the rt-inventory-dev namespace
@@ -187,3 +213,15 @@ The expected set of ArgoCD apps looks like:
   * store-simulator-app is for the simulator app used in the demo.
   * item-inventory for the item aggregator application
   * store-inventory for the store aggregator application
+
+* Go to the dev project: `oc project rt-inventory-dev`
+* Access to the Simulator User Interface via:
+
+   ```sh
+   chrome http://$(oc get route store-simulator -o jsonpath='{.status.ingress[].host}')
+   ```
+* Access Event Stream Console:
+
+ ```sh
+ chrome https://$(oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}')
+ ```
