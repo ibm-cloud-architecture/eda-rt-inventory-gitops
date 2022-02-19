@@ -1,0 +1,23 @@
+apiVersion: eventstreams.ibm.com/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: cos-sink-connector
+  labels:
+    eventstreams.ibm.com/cluster:  eda-cos-kconnect-cluster
+spec:
+  class: com.ibm.eventstreams.connect.cossink.COSSinkConnector
+  tasksMax: 1
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    topics: store.inventory
+    cos.api.key: X3YdeAwUACu5dWlspJhY3advx6MC26elYff_UCd7sQZ3
+    cos.bucket.location: us-east
+    cos.bucket.name: eda-demo
+    cos.bucket.resiliency: regional
+    cos.service.crn: "crn:v1:bluemix:public:cloud-object-storage:global:a/ecdc33cf8ef7498fc6da4d02e21126ac:4d222764-6f90-4257-b5ef-a8bd32a6c8e4::"
+    cos.object.records: 5
+    # As try to have exactly one delivery: cos.object.deadline.seconds: 5
+    cos.object.interval.seconds: 5
+    # The connector uses the following scheme to name Cloud Object Storage objects:
+    # topic/partition/firstoffset-lastoffset

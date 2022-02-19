@@ -215,13 +215,28 @@ The expected set of ArgoCD apps looks like:
   * store-inventory for the store aggregator application
 
 * Go to the dev project: `oc project rt-inventory-dev`
+* Deploy the sink kafka connector for cloud object storage:
+
+  * Modify the file `kafka-cos-sink-connector.yaml` in `environments/rt-inventory-dev/services/kconnect`, by replacing the following line from the cloud object storage credentials:
+
+  ```yaml
+    cos.api.key: IBM_COS_API_KEY
+    cos.bucket.location: IBM_COS_BUCKET_LOCATION
+    cos.bucket.name: IBM_COS_BUCKET_NAME
+    cos.bucket.resiliency: IBM_COS_RESILIENCY
+    cos.service.crn: "IBM_COS_CRM"
+  ```
+
+  * Then deploy the connector: `oc apply -f jb-kafka-cos-sink-connector.yaml `
+  
 * Access to the Simulator User Interface via:
 
    ```sh
    chrome http://$(oc get route store-simulator -o jsonpath='{.status.ingress[].host}')
    ```
+
 * Access Event Stream Console:
 
- ```sh
- chrome https://$(oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}')
- ```
+  ```sh
+  chrome https://$(oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}')
+  ```
