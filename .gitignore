@@ -1,2 +1,2 @@
-
+./environments/rt-inventory-dev/services/kconnect/src/my-plugins/
 ./environments/rt-inventory-dev/services/kconnect/jb-kafka-*.*
