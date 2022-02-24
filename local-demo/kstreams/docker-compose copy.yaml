@@ -30,11 +30,9 @@ services:
       - "2181:2181"
     environment:
       LOG_DIR: /tmp/logs
-
   kafka:
     image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
     container_name: kafka
-    hostname: kafka
     command: [
       "sh", "-c",
       "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} \
@@ -67,13 +65,9 @@ services:
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       APP_TARGET_MESSAGING: IBMMQ, Kafka
+      KAFKA_CERT_PWD: ""
+      USER_CERT_PWD: ""
       MQ_HOST: ibmmq
-      MQ_APP_PASSWORD: passw0rd
-      MQ_PORT: 1414
-      MQ_CHANNEL: DEV.APP.SVRCONN
-      MQ_QMGR: QM1
-      MQ_APP_USER: app
-      MQ_QUEUE_NAME: DEV.QUEUE.1
   itemInventory:
     image: quay.io/ibmcase/item-aggregator
     container_name: item-aggregator
@@ -109,9 +103,27 @@ services:
       KAFKA_BROKERCONNECT: "kafka:29092"
     depends_on:
       - kafka
-  src-kconnect:
-    container_name: src-kconnect
-    image: quay.io/ibmcase/eda-kconnect-cluster-image
+  elastic:
+    image: elasticsearch:7.6.0
+    hostname: elastic
+    environment:
+    - discovery.type=single-node
+    - ELASTICSEARCH_PASSWORD=passw0rd
+    ports:
+    - "9200:9200"
+    - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.0
+    depends_on: 
+    - elastic
+    ports:
+    - "5601:5601"
+    environment:
+    - ELASTICSEARCH_HOSTS=http://elastic:9200
+    - ELASTICSEARCH_USERNAME=elastic
+  kconnect:
+    container_name: kconnect
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0 
     ports:
       - 8083:8083
     volumes:
@@ -119,7 +131,7 @@ services:
     command: [
       "sh", "-c",
       "export LOG_DIR=/tmp &&
-      bin/connect-standalone.sh /tmp/standalone.properties /tmp/mq-source.properties"
+      bin/connect-standalone.sh /tmp/standalone.properties /tmp/kafka-sinks-standalone.properties"
     ]
     depends_on:
       - kafka

@@ -1,2 +1,5 @@
-./environments/rt-inventory-dev/services/kconnect/src/my-plugins/
-./environments/rt-inventory-dev/services/kconnect/jb-kafka-*.*
+/kconnect/my-plugins/*.jar
+/environments/rt-inventory-dev/services/kconnect/jb-kafka*
+/local-demo/kconnect/.com*
+/local-demo/kconnect/connect.log
+

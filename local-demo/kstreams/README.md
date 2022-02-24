@@ -1,6 +1,6 @@
 # Deploy the RT inventory locally
 
-This is an example of running thee solution using Minikube or docker compose.
+This is an example of running the solution using Docker compose.
 
 ## With Docker desktop and docker compose
 
@@ -21,4 +21,19 @@ cos.service.crn="crn:v1:b.....l:a/ecdc......32a6c8e4::"
 
 ```sh
 docker-compose up -d
+# Verify containers are running
+docker ps | awk 'print $2|'
+quay.io/ibmcase/item-aggregator
+quay.io/ibmcase/eda-store-simulator
+obsidiandynamics/kafdrop
+quay.io/ibmcase/store-aggregator
+cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
+cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
+ibmcom/mq
+```
+
+* Create topics
+
+```sh
+./createTopics.sh
 ```

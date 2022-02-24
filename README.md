@@ -12,7 +12,7 @@ As illustrated by the following figure, we are using Kafka / Event Streams to su
 the need to have aggregators to compute store inventory and item cross stores inventory. The following figure illustrates the expected
 components:
 
-![](./docs/images/event-bus.png)
+![](./docs/images/mq-es-demo.png)
 
 
 * The store simulator injects directly sell events to Kafka to the `items` topic
@@ -21,19 +21,23 @@ components:
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
 * The Store-aggregator computes aggregate at the store level for each items.
 
-### Two different streaming approaches
+## Two different streaming approaches
 
 We propose two approaches to develop the streaming processing. 
 
 * One using Kafka Streams 
 * One using Apache Flink
 
-#### Kafka Streams implementation
+### Kafka Streams implementation
 
 We have transformed this implementation into a lab that can be read [here](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/)
 
 * The Item-aggregator is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
 * The Store-aggregator is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
+
+### Fink implementation
+
+See [the refarch-eda-item-inventory-sql-flink repository](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory-sql-flink)
 
 ## Run the solution locally
 
