@@ -6,3 +6,4 @@ source $scriptDir/installOperators.sh
 
 install_operator ibm-eventstreams
 install_operator ibm-mq
+install_operator api-mgt

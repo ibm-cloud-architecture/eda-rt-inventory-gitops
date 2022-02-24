@@ -1,0 +1,8 @@
+bases:
+  - ../../base
+
+patchesJson6902:
+- path: patch-version.yaml
+  target:
+    kind: EventEndpointManager
+    name: eda-eepm

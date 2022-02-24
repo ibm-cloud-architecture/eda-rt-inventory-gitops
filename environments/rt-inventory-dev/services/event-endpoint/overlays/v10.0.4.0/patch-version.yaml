@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/version
+  value: 10.0.4.0-ifix1-54

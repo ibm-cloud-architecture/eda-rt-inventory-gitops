@@ -5,12 +5,13 @@ This repository uses OpenShift GitOps to manage the deployment of the real-time 
 ## Scenario presentation
 
 This scenario implements a simple real-time inventory management solution based on some real life MVPs we developed in 2020. 
+For a full explanation of the use case and scenario demo go to [this chapter](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#use-case-overview) in EDA reference architecture.
 
-Stores are sending their sale transactions to a central messaging platform, based on queues or Kafka topics.
+Stores are sending their sale transactions to a central messaging platform, based on IBM MQ queues and Kafka topics.
 
 As illustrated by the following figure, we are using Kafka / Event Streams to support the events pub/sub and 
 the need to have aggregators to compute store inventory and item cross stores inventory. The following figure illustrates the expected
-components:
+components deployed by this GitOps:
 
 ![](./docs/images/mq-es-demo.png)
 
@@ -20,6 +21,11 @@ components:
 * When messages are sourced to Queues, then a Kafka Source Connector is used to propagate message to `items` topics.
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
 * The Store-aggregator computes aggregate at the store level for each items.
+
+The GitOps approach is using [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product specific operator subscription definitions and configuration 
+and different instances definition in this repository. 
+
+![](./docs/images/gitops-catalog.png)
 
 ## Two different streaming approaches
 
@@ -201,7 +207,7 @@ with the entitlement key
    ```
 
 
-* To start the CD management with ArgoCD, just executing the following should work.
+* To start the Continuous Deployment with ArgoCD, just executing the following command should deploy event streams cluster instance, MQ broker, kafka connect, and the different microservices.
 
    ```sh
    oc apply -k config/argocd
@@ -231,7 +237,7 @@ The expected set of ArgoCD apps looks like:
     cos.service.crn: "IBM_COS_CRM"
   ```
 
-  * Then deploy the connector: `oc apply -f jb-kafka-cos-sink-connector.yaml `
+  * Then deploy the connector: `oc apply -f kafka-cos-sink-connector.yaml `
   
 * Access to the Simulator User Interface via:
 
@@ -243,4 +249,10 @@ The expected set of ArgoCD apps looks like:
 
   ```sh
   chrome https://$(oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}')
+  ```
+
+* Access to IBM MQ Admin Console
+
+  ```sh
+  chrome https://$(oc get route store-mq-ibm-mq-qm -o jsonpath='{.status.ingress[].host}')
   ```
