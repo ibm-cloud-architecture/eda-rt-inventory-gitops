@@ -140,7 +140,7 @@ kam bootstrap \
 
   ![](./docs/images/hl-view.png)
 
-### Bootstrap
+### Bootstrap GitOps
 
 * Login to the OpenShift Console, and get login token to be able to use `oc cli`
 * If not done already, use the script to install GitOps and Pipeline operators: 
@@ -162,7 +162,7 @@ a list of pods like:
     openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
   ```
 
-* If not done already, install IBM product catalog
+* If not done already, install IBM product catalog subscriptions, so the OpenShift Cluster can get visibility of IBM product within the OpenShift Operator Hub
 
   ```sh
   ./bootstrap/scripts/installIBMCatalog.sh
@@ -181,7 +181,7 @@ with the entitlement key
     --docker-password=$KEY 
     ```
 
-* Deploy IBM product Operators  to monitor All Namespaces 
+* Deploy IBM product Operators (Event Streams, MQ...) to monitor All Namespaces 
 
 
   ```sh
@@ -223,6 +223,8 @@ The expected set of ArgoCD apps looks like:
   * **rt-inventory-store-simulator-app** is for the simulator app used in the demo.
   * **rt-inventory-item-inventory** for the item aggregator application
   * **rt-inventory-store-inventory** for the store aggregator application
+
+## Configure connector
 
 * Go to the dev project: `oc project rt-inventory-dev`
 * Deploy the sink kafka connector for cloud object storage:
