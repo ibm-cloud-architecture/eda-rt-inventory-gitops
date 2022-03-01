@@ -99,6 +99,19 @@ The item inventory API is at [http://localhost:8081](http://localhost:8081/q/swa
 
 Kafdrop UI to see messages in `items`, `store.inventory` and `item.inventory` topics is at [http://localhost:9000](http://localhost:9000)
 
+* Verify Events are in `items` topic using Kafdrop:
+
+  ![](./docs/images/items-content.png)
+
+* Verify item inventory events are in `item-inventory`
+
+  ![](./docs/images/item-inventory-content.png)
+
+* Finally verify item inventory events are in `store-inventory`
+
+  ![](./docs/images/store-inventory-content.png)
+
+
 * Stop the demo
 
 ```sh
@@ -206,6 +219,7 @@ with the entitlement key
    chrome https://$(oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops)
    ```
 
+### Deploy ArgoCD app of apps:
 
 * To start the Continuous Deployment with ArgoCD, just executing the following command should deploy event streams cluster instance, MQ broker, kafka connect, and the different microservices.
 
@@ -263,3 +277,5 @@ The expected set of ArgoCD apps looks like:
   ```sh
   chrome https://$(oc get route store-mq-ibm-mq-qm -o jsonpath='{.status.ingress[].host}')
   ```
+
+  
