@@ -2,4 +2,5 @@
 /environments/rt-inventory-dev/services/kconnect/jb-kafka*
 /local-demo/kconnect/.com*
 /local-demo/kconnect/connect.log
+/local-demo/kconnect/connect.*
 

@@ -1,5 +1,5 @@
 
-# Kafka connect configuration for elastic search and cloud object storage sinks and MQ source
+# Kafka connect configuration for elastic search and cloud object storage sinks and MQ source connectors
 
 ## Get Kafka Connector cluster definition to connect to Event Streams
 
@@ -8,7 +8,7 @@ Go to the Event Streams User Interface by using OpenShift credentials. Then sele
 Click on the Set up button for the `Set up a Kafka Connect environment` option and download the zip file. The Zip
 includes a `kafka-connect.yaml` to define the Kafka Connect cluster and a Dockerfile to build custom images.
 
-This task was already done as we have the `kafka-connect.yaml` file in this folder. The dockerfile was moved to src folder as well as `my-plugins` folder.
+This task was already done as we have the `kafka-connect.yaml` file in this folder. The dockerfile was moved to `kconnect` folder as well as `my-plugins` folder.
 
 The following lines were changed to reflect where the container will run and which new image to use.
 
@@ -20,7 +20,7 @@ spec:
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
 ```
 
-For maintainance purpose, when new Event Streams product version will be released, the `metadata.annotations` need to be modified to reflect new productID 
+For maintenance purpose, when new Event Streams product version will be released, the `metadata.annotations` need to be modified to reflect new `productID`,  
 `cloudpakVersion` and `cloudpakId`.
 
 ```
@@ -46,3 +46,5 @@ oc apply -f kafka-connect.yaml
 # Verify cluster is ready
 oc get kafkaconnect
 ```
+
+## Deploy connector

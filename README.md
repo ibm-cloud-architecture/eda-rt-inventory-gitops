@@ -38,8 +38,8 @@ We propose two approaches to develop the streaming processing.
 
 We have transformed this implementation into a lab that can be read [here](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/)
 
-* The Item-aggregator is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
-* The Store-aggregator is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
+* The Item-aggregator, based on Kafka Stream APIs, is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
+* The Store-aggregator, also based on Kafka Stream APIs, is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
 
 ### Fink implementation
 
@@ -65,7 +65,7 @@ docker compose up -d
 ./createTopics.sh
 ```
 
-* Execute the demonstration using the script in :[refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
+* Execute the demonstration using the script in: [refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
 
 Then for the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/), and
 follow the demo script defined in [this article](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution).
@@ -217,12 +217,12 @@ The expected set of ArgoCD apps looks like:
 
   ![](./docs/images/rt-inv-argoapps.png)
 
-  * Argo-app is an app of apps
-  * dev-env is for the rt-inventory-dev namespace
-  * dev-services is for event streams and mq deployment in dev-env namespace
-  * store-simulator-app is for the simulator app used in the demo.
-  * item-inventory for the item aggregator application
-  * store-inventory for the store aggregator application
+  * **rt-inventory-Argo-app** is an app of apps
+  * **rt-inventory-dev-env** is for the rt-inventory-dev namespace
+  * **rt-inventory-dev-services** is for event streams, kafka connect cluster and mq deployments in dev-env namespace
+  * **rt-inventory-store-simulator-app** is for the simulator app used in the demo.
+  * **rt-inventory-item-inventory** for the item aggregator application
+  * **rt-inventory-store-inventory** for the store aggregator application
 
 * Go to the dev project: `oc project rt-inventory-dev`
 * Deploy the sink kafka connector for cloud object storage:
@@ -237,8 +237,13 @@ The expected set of ArgoCD apps looks like:
     cos.service.crn: "IBM_COS_CRM"
   ```
 
-  * Then deploy the connector: `oc apply -f kafka-cos-sink-connector.yaml `
-  
+  * Then deploy the connector: `oc apply -f environments/rt-inventory-dev/services/kconnect/kafka-cos-sink-connector.yaml `
+* Deploy the MQ source connector
+
+  ```
+  oc apply -f environments/rt-inventory-dev/services/kconnect/mq-source.json
+  ```
+
 * Access to the Simulator User Interface via:
 
    ```sh
