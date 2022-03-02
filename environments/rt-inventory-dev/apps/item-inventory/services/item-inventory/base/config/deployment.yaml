@@ -7,14 +7,14 @@ metadata:
     prometheus.io/scrape: "true"
     prometheus.io/path: /q/metrics
   labels:
-    app.kubernetes.io/version: 0.0.7
+    app.kubernetes.io/version: 0.0.10
     app.kubernetes.io/name: item-inventory
   name: item-inventory
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/version: 0.0.7
+      app.kubernetes.io/version: 0.0.10
       app.kubernetes.io/name: item-inventory
   template:
     metadata:
@@ -24,7 +24,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: /q/metrics
       labels:
-        app.kubernetes.io/version: 0.0.7
+        app.kubernetes.io/version: 0.0.10
         app.kubernetes.io/name: item-inventory
     spec:
       containers:
@@ -67,7 +67,7 @@ spec:
         envFrom:
         - configMapRef:
             name: item-inventory-cm
-        image: quay.io/ibmcase/item-aggregator
+        image: quay.io/ibmcase/item-aggregator:0.0.10
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

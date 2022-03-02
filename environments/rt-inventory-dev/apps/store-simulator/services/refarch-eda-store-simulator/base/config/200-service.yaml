@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: store-simulator
-    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/version: 0.0.10
     app.kubernetes.io/part-of: app-refarch-eda-store-simulator
   creationTimestamp: null
   name: store-simulator
@@ -16,7 +16,7 @@ spec:
       targetPort: 8080
   selector:
     app.kubernetes.io/name: store-simulator
-    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/version: 0.0.10
     app.kubernetes.io/part-of: app-refarch-eda-store-simulator
   type: ClusterIP
 status:
