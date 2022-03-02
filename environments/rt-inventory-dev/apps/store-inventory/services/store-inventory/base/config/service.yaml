@@ -8,6 +8,7 @@ metadata:
     prometheus.io/path: /q/metrics
   labels:
     app.kubernetes.io/name: store-aggregator
+    app.kubernetes.io/version: 0.0.10
   name: store-aggregator
 spec:
   ports:

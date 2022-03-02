@@ -3,6 +3,7 @@ kind: Route
 metadata:
   labels:
     app.kubernetes.io/name: item-inventory
+    app.kubernetes.io/version: 0.0.10
   name: item-inventory
 spec:
   host: ""
