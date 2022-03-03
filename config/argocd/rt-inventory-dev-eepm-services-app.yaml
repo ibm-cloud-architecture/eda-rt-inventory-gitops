@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   creationTimestamp: null
-  name: rt-inventory-dev-services
+  name: rt-inventory-dev-eepm-services
   namespace: openshift-gitops
 spec:
   destination:
@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   project: rt-inventory
   source:
-    path: environments/rt-inventory-dev/services/
+    path: environments/rt-inventory-dev/services/event-endpoint/overlays
     repoURL: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
   syncPolicy:
     automated:
