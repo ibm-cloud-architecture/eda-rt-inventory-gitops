@@ -8,6 +8,7 @@ metadata:
     prometheus.io/path: /q/metrics
   labels:
     app.kubernetes.io/name: item-inventory
+    app.kubernetes.io/version: 0.0.10
   name: item-inventory
 spec:
   ports:

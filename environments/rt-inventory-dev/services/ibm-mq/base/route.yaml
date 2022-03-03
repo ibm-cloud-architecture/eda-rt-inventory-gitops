@@ -1,0 +1,17 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ibmmq-route
+spec:
+  host: ""
+  port:
+    targetPort: https
+  to:
+    kind: Service
+    name: ibmmq
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None
+  

@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ibmmq-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ibmmq
+  template:
+    metadata:
+      labels:
+        app: ibmmq
+    spec:
+      containers:
+      - name: ibmmq
+        image: quay.io/ibmcase/ibm-mqadvanced-server-dev:9.2.4.0-amd64
+        ports:
+        - containerPort: 1414
+        - containerPort: 9443
+        - containerPort: 5672
+        envFrom:
+        - configMapRef:
+            name: mq-config
+        volumeMounts:
+        - name: mq-mqsc-config
+          mountPath: /etc/mqm/example.mqsc
+          subPath: example.mqsc
+      volumes:
+        - name: mq-mqsc-config
+          configMap:
+            name: mq-mqsc-config

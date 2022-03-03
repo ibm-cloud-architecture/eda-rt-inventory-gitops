@@ -10,6 +10,11 @@ spec:
     use: NonProduction
   queueManager:
     name: QM1
+    mqsc:
+      - configMap:
+          name: mq-mqsc-config
+          items:
+            -  example.mqsc
     resources:
       limits:
         cpu: 500m

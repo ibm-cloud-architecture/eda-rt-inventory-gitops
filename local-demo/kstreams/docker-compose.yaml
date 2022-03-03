@@ -60,9 +60,9 @@ services:
     image:  cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
     depends_on:
       - kafka
-    entrypoint: [ "bash",  "-c", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --replication-factor 1 --partitions 1 --topic items 
-            && /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --replication-factor 1 --partitions 1 --topic store.inventory 
-            && /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --replication-factor 1 --partitions 1 --topic item.inventory"]
+    entrypoint: [ "bash",  "-c", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --if-not-exists --replication-factor 1 --partitions 1 --topic items 
+            && /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --if-not-exists --replication-factor 1 --partitions 1 --topic store.inventory 
+            && /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --if-not-exists --replication-factor 1 --partitions 1 --topic item.inventory"]
   simulator:
     image: quay.io/ibmcase/eda-store-simulator
     container_name: simulator

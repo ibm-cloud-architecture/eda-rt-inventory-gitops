@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: store-inventory-cm
 data:
-  APP_VERSION: 0.0.8
+  APP_VERSION: 0.0.10
   STORE_INVENTORY_TOPIC: store.inventory
   ITEM_TOPIC: items
   KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.rt-inventory-dev.svc:9092

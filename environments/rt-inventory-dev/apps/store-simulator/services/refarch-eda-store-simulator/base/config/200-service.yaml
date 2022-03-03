@@ -4,7 +4,6 @@ metadata:
   labels:
     app.kubernetes.io/name: store-simulator
     app.kubernetes.io/version: 0.0.10
-    app.kubernetes.io/part-of: app-refarch-eda-store-simulator
   creationTimestamp: null
   name: store-simulator
   namespace: rt-inventory-dev
@@ -17,7 +16,6 @@ spec:
   selector:
     app.kubernetes.io/name: store-simulator
     app.kubernetes.io/version: 0.0.10
-    app.kubernetes.io/part-of: app-refarch-eda-store-simulator
   type: ClusterIP
 status:
   loadBalancer: {}
