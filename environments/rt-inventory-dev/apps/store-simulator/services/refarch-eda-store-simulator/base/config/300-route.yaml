@@ -1,15 +1,17 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  creationTimestamp: null
-  app.kubernetes.io/name: store-simulator
-  app.kubernetes.io/version: 0.0.10
+  labels:
+    app.kubernetes.io/name: store-simulator
+    app.kubernetes.io/version: 0.0.10
   namespace: rt-inventory-dev
+  name: store-simulator
 spec:
+  host: ""
+  path: /
   port:
     targetPort: http
   to:
     kind: Service
     name: store-simulator
-    weight: 100
-  wildcardPolicy: None
+
