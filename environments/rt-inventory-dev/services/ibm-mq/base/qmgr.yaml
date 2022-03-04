@@ -30,11 +30,11 @@ spec:
   template:
     pod:
       containers:
-        name: qmgr
-        - env:
+        - name: qmgr
+          env:
             - name: MQSNOAUT
               value: 'yes' 
-        - envFrom:
+          envFrom:
           - configMapRef:
               name: mq-config
 
