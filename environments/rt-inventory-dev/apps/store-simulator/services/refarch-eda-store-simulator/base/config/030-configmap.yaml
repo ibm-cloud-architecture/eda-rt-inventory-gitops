@@ -13,6 +13,6 @@ data:
   # external: mq1-cp4i-ibm-mq-qm-cp4i-mq1.apps.biggs.coc-ibm.com
   MQ_PORT: "1414"
   MQ_QMGR: QM1 
-  MQ_QUEUE_NAME: items
+  MQ_QUEUE_NAME: ITEMS
   MQ_CHANNEL: DEV.APP.SVRCONN
   #SASL_MECHANISM: SSL
