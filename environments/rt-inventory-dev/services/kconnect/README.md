@@ -48,3 +48,9 @@ oc get kafkaconnect
 ```
 
 ## Deploy connector
+
+Get the Connect Cluster route
+
+```sh
+oc apply -f kafka-connector.yaml
+```

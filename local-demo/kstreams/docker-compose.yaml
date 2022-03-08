@@ -68,12 +68,12 @@ services:
     container_name: simulator
     depends_on:
       - kafka
-    hostname: storeapp
+    hostname: simulator
     ports:
       - "8080:8080"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      APP_TARGET_MESSAGING: IBMMQ, Kafka
+      APP_TARGET_MESSAGING: IBMMQ,Kafka
       MQ_HOST: ibmmq
       MQ_APP_PASSWORD: passw0rd
       MQ_PORT: 1414
@@ -116,8 +116,9 @@ services:
       KAFKA_BROKERCONNECT: "kafka:29092"
     depends_on:
       - kafka
-  src-kconnect:
-    container_name: src-kconnect
+  kconnect:
+    hostname: kconnect
+    container_name: kconnect
     image: quay.io/ibmcase/eda-kconnect-cluster-image
     ports:
       - 8083:8083
@@ -126,7 +127,7 @@ services:
     command: [
       "sh", "-c",
       "export LOG_DIR=/tmp &&
-      bin/connect-standalone.sh /tmp/standalone.properties /tmp/mq-source.properties"
+      bin/connect-distributed.sh /tmp/distributed.properties"
     ]
     depends_on:
       - kafka

@@ -49,16 +49,23 @@ See [the refarch-eda-item-inventory-sql-flink repository](https://github.com/ibm
 
 ### Run the Kafka Stream implementation
 
-Each service docker images are in the `quay.io/ibmcase` image registry.
+The Kafka connector image and each service docker images are in the `quay.io/ibmcase` image registry.
 
-* Start local kafka and services
+* Start local kafka, with the 3 apps, MQ and ElasticSearch services run
 
 ```sh
 cd local-demo/kstreams
-docker compose up -d
+docker-compose -f docker-compose-all.yaml up -d
 ```
 
-* Create topics
+* As an alternate to only start Kafka, MQ and the 3 apps run:
+
+```sh
+cd local-demo/kstreams
+docker-compose up -d
+```
+
+* Create items, item.inventory, store.inventory topics
 
 ```sh
 # under local-demo/kstreams
@@ -111,11 +118,14 @@ Kafdrop UI to see messages in `items`, `store.inventory` and `item.inventory` to
 
   ![](./docs/images/store-inventory-content.png)
 
+* If using ElasticSearch go to Kibana UI at []()
 
 * Stop the demo
 
 ```sh
-docker-compose down
+docker-compose -f docker-compose-all.yaml down
+# OR
+docker-compose  down
 ```
 
 ### Run the Flink implementation

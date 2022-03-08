@@ -3,5 +3,9 @@
 /local-demo/kconnect/.com*
 /local-demo/kconnect/connect.log
 /local-demo/kconnect/connect.*
-
+/local-demo/kstreams/elasticsearch/nodes
+/local-demo/kstreams/elasticsearch/_state/
+/local-demo/kstreams/elasticsearch/indices/
+/local-demo/kstreams/elasticsearch/snapshot_cache/
+/local-demo/kstreams/elasticsearch/node.lock
 docs/.DS_Store

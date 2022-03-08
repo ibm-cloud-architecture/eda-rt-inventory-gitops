@@ -6,7 +6,7 @@
         "mq.queue.manager": "QM1",
         "mq.connection.name.list": "store-mq-ibm-mq.rt-inventory-dev.svc:1414",
         "mq.channel.name": "DEV.APP.SVRCONN",
-        "mq.queue": "DEV.QUEUE.1",
+        "mq.queue": "ITEMS",
         "mq.user.name": "",
         "mq.password": "",
         "topic": "items",
