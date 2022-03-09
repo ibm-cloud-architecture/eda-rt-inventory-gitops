@@ -10,5 +10,7 @@ resources:
 - rt-inventory-dev-store-simulator-app.yaml
 - rt-inventory-dev-item-inventory-app.yaml
 - rt-inventory-dev-store-inventory-app.yaml
+- rt-inventory-dev-elastic-services-app.yaml
+- rt-inventory-dev-kibana-services-app.yaml
 # Staging
 # - rt-inventory-stage-env-app.yaml
