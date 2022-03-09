@@ -4,16 +4,6 @@ metadata:
   name: elasticsearch
   namespace: rt-inventory-lab
 spec:
-  auth: {}
-  http:
-    service:
-      metadata: {}
-      spec: {}
-    tls:
-      certificate: {}
-  monitoring:
-    logs: {}
-    metrics: {}
   nodeSets:
     - config:
         node.attr.attr_name: attr_value
