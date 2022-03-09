@@ -1,0 +1,23 @@
+apiVersion: eventstreams.ibm.com/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: elastic-sink
+  labels:
+    eventstreams.ibm.com/cluster: lab-kconnect-cluster
+spec:
+  class: com.ibm.eventstreams.connect.elasticsink.ElasticSinkConnector
+  tasksMax: 1
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    topics: item.inventory
+    es.connection: elasticsearch-es-http:9200
+    es.document.builder: com.ibm.eventstreams.connect.elasticsink.builders.JsonDocumentBuilder
+    es.index.builder: com.ibm.eventstreams.connect.elasticsink.builders.DefaultIndexBuilder
+    es.identifier.builder: com.ibm.eventstreams.connect.elasticsink.builders.DefaultIdentifierBuilder
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: false
+    es.http.connections: 3
+    es.user.name: elastic
+    es.password: 63i8VoA4T1s4SPCK44Bbq70o

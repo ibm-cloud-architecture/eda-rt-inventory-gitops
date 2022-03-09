@@ -1,0 +1,8 @@
+resources:
+- serviceaccount.yaml
+- clusterroles.yaml
+- configMap.yaml
+- secret.yaml
+- rolebinding.yaml
+- elasticsearch.yaml
+- service.yaml
