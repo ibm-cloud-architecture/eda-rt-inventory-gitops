@@ -28,10 +28,4 @@ spec:
                 requests:
                   cpu: '1'
                   memory: 4Gi
-  transport:
-    service:
-      metadata: {}
-      spec: {}
-  updateStrategy:
-    changeBudget: {}
   version: 8.0.0
