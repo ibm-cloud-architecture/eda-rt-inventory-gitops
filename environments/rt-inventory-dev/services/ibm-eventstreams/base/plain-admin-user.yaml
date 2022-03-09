@@ -1,10 +1,10 @@
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaUser
 metadata:
-  name: scram-user
-  namespace:  rt-inventory-lab
+  name: admin-user
+  namespace:  rt-inventory-dev
   labels:
-    eventstreams.ibm.com/cluster: lab
+    eventstreams.ibm.com/cluster: dev
 spec:
   authentication:
     type: scram-sha-512

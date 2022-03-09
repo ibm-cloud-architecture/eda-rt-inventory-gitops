@@ -257,3 +257,16 @@ with the entitlement key
     ```
 
 * Verify records from `item.inventory` topic are in ElasticSearch indices.
+
+
+## Remove everything
+
+```
+oc delete -k ocp-demo-step-by-step/item-inventory 
+oc delete -k ocp-demo-step-by-step/store-simulator
+oc delete -f ocp-demo-step-by-step/kibana/kibana.yaml
+oc delete -f ocp-demo-step-by-step/elasticsearch/elasticsearch.yaml
+oc delete -f ocp-demo-step-by-step/kconnect/kafka-connect.yaml
+oc delete -k ocp-demo-step-by-step/ibm-eventstreams/overlays
+oc delete -k ocp-demo-step-by-step/ibm-mq/overlays 
+```
