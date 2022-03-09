@@ -1,0 +1,24 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: rt-inventory-dev
+spec:
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch
+  podTemplate:
+    metadata:
+      labels:
+        foo: bar
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 0.5
+              memory: 1Gi
+  version: 8.0.0
