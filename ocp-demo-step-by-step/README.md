@@ -1,19 +1,29 @@
 # A manual deployment of the operators, components and services
 
 
-* Login to the Openshift Console
-* Create a project for the solution name it rt-inventory-lab
+## Pre-requisites
+
+Be sure to have 
+
+* oc cli
+* IBM Entitlement key
+* OpenShift clsuter 4.7+
+
+## Steps
+
+1. Login to the Openshift Console
+1. Create a project for the solution name it rt-inventory-lab
 
     ```sh
     oc new-project rt-inventory-lab
     ```
-* Deploy the IBM product catalog
+1. Deploy the IBM product catalog
 
     ```sh
     ./bootstrap/scripts/installIBMCatalog.sh
     ```
-* Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key)
-* Update the [OCP global pull secret of the `openshift-operators` project](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#update-the-ocp-global-pull-secret)
+1. Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key)
+1. Update the [OCP global pull secret of the `openshift-operators` project](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#update-the-ocp-global-pull-secret)
 with the entitlement key
 
     ```sh
@@ -25,23 +35,28 @@ with the entitlement key
     --docker-password=$KEY 
     ```
 
-* Deploy Event Streams, IBM MQ and API Connect Operators
+1. If not done before, deploy Event Streams, IBM MQ and API Connect Operators
 
     ```sh
+    # Verify if some operator are present
+    oc get -n openshift-operators subscription ibm-eventstreams 
+    # install them if not
     ./bootstrap/scripts/installIBMOperators.sh
     ```
 
-* Copy IBM Entitlement secrets to the demo project
+1. Copy IBM Entitlement secrets to the demo project
 
     ```sh
     ./bootstrap/scripts/copySecrets.sh ibm-entitlement-key  openshift-operators  rt-inventory-lab
     ```
 
-* Create an Event Stream Cluster
+1. Create an Event Stream Cluster
 
     ```sh
     oc apply -k ./ocp-demo-step-by-step/ibm-eventstreams/overlays
     ```
+
+    You may see some failure issue reported like "An unexpected exception was encountered: ConfigMap for Common Services Management Ingress missing.. More detail can be found in the Event Streams Operator log."... this is temporal, it will get it configured after few minutes.
 
     * Verify the Event Streams brokers are up and running
 
@@ -85,13 +100,13 @@ with the entitlement key
 
     ![](../docs/images/es-rt-topics.png)
 
-* Get the cluster admin password
+1. Get the cluster admin password
 
 ```sh
  oc get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' -n ibm-common-services | base64 --decode && echo ""
 ```
 
-* Deploy MQ Broker
+1. Deploy MQ Broker
 
     ```sh
     oc apply -k ./ocp-demo-step-by-step/ibm-mq/overlays
@@ -111,7 +126,7 @@ with the entitlement key
     chrome https://$(oc get route store-mq-ibm-mq-web  -o jsonpath='{.status.ingress[].host}')
     ```
 
-* Deploy the Store simulator demo
+1. Deploy the Store simulator demo
 
     ```sh
         oc apply -k ./ocp-demo-step-by-step/store-simulator
@@ -125,11 +140,11 @@ with the entitlement key
 
     ![](../docs/images/store-simul-home.png)
 
-* Start the controlled simulator, by selecting IBMMQ and the runner icon:
+1. Start the controlled simulator, by selecting IBMMQ and the runner icon:
 
      ![](../docs/images/ibmmq-control.png)
 
-* Verify messages are in MQ Queue named `items`
+1. Verify messages are in MQ Queue named `items`
 
     ![](../docs/images/qm-items.png)
 
@@ -137,7 +152,7 @@ with the entitlement key
 
     ![](../docs/images/messages-in-itemsQ.png)
 
-* Now we will add the Kafka connectors - MQ source connector to get those messages to the `items` topics in Event Streams
+1. Now we will add the Kafka connectors - MQ source connector to get those messages to the `items` topics in Event Streams
 
     * Deploy Kafka Connector cluster
 
@@ -161,11 +176,11 @@ with the entitlement key
     mq-source   lab-kconnect-cluster   com.ibm.eventstreams.connect.mqsource.MQSourceConnector   1       
     ``` 
 
-* Now items are in the topics
+1. Now items are in the topics
 
     ![](../docs/images/items-topic.png)
 
-* Deploy one of the streaming agent
+1. Deploy one of the streaming agent
 
     ```sh
     oc apply -k ocp-demo-step-by-step/item-inventory
@@ -175,13 +190,13 @@ with the entitlement key
     item-inventory   1/1     1            1           58s
     ```
 
-* Deploy the Elastic Search Operator
+1. Deploy the Elastic Search Operator
 
     ```sh
     oc apply -k bootstrap/elastic-operator 
     ```
 
-* Create an Elastic Search Cluster.  It may take up to a few minutes until all the resources are created and the cluster is ready for use.
+1. Create an Elastic Search Cluster.  It may take up to a few minutes until all the resources are created and the cluster is ready for use.
 
 
     ```sh
@@ -218,7 +233,7 @@ with the entitlement key
     }
     ```
 
-* Deploy Kibana
+1. Deploy Kibana
 
     ```sh
     oc apply -f ocp-demo-step-by-step/kibana/kibana.yaml
@@ -238,7 +253,7 @@ with the entitlement key
     oc get secret elasticsearch-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
     ```
 
-* Deploy Kafka connector [ElasticSearch sink connector](https://github.com/ibm-messaging/kafka-connect-elastic-sink)
+1. Deploy Kafka connector [ElasticSearch sink connector](https://github.com/ibm-messaging/kafka-connect-elastic-sink)
 
     ```sh
     oc apply -f ocp-demo-step-by-step/kconnect/kafka-elastic-sink-connector.yaml
@@ -256,7 +271,7 @@ with the entitlement key
     mq-source      lab-kconnect-cluster   com.ibm.eventstreams.connect.mqsource.MQSourceConnector         1           True
     ```
 
-* Verify records from `item.inventory` topic are in ElasticSearch indices.
+1. Verify records from `item.inventory` topic are in ElasticSearch indices.
 
 
 ## Remove everything

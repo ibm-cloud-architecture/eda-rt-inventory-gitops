@@ -16,7 +16,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app.kubernetes.io/name: store-simulator
         app.kubernetes.io/version: 0.0.10

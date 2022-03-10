@@ -2,7 +2,6 @@ apiVersion: mq.ibm.com/v1beta1
 kind: QueueManager
 metadata:
   name: store-mq
-  namespace: rt-inventory-lab
 spec:
   license:
     accept: true

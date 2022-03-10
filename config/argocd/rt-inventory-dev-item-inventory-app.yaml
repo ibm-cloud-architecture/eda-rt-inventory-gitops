@@ -18,12 +18,4 @@ spec:
     automated:
       prune: true
       selfHeal: true
-status:
-  health: {}
-  summary: {}
-  sync:
-    comparedTo:
-      destination: {}
-      source:
-        repoURL: ""
-    status: ""
+

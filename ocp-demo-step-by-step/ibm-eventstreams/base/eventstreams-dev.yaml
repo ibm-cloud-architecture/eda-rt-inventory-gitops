@@ -2,7 +2,6 @@
 kind: EventStreams
 metadata:
   name: lab
-  namespace: rt-inventory-lab
 spec:
   version: 10.5.0
   license:

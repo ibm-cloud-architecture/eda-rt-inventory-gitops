@@ -2,7 +2,6 @@ apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaTopic
 metadata:
   name: items
-  namespace: rt-inventory-lab
   labels:
     eventstreams.ibm.com/cluster: lab
 spec:
@@ -15,7 +14,6 @@ apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaTopic
 metadata:
   name: item.inventory
-  namespace: rt-inventory-lab
   labels:
     eventstreams.ibm.com/cluster: lab
 spec:
@@ -28,7 +26,6 @@ apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaTopic
 metadata:
   name: store.inventory
-  namespace: rt-inventory-lab
   labels:
     eventstreams.ibm.com/cluster: lab
 spec:
