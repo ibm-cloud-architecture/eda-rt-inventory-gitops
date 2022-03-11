@@ -54,12 +54,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: ca.password
-              name: dev-cluster-ca-cert
-        - name: USER_CERT_PWD
-          valueFrom:
-            secretKeyRef:
-              key: user.password
-              name: tls-user
+              name: lab-cluster-ca-cert
         envFrom:
         - configMapRef:
             name: store-inventory-cm
@@ -95,17 +90,10 @@ spec:
           name: kafka-cert
           readOnly: false
           subPath: ""
-        - mountPath: /deployments/certs/user
-          name: user-cert
-          readOnly: false
-          subPath: ""
       serviceAccount: store-inventory
       volumes:
       - name: kafka-cert
         secret:
           optional: true
-          secretName: dev-cluster-ca-cert
-      - name: user-cert
-        secret:
-          optional: true
-          secretName: tls-user
+          secretName: lab-cluster-ca-cert
+

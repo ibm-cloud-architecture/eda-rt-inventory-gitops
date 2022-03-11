@@ -6,7 +6,6 @@ metadata:
     app.kubernetes.io/version: 0.0.10
   creationTimestamp: null
   name: store-simulator
-  namespace: rt-inventory-lab
 spec:
   ports:
     - name: http

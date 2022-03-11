@@ -1,9 +1,10 @@
 # A manual deployment of the operators, components and services
 
+This is the manual deployment of the real-time inventory solution. 
 
 ## Pre-requisites
 
-Be sure to have 
+Be sure to have:
 
 * oc cli
 * IBM Entitlement key
@@ -11,20 +12,26 @@ Be sure to have
 
 ## Steps
 
+> If you are using an environment where Event Streams, MQ, API Connect operators are deployed in a namespace and not in `openshift-operators` level to monitor `All namespace`, then it is recommended to install this solution where the cloud Pak for integration runs. The happy path of this deployment is to have operators in `openshift-operators` and being able to install clusters, brokers and microservice in a dedicate project: `rt-inventory-lab`. To try to be exhaustive, we will use some side notes to present what to tune in case you are reusing an existing deployment, by taking the example that operators and operands are in `cp4i` project.
+
 1. Login to the Openshift Console
-1. Create a project for the solution name it rt-inventory-lab
+1. Create a project for the solution name it `rt-inventory-lab`, or go to existing project: `oc project cp4i`
 
     ```sh
     oc new-project rt-inventory-lab
     ```
-1. Deploy the IBM product catalog
+
+   
+1. Deploy the IBM product catalog - (Not needed if `cp4i` already deployed)
 
     ```sh
     ./bootstrap/scripts/installIBMCatalog.sh
     ```
-1. Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key)
+
+
+1. Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key) - (Not needed  if `cp4i` already deployed)
 1. Update the [OCP global pull secret of the `openshift-operators` project](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#update-the-ocp-global-pull-secret)
-with the entitlement key
+with the entitlement key. - (Not needed if `cp4i` already deployed)
 
     ```sh
     export KEY=<yourentitlementkey>
@@ -35,7 +42,7 @@ with the entitlement key
     --docker-password=$KEY 
     ```
 
-1. If not done before, deploy Event Streams, IBM MQ and API Connect Operators
+1. If not done before, deploy Event Streams, IBM MQ and API Connect Operators- (Not needed if `cp4i` already deployed)
 
     ```sh
     # Verify if some operator are present
@@ -44,10 +51,16 @@ with the entitlement key
     ./bootstrap/scripts/installIBMOperators.sh
     ```
 
-1. Copy IBM Entitlement secrets to the demo project
+1. Copy IBM Entitlement secrets to the `rt-inventory-lab` project - (Not needed if `cp4i` already deployed)
 
     ```sh
     ./bootstrap/scripts/copySecrets.sh ibm-entitlement-key  openshift-operators  rt-inventory-lab
+    ```
+
+1. Get the cluster admin password
+
+    ```sh
+    oc get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' -n ibm-common-services | base64 --decode && echo ""
     ```
 
 1. Create an Event Stream Cluster
@@ -88,9 +101,8 @@ with the entitlement key
      chrome https://$(oc get route lab-ibm-es-ui  -o jsonpath='{.status.ingress[].host}')
     ```
 
-     Use OpenShift authentication option.
-
-    * Verify the Topics were created
+     Use OpenShift authentication option: admin user, and previously retrieved password.
+    * Verify the Topics were created:
 
     ```sh
     oc get kafkatopics
@@ -100,11 +112,6 @@ with the entitlement key
 
     ![](../docs/images/es-rt-topics.png)
 
-1. Get the cluster admin password
-
-```sh
- oc get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' -n ibm-common-services | base64 --decode && echo ""
-```
 
 1. Deploy MQ Broker
 
@@ -127,6 +134,8 @@ with the entitlement key
     ```
 
 1. Deploy the Store simulator demo
+
+    > if you are using `cp4i` project modify the store-simulator/config map to change the bootstrap server as: `KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.cp4i.svc:9092` and the `MQ_HOST: store-mq-ibm-mq.cp4i.svc`
 
     ```sh
         oc apply -k ./ocp-demo-step-by-step/store-simulator
@@ -154,6 +163,7 @@ with the entitlement key
 
 1. Now we will add the Kafka connectors - MQ source connector to get those messages to the `items` topics in Event Streams
 
+    > if you are using `cp4i` project modify the kconnect/kafka-connect.yaml to change the bootstrap server as: ` bootstrapServers: lab-kafka-bootstrap.cp4i.svc:9092`
     * Deploy Kafka Connector cluster
 
     ```sh
@@ -165,7 +175,9 @@ with the entitlement key
     lab-kconnect-cluster   1                  
     ```
 
-    * Deploy and start the MQ Source connector
+    * Deploy and start the MQ Source connector.
+
+    > if you are using `cp4i` project modify the kconnect/kafka-mq-src-connector.yaml with `mq.connection.name.list: store-mq-ibm-mq.cp4i.svc`
 
     ```sh
     oc apply -f ocp-demo-step-by-step/kconnect/kafka-mq-src-connector.yaml 
@@ -180,8 +192,19 @@ with the entitlement key
 
     ![](../docs/images/items-topic.png)
 
-1. Deploy one of the streaming agent
+1. Deploy one of the Store Inventory streaming agent
 
+    > if you are using `cp4i` project modify the store-inventory/ config map with `KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.cp4i.svc:9092`
+    ```sh
+    oc apply -k ocp-demo-step-by-step/store-inventory
+    # Verify
+    oc get deployment store-inventory
+    NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+    store-inventory   1/1     1            1           58s
+    ```
+1. [Optional] Deploy one of the Item Inventory streaming agent
+
+    > if you are using `cp4i` project modify the item-inventory/ config map with `KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.cp4i.svc:9092`
     ```sh
     oc apply -k ocp-demo-step-by-step/item-inventory
     # Verify
@@ -189,7 +212,6 @@ with the entitlement key
     NAME             READY   UP-TO-DATE   AVAILABLE   AGE
     item-inventory   1/1     1            1           58s
     ```
-
 1. Deploy the Elastic Search Operator
 
     ```sh
