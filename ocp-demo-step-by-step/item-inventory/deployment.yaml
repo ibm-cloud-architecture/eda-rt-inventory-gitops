@@ -44,19 +44,6 @@ spec:
           value: /deployments/quarkus-run.jar
         - name: KAFKA_SECURITY_PROTOCOL
           value: PLAINTEXT
-        - name: KAFKA_SASL_MECHANISM
-          value: PLAIN
-        - name: KAFKA_USER
-          value: admin-user
-        - name: USER_CERT_PWD
-          value: ""
-        - name: KAFKA_CERT_PWD
-          value: ""
-        - name: JAAS_CFG
-          valueFrom:
-            secretKeyRef:
-              key: sasl.jaas.config
-              name: admin-user
         envFrom:
         - configMapRef:
             name: item-inventory-cm
