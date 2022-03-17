@@ -43,7 +43,7 @@ We have transformed this implementation into a lab that can be read [here](https
 
 ### Fink implementation
 
-See [the refarch-eda-item-inventory-sql-flink repository](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory-sql-flink)
+See [the refarch-eda-item-inventory-sql-flink repository](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory-sql-flink) for more information.
 
 ## Run the solution locally
 
@@ -155,13 +155,20 @@ kam bootstrap \
 
 ### What was added
 
-* Added a bootstrap folder to define gitops and operator declaration and to create an ArgoCD project
+* Added a bootstrap folder to define gitops and Cloud Pak for integration capabilities operator declarations and to create an ArgoCD project
 * Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
 * Added scripts to deploy the gitops, pipelines operators: `scripts/installOperators.sh`
 
 ### What is deployed
 
   ![](./docs/images/hl-view.png)
+
+### CP4Integration installation considerations
+
+* In this solution, CP4I operators are deployed in **All namespaces**, the entire OpenShift cluster effectively behaves as one large tenant.
+* With **All namespace** there can be only one Platform Navigator installed per cluster, and all Cloud Pak instances are owned by that Platform Navigator. 
+* A single instance of IBM Cloud Pak foundational services is installed in the `ibm-common-services` namespace if the foundational services operator is not already installed on the cluster.
+* Operators can be upgraded automatically when new compatible versions are available. For production deployment, the manual upgrade may be desirable.
 
 ### Bootstrap GitOps
 
@@ -209,12 +216,22 @@ with the entitlement key
 
   ```sh
   ./bootstrap/scripts/installIBMOperators.sh
+  # Results
+  subscription.operators.coreos.com/ibm-eventstreams created
+  Waiting for operator ibm-eventstreams to be deployed...
+  ......................................Done
+  subscription.operators.coreos.com/ibm-mq created
+  Waiting for operator ibm-mq to be deployed..................Done
+  subscription.operators.coreos.com/ibm-apiconnect created
+  Waiting for operator ibm-apiconnect to be deployed...Done
   ```
  
-* Create ArgoCD project named `rt-inventory`
+* Create an ArgoCD project named `rt-inventory`
 
    ```sh
    oc apply -k bootstrap/argocd-project
+   # Result
+   appproject.argoproj.io/rt-inventory created
    ```
 
 * To get the `admin` user's password use the command
@@ -248,6 +265,10 @@ The expected set of ArgoCD apps looks like:
   * **rt-inventory-item-inventory** for the item aggregator application
   * **rt-inventory-store-inventory** for the store aggregator application
 
+### Potential errors
+
+* While the Event Streams cluster is created: An unexpected exception was encountered: Exceeded timeout of 1200000ms while waiting for ConfigMap resource **ibm-common-services-status** in namespace **kube-public** to be ready. More detail can be found in the Event Streams Operator log.
+
 ## Configure connector
 
 * Go to the dev project: `oc project rt-inventory-dev`
@@ -264,9 +285,10 @@ The expected set of ArgoCD apps looks like:
   ```
 
   * Then deploy the connector: `oc apply -f environments/rt-inventory-dev/services/kconnect/kafka-cos-sink-connector.yaml `
+
 * Deploy the MQ source connector
 
-  ```
+  ```sh
   oc apply -f environments/rt-inventory-dev/services/kconnect/mq-source.json
   ```
 
