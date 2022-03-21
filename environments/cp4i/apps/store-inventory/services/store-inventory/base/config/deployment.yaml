@@ -42,24 +42,8 @@ spec:
               fieldPath: metadata.namespace
         - name: JAVA_APP_JAR
           value: /deployments/quarkus-run.jar
-        - name: KAFKA_SSL_TRUSTSTORE_LOCATION
-          value: /deployments/certs/server/ca.p12
-        - name: KAFKA_SSL_TRUSTSTORE_TYPE
-          value: PKCS12
         - name: KAFKA_SECURITY_PROTOCOL
           value: PLAINTEXT
-        - name: KAFKA_USER
-          value: tls-user
-        - name: KAFKA_CERT_PWD
-          valueFrom:
-            secretKeyRef:
-              key: ca.password
-              name: dev-cluster-ca-cert
-        - name: USER_CERT_PWD
-          valueFrom:
-            secretKeyRef:
-              key: user.password
-              name: tls-user
         envFrom:
         - configMapRef:
             name: store-inventory-cm
@@ -90,22 +74,4 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 10
-        volumeMounts:
-        - mountPath: /deployments/certs/server
-          name: kafka-cert
-          readOnly: false
-          subPath: ""
-        - mountPath: /deployments/certs/user
-          name: user-cert
-          readOnly: false
-          subPath: ""
       serviceAccount: store-inventory
-      volumes:
-      - name: kafka-cert
-        secret:
-          optional: true
-          secretName: dev-cluster-ca-cert
-      - name: user-cert
-        secret:
-          optional: true
-          secretName: tls-user

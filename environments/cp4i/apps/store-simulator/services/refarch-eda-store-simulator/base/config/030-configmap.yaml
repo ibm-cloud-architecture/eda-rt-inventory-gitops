@@ -5,10 +5,11 @@ metadata:
 data:
   APP_VERSION: 0.0.10
   APP_TARGET_MESSAGING: kafka,IBMMQ
-  KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
-  KAFKA_TOPIC_NAME: items
+  KAFKA_BOOTSTRAP_SERVERS: es-demo-kafka-bootstrap.cp4i.svc:9092
+  KAFKA_TOPIC_NAME: rt-demo.items
   KAFKA_SECURITY_PROTOCOL: PLAINTEXT
   USER_CERT_PWD: none
+  KAFKA_CERT_PWD: ""
   MQ_HOST: store-mq-ibm-mq.rt-inventory-dev.svc
   # external: mq1-cp4i-ibm-mq-qm-cp4i-mq1.apps.biggs.coc-ibm.com
   MQ_PORT: "1414"

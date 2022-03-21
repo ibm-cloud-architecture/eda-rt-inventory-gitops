@@ -39,11 +39,6 @@ spec:
               value: PKCS12
             - name: KAFKA_SECURITY_PROTOCOL
               value: PLAINTEXT
-            - name: KAFKA_CERT_PWD
-              valueFrom:
-                secretKeyRef:
-                  key: ca.password
-                  name: dev-cluster-ca-cert
           envFrom:
             - configMapRef:
                 name: store-simulator-cm
@@ -74,14 +69,5 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 10
-          volumeMounts:
-          - mountPath: /deployments/certs/server
-            name: kafka-cert
-            readOnly: false
-            subPath: ""
       serviceAccount: store-simulator
-      volumes:
-      - name: kafka-cert
-        secret:
-          optional: true
-          secretName: dev-cluster-ca-cert
+

@@ -267,7 +267,10 @@ The expected set of ArgoCD apps looks like:
 
 ### Potential errors
 
-* While the Event Streams cluster is created: An unexpected exception was encountered: Exceeded timeout of 1200000ms while waiting for ConfigMap resource **ibm-common-services-status** in namespace **kube-public** to be ready. More detail can be found in the Event Streams Operator log.
+????- "ConfigMap ibm-common-services-status in **kube-public** to be ready"
+  * While the Event Streams cluster is created: An unexpected exception was encountered: Exceeded timeout of 1200000ms while waiting for ConfigMap resource **ibm-common-services-status** in namespace **kube-public** to be ready. More detail can be found in the Event Streams Operator log.
+  * This is an issue known as of 10.5.  Restart the ES operator pod
+  * See also https://github.ibm.com/mhub/qp-planning/issues/7383
 
 ## Configure connector
 

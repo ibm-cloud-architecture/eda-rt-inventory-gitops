@@ -4,10 +4,12 @@ metadata:
   name: item-inventory-cm
 data:
   APP_VERSION: 0.0.10
-  INVENTORY_TOPIC: item.inventory
-  ITEM_TOPIC: items
-  KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.cp4i.svc:9092
-  QUARKUS_KAFKA_STREAMS_TOPICS: items,item.inventory
+  APP_ITEM_INVENTORY_TOPIC: rt-demo.item.inventory
+  APP_ITEM_TOPIC: rt-demo.items
+  KAFKA_BOOTSTRAP_SERVERS: es-demo-kafka-bootstrap.cp4i.svc:9092
+  KAFKA_CERT_PWD: ""
+  USER_CERT_PWD: ""
+  QUARKUS_KAFKA_STREAMS_TOPICS: rt-demo.items,rt-demo.item.inventory
   QUARKUS_KAFKA_HEALTH_ENABLED: "false"
   QUARKUS_KAFKA_STREAMS_HEALTH_ENABLED: "false"
   QUARKUS_KAFKA_CONNECTOR_HEALTH_ENABLED: "false"
