@@ -1,0 +1,20 @@
+bases:
+  - ../../base
+
+patchesJson6902:
+- path: patch-ns.yaml
+  target:
+    kind: KafkaTopic
+    name: rt-demo.items
+- path: patch-ns.yaml
+  target:
+    kind: KafkaTopic
+    name: rt-demo.item.inventory
+- path: patch-ns.yaml
+  target:
+    kind: KafkaTopic
+    name: rt-demo.store.inventory
+- path: patch-ns.yaml
+  target:
+    kind: KafkaTopic
+    name: item-aggregator-itemstock-repartition

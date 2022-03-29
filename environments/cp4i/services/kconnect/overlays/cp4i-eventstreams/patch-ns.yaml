@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/bootstrapServers
+  value: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093

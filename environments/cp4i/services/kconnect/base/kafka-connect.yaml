@@ -7,8 +7,9 @@ metadata:
 spec:
   version: 2.8.1
   replicas: 1
-  bootstrapServers: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
+  bootstrapServers: es-demo-kafka-bootstrap.cp4i.svc:9093
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
+  
   template:
     pod:
       imagePullSecrets: []
@@ -32,6 +33,7 @@ spec:
     config.storage.replication.factor: 3
     offset.storage.replication.factor: 3
     status.storage.replication.factor: 3
+  imagePullPolicy: Always
   externalConfiguration:
     env:
       - name: IBM_COS_API_KEY
@@ -54,18 +56,18 @@ spec:
           secretKeyRef:
             name: cos-creds
             key: cos.bucket.resiliency
-      - name: IBM_COS_CRM
+      - name: IBM_COS_CRN
         valueFrom:
           secretKeyRef:
             name: cos-creds
             key: cos.service.crn
-#  tls:
-#    trustedCertificates:
-#      - secretName: quickstart-cluster-ca-cert
-#        certificate: ca.crt
-#  authentication:
-#    type: scram-sha-512
-#    username: my-connect-user
-#    passwordSecret:
-#      secretName: my-connect-user
-#      password: my-connect-password-key
+  tls:
+    trustedCertificates:
+      - secretName: es-demo-cluster-ca-cert
+        certificate: ca.crt
+  authentication:
+    type: tls
+    certificateAndKey:
+      certificate: user.crt
+      key: user.key
+      secretName: es-tls-user

@@ -1,0 +1,4 @@
+resources:
+- argocd-admin.yaml
+- service-account.yaml
+- rt-inventory-dev-environment.yaml

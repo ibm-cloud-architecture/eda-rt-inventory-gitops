@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/name: store-simulator
+  name: rt-inventory-dev-store-simulator-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: rt-inventory-dev
+    server: https://kubernetes.default.svc
+  project: rt-inventory
+  source:
+    path: environments/cp4i/apps/store-simulator/overlays
+    repoURL: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+status:
+  health: {}
+  summary: {}
+  sync:
+    comparedTo:
+      destination: {}
+      source:
+        repoURL: ""
+    status: ""

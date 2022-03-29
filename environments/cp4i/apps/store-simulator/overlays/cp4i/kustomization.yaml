@@ -1,0 +1,8 @@
+bases:
+- ../../../../../rt-inventory-dev/apps/store-simulator/services/refarch-eda-store-simulator/base/config
+
+patchesJson6902:
+- path: patch-cm.yaml
+  target:
+    kind: ConfigMap
+    name: store-simulator-cm

@@ -2,6 +2,17 @@
 
 This environment is when you want to deploy this solution on an existing IBM Cloud Pak for Integration demo environment, where Operators and Operandes are in the same namespace, which should be `cp4i`.
 
+The digram below illustrates the GitOps approach. The Green rectangle defines how to deploy the Cloud Pak for Integration in a unique namespace and then share the cluster like event streams or MQ brokers 
+between multiple solutions.
+
+![](../../docs/images/gitops-multi-tenants.png)
+
+The Grey represents the dedicated solution microservices or stateful agents deployments.
+
+So we assume the Green deployments are done for the white openshift cluster, which represents a development and quality assurance cluster.
+
+Operators are deployed in openshift-operators namespace and monitor All namespaces.
+
 ## Verify pre-requisites
 
 In this case we assume the following commands will show the prerequisites are ready:
@@ -42,7 +53,7 @@ openshift-pipelines-operator-rh.openshift-operators
 
 ## Verify Event Streams bootstrap
 
-* bootstrap URL
+* Get bootstrap URL
 
 ```sh
 oc get svc | grep bootstrap
@@ -62,9 +73,10 @@ oc get kafkausers
 
 ## Prepare demo event streams elements
 
-### Create topic
+### Create topics
 
 ```sh
+# go to the project where event streams cluster runs. The expected name of the cluster is `es-demo` if no change the topic declaration and then do:
 oc apply -f environments/cp4i/services/ibm-eventstreams/base/topics.yaml
 # verify topic ae ready
 oc get kafkatopics 
@@ -86,5 +98,52 @@ If you do not see the topic ready and created in the UI, this is because the top
       topicOperator: {}
       userOperator: {}
 ```
+
+## Deploy without GitOps
+
+This section is defining how to deploy the solution step by step.
+
+* Create namespace
+
+  ```sh
+  oc apply -k environments/cp4i/env/
+  ```
+
+* Define topics, users, and copy secrets
+
+  ```sh
+  oc apply -k environments/cp4i/services/ibm-eventstreams/overlays
+  ```
+
+* Deploy MQ services
+
+  ```sh
+  oc apply -k environments/rt-inventory-dev/services/ibm-mq/overlays
+  # Get the Admin URL
+  chrome $(oc get route store-mq-ibm-mq-qm  -o jsonpath='{.status.ingress[].host}')
+  ```
+
+* Deploy Store Simulator
+
+  ```sh
+  oc apply -k environments/cp4i/apps/store-simulator/overlays/cp4i
+  # Get its user interface
+  chrome http://$(oc get routes store-simulator -o jsonpath='{.status.ingress[].host}')
+ 
+  ```
+* Run the simulator to MQ backend; then verify messages are in the QM1 / ITEMS queue.
+
+* Deploy Kafka Connect Cluster 
+
+  ```sh
+  oc apply -n cp4i-eventstreams -k environments/cp4i/services/kconnect/overlays
+  ```
+
+* Access to the Event Streams User Interface
+
+  ```sh
+  # go to the project where event streams run
+  chrome https://$(oc get route es-demo-ibm-es-ui  -o jsonpath='{.status.ingress[].host}')
+  ```
 
 

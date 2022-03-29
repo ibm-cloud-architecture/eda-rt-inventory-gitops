@@ -2,6 +2,14 @@
 
 This repository uses OpenShift GitOps to manage the deployment of the real-time inventory solution.
 
+## What is covered
+
+In this Gitops you can do different approaches to deploy the real-time inventory solution:
+
+* [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-openshift-cluster)
+* [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
+* [Run locally with docker](#run-the-solution-locally)
+
 ## Scenario presentation
 
 This scenario implements a simple real-time inventory management solution based on some real life MVPs we developed in 2020. 
@@ -22,10 +30,6 @@ components deployed by this GitOps:
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
 * The Store-aggregator computes aggregate at the store level for each items.
 
-The GitOps approach is using [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product specific operator subscription definitions and configuration 
-and different instances definition in this repository. 
-
-![](./docs/images/gitops-catalog.png)
 
 ## Two different streaming approaches
 
@@ -132,7 +136,7 @@ docker-compose  down
 
 To be done.
 
-## GitOps 
+## GitOps presentation
 
 ### How this repository was created
 
@@ -159,7 +163,17 @@ kam bootstrap \
 * Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
 * Added scripts to deploy the gitops, pipelines operators: `scripts/installOperators.sh`
 
+## GitOps from OpenShift Cluster
+
+The GitOps approach is using the [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product specific operator subscription definitions  
+and the instances definitions, as part of the real-time solution in this repository. This correspond to the yellow rectangles in the figure below:
+
+![](./docs/images/gitops-catalog.png)
+
+
 ### What is deployed
+
+The development project includes event-streams, MQ, schema registry... 
 
   ![](./docs/images/hl-view.png)
 
@@ -272,7 +286,7 @@ The expected set of ArgoCD apps looks like:
   * This is an issue known as of 10.5.  Restart the ES operator pod
   * See also https://github.ibm.com/mhub/qp-planning/issues/7383
 
-## Configure connector
+### Configure connector
 
 * Go to the dev project: `oc project rt-inventory-dev`
 * Deploy the sink kafka connector for cloud object storage:
@@ -314,3 +328,61 @@ The expected set of ArgoCD apps looks like:
   ```
 
   
+## GitOps from CP4I deployment
+
+In this section we suppose CP4I is already deployed in a unique `cp4i` namespace. So somewhere someone has already deployed the infrastructure, to deploy the components as multi tenants. (This is represented as the green rectangles in the figure below)
+
+![](./docs/images/gitops-multi-tenants.png)
+
+So the focus is on the solution component deployment.
+
+### Bootstrap GitOps
+
+* Login to the OpenShift Console, and get login token to be able to use `oc cli`
+* If not done already, use the script to install GitOps and Pipeline operators: 
+
+  ```sh
+    ./bootstrap/scripts/installGitOpsOperators.sh
+  ```
+    
+  Once the operators are running the command: `oc get pods -n openshift-gitops` should return
+a list of pods like:
+
+  ```sh
+    NAME                                                          READY   STATUS    RESTARTS   AGE
+    openshift-gitops-application-controller-0                     1/1     Running   0          4h5m
+    openshift-gitops-applicationset-controller-6948bcf87c-jdv2x   1/1     Running   0          4h5m
+    openshift-gitops-dex-server-64cbd8d7bd-76czz                  1/1     Running   0          4h5m
+    openshift-gitops-redis-7867d74fb4-dssr2                       1/1     Running   0          4h5m
+    openshift-gitops-repo-server-6dc777c845-gdjhr                 1/1     Running   0          4h5m
+    openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
+  ```
+
+* Create an ArgoCD project named `rt-inventory`
+
+   ```sh
+   oc apply -k bootstrap/argocd-project
+   # Result
+   appproject.argoproj.io/rt-inventory created
+   ```
+
+* To get the `admin` user's password use the command
+
+    ```sh
+    oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
+    ```
+
+* Get the ArgoCD User Interface URL and open a web browser
+
+   ```sh
+   chrome https://$(oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops)
+   ```
+
+### Deploy the solution
+
+* To start the Continuous Deployment with ArgoCD, just executing the following command should deploy different microservices under rt-inventory-dev project using event-streams, MQ.. from another project (e.g. cp4i).
+
+   ```sh
+   oc apply -k config/cp4i-deploy
+   ```
+

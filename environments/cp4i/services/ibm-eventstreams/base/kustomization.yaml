@@ -1,0 +1,4 @@
+resources:
+  - topics.yaml
+  - cp-cacert-secret.yaml
+  - cp-tls-user-secret.yaml

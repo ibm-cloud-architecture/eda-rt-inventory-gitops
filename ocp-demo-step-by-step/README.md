@@ -10,7 +10,7 @@ Be sure to have:
 * IBM Entitlement key
 * OpenShift clsuter 4.7+
 
-## Steps
+## Steps to deploy the infrastucture and needed CP4I components
 
 > If you are using an environment where Event Streams, MQ, API Connect operators are deployed in a namespace and not in `openshift-operators` level to monitor `All namespace`, then it is recommended to install this solution where the cloud Pak for integration runs. The happy path of this deployment is to have operators in `openshift-operators` and being able to install clusters, brokers and microservice in a dedicate project: `rt-inventory-lab`. To try to be exhaustive, we will use some side notes to present what to tune in case you are reusing an existing deployment, by taking the example that operators and operands are in `cp4i` project.
 
@@ -132,6 +132,8 @@ with the entitlement key. - (Not needed if `cp4i` already deployed)
     ```sh
     chrome https://$(oc get route store-mq-ibm-mq-web  -o jsonpath='{.status.ingress[].host}')
     ```
+
+## Step to deploy the different components of the solution
 
 1. Deploy the Store simulator demo
 
