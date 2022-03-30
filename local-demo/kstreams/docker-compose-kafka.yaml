@@ -1,23 +1,5 @@
 version: '3.7'
 services:
-  ibmmq:
-    image: ibmcom/mq
-    container_name: ibmmq
-    hostname: ibmmq
-    ports:
-        - '1414:1414'
-        - '9443:9443'
-        - '9157:9157'
-    volumes:
-        - qm1data:/mnt/mqm
-    stdin_open: true
-    tty: true
-    restart: always
-    environment:
-        LICENSE: accept
-        MQ_QMGR_NAME: QM1
-        MQ_APP_PASSWORD: passw0rd
-        MQ_ENABLE_METRICS: "true"
   zookeeper:
     image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
     container_name: zookeeper
@@ -64,10 +46,12 @@ services:
       - "8080:8080"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      APP_TARGET_MESSAGING: IBMMQ,Kafka
+      APP_TARGET_MESSAGING: Kafka
       KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_SASL_MECHANISM: PLAIN
       KAFKA_CERT_PWD: ""
       USER_CERT_PWD: ""
+      MQ_HOST: ibmmq
   itemInventory:
     image: quay.io/ibmcase/item-aggregator
     container_name: item-aggregator
@@ -109,47 +93,3 @@ services:
       KAFKA_BROKERCONNECT: "kafka:29092"
     depends_on:
       - kafka
-  elastic:
-    image: elasticsearch:8.0.1
-    hostname: elastic
-    container_name: elastic
-    environment:
-    - discovery.type=single-node
-    - cluster.name=rt-cluster
-    - node.name=elastic
-    - xpack.security.enabled=false
-    - bootstrap.memory_lock=true
-    - network.host=0.0.0.0
-    - ELASTICSEARCH_PASSWORD=passw0rd
-    - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-    ports:
-    - 9200:9200
-    - 9300:9300
-    volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.0.1
-    container_name: kibana
-    depends_on: 
-    - elastic
-    ports:
-    - 5601:5601
-    environment:
-    - ELASTICSEARCH_HOSTS=http://elastic:9200
-    - XPACK_SECUTITY_ENABLED=false
-  kconnect:
-    container_name: kconnect
-    image: quay.io/ibmcase/eda-kconnect-cluster-image
-    ports:
-      - 8083:8083
-    volumes:
-      - ../kconnect:/tmp
-    command: [
-      "sh", "-c",
-      "export LOG_DIR=/tmp &&
-       bin/connect-distributed.sh /tmp/distributed.properties"
-    ]
-    depends_on:
-      - kafka
-volumes:
-  qm1data:
