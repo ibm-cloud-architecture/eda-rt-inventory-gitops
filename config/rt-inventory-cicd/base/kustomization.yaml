@@ -1,5 +1,4 @@
 resources:
-- 01-namespaces/cicd-environment.yaml
 - 02-rolebindings/argocd-admin.yaml
 - 02-rolebindings/pipeline-service-account.yaml
 - 02-rolebindings/pipeline-service-role.yaml

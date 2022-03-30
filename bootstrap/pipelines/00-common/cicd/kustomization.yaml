@@ -1,0 +1,5 @@
+resources:
+- ./cicd-environment.yaml
+- ./pipeline-service-account.yaml
+- ./pipeline-service-role.yaml
+- ./pipeline-service-rolebinding.yaml

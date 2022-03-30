@@ -1,8 +1,11 @@
 # Real time inventory demo GitOps
 
-This repository uses OpenShift GitOps to manage the deployment of the real-time inventory solution.
+This repository uses OpenShift GitOps to manage the deployment of the real-time inventory solution. The GitOps approach is an adaptation of [Red Hat's KAM practices](https://developers.redhat.com/articles/2021/07/21/bootstrap-gitops-red-hat-openshift-pipelines-and-kam-cli#a_gitops_approach_to_application_deployment) enhanced
+with boostraping some important operators deployments like the OpenShift GitOps Operator and OpenShift Pipelines Operator installation if not done yet.
 
 ## What is covered
+
+This GitOps supports bootstrapping the solution as a Day 1 operation, with the deployment of operators, secrets, pipelines... and then Day 2 operations, as once the solution is deployed, all changes to the configurations are done in this repository and propagated by ArgoCD to the runtime cluster.
 
 In this Gitops you can do different approaches to deploy the real-time inventory solution:
 
@@ -10,7 +13,7 @@ In this Gitops you can do different approaches to deploy the real-time inventory
 * [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
 * [Run locally with docker](#run-the-solution-locally)
 
-## Scenario presentation
+## Real-time inventory scenario presentation
 
 This scenario implements a simple real-time inventory management solution based on some real life MVPs we developed in 2020. 
 For a full explanation of the use case and scenario demo go to [this chapter](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#use-case-overview) in EDA reference architecture.
@@ -24,7 +27,7 @@ components deployed by this GitOps:
 ![](./docs/images/mq-es-demo.png)
 
 
-* The store simulator injects directly sell events to Kafka to the `items` topic
+* The store simulator injects directly sell or restock events to Kafka to the `items` topic
 * The store simulator can also generate messages to IBM MQ using JMS API or to RabbitMQ using AMQP protocol
 * When messages are sourced to Queues, then a Kafka Source Connector is used to propagate message to `items` topics.
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
@@ -69,17 +72,16 @@ cd local-demo/kstreams
 docker-compose up -d
 ```
 
-* Create items, item.inventory, store.inventory topics
+* As another alternate without MQ and elastic search:
 
 ```sh
-# under local-demo/kstreams
-./createTopics.sh
+cd local-demo/kstreams
+docker-compose -f docker-compose-kafka.yaml up -d
 ```
 
-* Execute the demonstration using the script in: [refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
+* Execute the demonstration using the script as defined in: [refarch-eda/scenarios/realtime-inventory](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution)
 
-Then for the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/), and
-follow the demo script defined in [this article](https://ibm-cloud-architecture.github.io/refarch-eda/scenarios/realtime-inventory/#demonstration-script-for-the-solution).
+Use the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/).
 
 If you run the controlled scenario the data are:
 
@@ -130,6 +132,8 @@ Kafdrop UI to see messages in `items`, `store.inventory` and `item.inventory` to
 docker-compose -f docker-compose-all.yaml down
 # OR
 docker-compose  down
+# OR
+docker-compose -f docker-compose-kafka.yaml down
 ```
 
 ### Run the Flink implementation
@@ -161,12 +165,11 @@ kam bootstrap \
 
 * Added a bootstrap folder to define gitops and Cloud Pak for integration capabilities operator declarations and to create an ArgoCD project
 * Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
-* Added scripts to deploy the gitops, pipelines operators: `scripts/installOperators.sh`
+* Added scripts to deploy the gitops, pipelines operators using Makefile.
 
-## GitOps from OpenShift Cluster
+## GitOps from a new OpenShift Cluster
 
-The GitOps approach is using the [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product specific operator subscription definitions  
-and the instances definitions, as part of the real-time solution in this repository. This correspond to the yellow rectangles in the figure below:
+The GitOps approach is using the [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product-specific operator subscription definitions, where product instance definitions are part of this [real-time inventory solution GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository. This corresponds to the yellow rectangles in the figure below:
 
 ![](./docs/images/gitops-catalog.png)
 
@@ -176,6 +179,16 @@ and the instances definitions, as part of the real-time solution in this reposit
 The development project includes event-streams, MQ, schema registry... 
 
   ![](./docs/images/hl-view.png)
+
+Part of this deployment will be based on commands run from your laptop, part as pipelines, and part as ArgoCD apps. The approach is based on the following:
+
+* secrets, and operators deployments to bootstrap the CI/CD are configured with Makefile and commands. Operators are deployed in `openshift-operators`.
+* Tekton pipelines are used to deploy some CP4I operators
+* ArgoCD apps are used to deploy CP4I operands: the use of ArgoCD for this, is justified for Day 2 operations. 
+
+The pipelines are using a service account, named `pipeline`, in the `rt-inventory-cicd` project, and cluster role to access different resources cross namespaces.
+
+*For a pure demo, without any ArgoCD, other pipelines and Make commands are available to deploy operators and operands, see section [Deploy without ArgoCD apps](#deploy-without-argocd-apps)*
 
 ### CP4Integration installation considerations
 
@@ -187,10 +200,16 @@ The development project includes event-streams, MQ, schema registry...
 ### Bootstrap GitOps
 
 * Login to the OpenShift Console, and get login token to be able to use `oc cli`
-* If not done already, use the script to install GitOps and Pipeline operators: 
+* Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key) and export as KEY environment variables
+
+    ```sh
+    export KEY=<yourentitlementkey>
+    ```
+
+* If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, ibm catalog: 
 
   ```sh
-    ./bootstrap/scripts/installGitOpsOperators.sh
+   make prepare
   ```
     
   Once the operators are running the command: `oc get pods -n openshift-gitops` should return
@@ -206,24 +225,8 @@ a list of pods like:
     openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
   ```
 
-* If not done already, install IBM product catalog subscriptions, so the OpenShift Cluster can get visibility of IBM product within the OpenShift Operator Hub
 
-  ```sh
-  ./bootstrap/scripts/installIBMCatalog.sh
-  ```
 
-* Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key)
-* Update the [OCP global pull secret of the `openshift-operators` project](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#update-the-ocp-global-pull-secret)
-with the entitlement key
-
-    ```sh
-    export KEY=<yourentitlementkey>
-    oc create secret docker-registry ibm-entitlement-key \
-    --docker-username=cp \
-    --docker-server=cp.icr.io \
-    --namespace=openshift-operators \
-    --docker-password=$KEY 
-    ```
 
 * Deploy IBM product Operators (Event Streams, MQ...) to monitor All Namespaces 
 
@@ -327,7 +330,10 @@ The expected set of ArgoCD apps looks like:
   chrome https://$(oc get route store-mq-ibm-mq-qm -o jsonpath='{.status.ingress[].host}')
   ```
 
-  
+## Deploy without ArgoCD apps
+
+TBD 
+
 ## GitOps from CP4I deployment
 
 In this section we suppose CP4I is already deployed in a unique `cp4i` namespace. So somewhere someone has already deployed the infrastructure, to deploy the components as multi tenants. (This is represented as the green rectangles in the figure below)

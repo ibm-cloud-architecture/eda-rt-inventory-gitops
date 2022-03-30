@@ -40,11 +40,47 @@ rules:
   - create
   - patch
 - apiGroups:
-  - argoproj.io
+    - ""
   resources:
-  - applications
-  - argocds
+    - secrets
   verbs:
-  - get
-  - create
-  - patch
+    - create
+    - patch
+    - get
+    - delete
+- apiGroups:
+    - operators.coreos.com
+  resources:
+    - subscriptions
+  verbs:
+    - get
+    - create
+    - patch
+- apiGroups:
+    - operators.coreos.com
+  resources:
+    - installplans
+  verbs:
+    - get
+- apiGroups:
+    - ""
+  resources:
+    - pods
+  verbs:
+    - list
+    - get
+- apiGroups:
+    - operator.ibm.com
+  resources:
+    - commonservices
+  verbs:
+    - get
+    - create
+    - patch
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+  verbs:
+    - get
+

@@ -1,0 +1,4 @@
+resources:
+- copy-secret.yaml
+- wait-for-operator.yaml
+- wait-for-pod.yaml
