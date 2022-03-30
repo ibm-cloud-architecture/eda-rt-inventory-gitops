@@ -1,5 +1,5 @@
 .PHONY: verify_tekton_pipelines_available prepare_general_pipeline verify-argocd-available
-.PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices
+.PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace
 .PHONY: output_details
 
 # integration from Dale Dane work
@@ -50,12 +50,16 @@ verify_tekton_pipelines_available:
 	@$(call ensure_operator_installed,"openshift-pipelines-operator","./bootstrap/openshift-pipelines-operator")
 	@oc apply -k ./bootstrap/pipelines/00-common/cicd
 	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml -n $(CICD_NS)
+	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/maven/0.2/maven.yaml -n $(CICD_NS)
 
 verify-argocd-available:
 	@$(call ensure_operator_installed,"openshift-gitops-operator","./bootstrap/openshift-gitops-operator")
 
 
 prepare_general_pipeline: verify_tekton_pipelines_available verify-argocd-available
+
+set_namespace:
+	@oc project $(CICD_NS)
 
 # IBM subscriptions
 # -----------------
@@ -73,6 +77,7 @@ prepare-ibm-catalog:
 # --------------
 prepare_pipeline_commonservices:
 	@oc apply -f ./bootstrap/pipelines/00-common/pipelines/cp4i.yaml
+	@oc apply -f ./bootstrap/pipelines/00-common/operands/cp4i-overrides-cm.yaml
 
 run_pipeline_commonservices:
 	@echo "------------------------------------------------------------"
@@ -80,7 +85,7 @@ run_pipeline_commonservices:
 	@echo "------------------------------------------------------------"
 	@$(call wait_for_pipelinerun,$(shell oc create -f ./bootstrap/pipelines/00-common/pipelines/pipelinerun.yaml -o name))
 
-pipeline_commonservices: prepare_pipeline_commonservices run_pipeline_commonservices
+pipeline_commonservices: set_namespace prepare_pipeline_commonservices run_pipeline_commonservices
 
 prepare: prepare_general_pipeline  set-entitlement-key prepare-ibm-catalog output_details
 

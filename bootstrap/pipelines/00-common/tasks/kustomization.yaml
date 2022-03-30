@@ -2,3 +2,7 @@ resources:
 - copy-secret.yaml
 - wait-for-operator.yaml
 - wait-for-pod.yaml
+- create-namespace.yaml
+- install-operator.yaml
+- create-cp4i-instance.yaml
+- wait-for-cp4i-operand.yaml
