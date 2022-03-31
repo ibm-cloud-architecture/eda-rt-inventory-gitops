@@ -117,8 +117,23 @@ install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_o
 
 start_argocd_apps:
 	@oc apply -k ./config/argocd
-	
+
+DEV_NS = rt-inventory-dev
+start_mq_source:
+	@oc apply -f environments/rt-inventory-dev/apps/mq-source/kafka-mq-src-connector.yaml -n $(DEV_NS)
+
+start_cos_sink:
+	@oc apply -f environments/rt-inventory-dev/apps/cos-sink/kafka-cos-sink-connector.yaml -n $(DEV_NS)
+
 all: prepare install_cp4i_operators start_argocd_apps
 
 output_details:
 	@echo "Install complete.\n\n"
+	@echo "Openshift admin credential"
+	@oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
+	@echo "\nMQ Console console url"
+	@oc get route store-mq-ibm-mq-web -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
+	@echo "\n\nEvent Streams Console console url"
+	@oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
+	@echo "\n\nStore simulator url\n"
+	@oc get route store-simulator -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)

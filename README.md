@@ -205,11 +205,17 @@ The pipelines are using a service account, named `pipeline`, in the `rt-inventor
     ```sh
     export KEY=<yourentitlementkey>
     ```
-* create YAML files for git secret based on template
-- `github-credentials.yaml`
-    - based on [`template-github-credentials.yaml`](./template-github-credentials.yaml) - github personal access token with access to clone this repo - which should be created in the namespace where the pipelines will run
+* create `github-credentials.yaml` file for the git secret based on [`template-github-credentials.yaml`](./template-github-credentials.yaml). Use your github personal access token. It will be used by the pipeline runs.
+* create a Secret for your IBM Cloud Object Storage credential. Use the on [`template-cos-credentials.yaml`](./template-cos-credentials.yaml) and modify the following parameters: 
 
-* If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, ibm catalog: 
+  ```yaml
+    cos.api.key: <cos-credential.field.apikey>
+    cos.bucket.location: <region where the cos bucket is>
+    cos.bucket.name: <bucketname>
+    cos.service.crn: <cos-credential.field.iam_serviceid_crn>
+  ```
+
+* If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, IBM image catalog: 
 
   ```sh
    make prepare
@@ -228,17 +234,14 @@ a list of pods like:
     openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
   ```
 
-
-
-
-* Deploy IBM product Operators (Event Streams, MQ...) to monitor All Namespaces 
+* Deploy IBM product Operators (Event Streams, MQ...) to monitor `All Namespaces`:
 
 
   ```sh
   make install_cp4i_operators
   ```
  
-* Get the ArgoCD User Interface URL and open a web browser
+* Get the ArgoCD User Interface URL and open a web browser:
 
    ```sh
    chrome https://$(oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops)
@@ -250,6 +253,8 @@ a list of pods like:
 
    ```sh
    oc apply -k config/argocd
+   # Or
+   make start_argocd_apps
    ```
 
 The expected set of ArgoCD apps looks like:

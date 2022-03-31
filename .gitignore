@@ -10,3 +10,4 @@
 /local-demo/kstreams/elasticsearch/node.lock
 docs/.DS_Store
 github-credentials.yaml
+cos-credentials.yaml
