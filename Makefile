@@ -1,5 +1,5 @@
 .PHONY: verify_tekton_pipelines_available prepare_general_pipeline verify-argocd-available
-.PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace
+.PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace prepare_github_credentials
 .PHONY: output_details
 
 # integration from Dale Dane work
@@ -40,7 +40,7 @@ ensure_operator_installed = \
 	fi
 
 
-# command definitions
+# command definitions for cicd
 # -------------------------------
 CICD_NS = rt-inventory-cicd
 verify_tekton_pipelines_available:
@@ -49,6 +49,7 @@ verify_tekton_pipelines_available:
 	@echo "-----------------------------------------------------------------"
 	@$(call ensure_operator_installed,"openshift-pipelines-operator","./bootstrap/openshift-pipelines-operator")
 	@oc apply -k ./bootstrap/pipelines/00-common/cicd
+	@oc apply -k ./bootstrap/pipelines/00-common/tasks
 	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml -n $(CICD_NS)
 	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/maven/0.2/maven.yaml -n $(CICD_NS)
 
@@ -56,7 +57,10 @@ verify-argocd-available:
 	@$(call ensure_operator_installed,"openshift-gitops-operator","./bootstrap/openshift-gitops-operator")
 
 
-prepare_general_pipeline: verify_tekton_pipelines_available verify-argocd-available
+prepare_general_pipeline: verify_tekton_pipelines_available prepare_github_credentials verify-argocd-available
+
+prepare_github_credentials: 
+	@oc apply -f ./github-credentials.yaml
 
 set_namespace:
 	@oc project $(CICD_NS)
