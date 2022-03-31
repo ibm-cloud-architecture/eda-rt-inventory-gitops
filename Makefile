@@ -27,11 +27,12 @@ ensure_operator_installed = \
 	if [ $$ISOPERATORINSTALLED -eq 0 ]; \
 	then \
 		oc apply -k $$OPERATORINSTALLER ; \
-		QUERY="{.items[?(@.metadata.ownerReferences[0].name==\"$$OPERATORNAME\")].status.phase}"; \
+		QUERY="{.items[0].status.phase}"; \
 		sleep 30 ; \
 		OPERATORSTATUS=""; \
-		while [ "$$OPERATORSTATUS" != *"Complete"* ]; do \
-			OPERATORSTATUS=$$(oc get installplan -n openshift-operators -o jsonpath="$$QUERY"); \
+		while [ "$$OPERATORSTATUS" != "Complete" ]; do \
+			OPERATORSTATUS=$$(oc get installplan -n openshift-operators -l operators.coreos.com/$$OPERATORNAME.openshift-operators -o jsonpath="$$QUERY"); \
+			echo $$OPERATORSTATUS; \
 			sleep 90 ; \
 		done; \
 	else \
@@ -83,6 +84,7 @@ prepare-ibm-catalog:
 	@echo "Installing the IBM Catalog into the cluster..."
 	@echo "------------------------------------------------------------"
 	@oc apply -f https://raw.githubusercontent.com/ibm-cloud-architecture/eda-gitops-catalog/main/ibm-catalog/catalog-source.yaml
+	
 
 # CP4I specifics
 # --------------
@@ -113,7 +115,10 @@ prepare: prepare_general_pipeline  set-entitlement-key prepare-ibm-catalog
 
 install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_operator install_apic_operator
 
-
+start_argocd_apps:
+	@oc apply -k ./config/argocd
+	
+all: prepare install_cp4i_operators start_argocd_apps
 
 output_details:
 	@echo "Install complete.\n\n"

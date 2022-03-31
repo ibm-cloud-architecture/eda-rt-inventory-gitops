@@ -1,16 +1,14 @@
 resources:
 - argo-app.yaml
 # - cicd-app.yaml
-# dev namespace
 - rt-inventory-dev-env-app.yaml
-#- rt-inventory-dev-mq-services-app.yaml
-#- rt-inventory-dev-es-services-app.yaml
+- rt-inventory-dev-mq-services-app.yaml
+- rt-inventory-dev-es-services-app.yaml
 #- rt-inventory-dev-eepm-services-app.yaml
-#- rt-inventory-dev-kconnect-app.yaml
-#- rt-inventory-dev-store-simulator-app.yaml
-#- rt-inventory-dev-item-inventory-app.yaml
-#- rt-inventory-dev-store-inventory-app.yaml
+- rt-inventory-dev-kconnect-app.yaml
+- rt-inventory-dev-store-simulator-app.yaml
+- rt-inventory-dev-item-inventory-app.yaml
+- rt-inventory-dev-store-inventory-app.yaml
 #- rt-inventory-dev-elastic-services-app.yaml
 #- rt-inventory-dev-kibana-services-app.yaml
-# Staging
 # - rt-inventory-stage-env-app.yaml
