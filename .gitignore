@@ -9,3 +9,4 @@
 /local-demo/kstreams/elasticsearch/snapshot_cache/
 /local-demo/kstreams/elasticsearch/node.lock
 docs/.DS_Store
+./github-credentials.yaml
