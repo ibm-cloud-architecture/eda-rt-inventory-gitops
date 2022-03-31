@@ -1,6 +1,6 @@
 .PHONY: verify_tekton_pipelines_available prepare_general_pipeline verify-argocd-available
 .PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace prepare_github_credentials
-.PHONY: output_details
+.PHONY: install_es_operator install_mq_operator install_apic_operator output_details
 
 # integration from Dale Dane work
 #
@@ -32,7 +32,6 @@ ensure_operator_installed = \
 		OPERATORSTATUS=""; \
 		while [ "$$OPERATORSTATUS" != *"Complete"* ]; do \
 			OPERATORSTATUS=$$(oc get installplan -n openshift-operators -o jsonpath="$$QUERY"); \
-			@/bin/echo -n ".."; \
 			sleep 90 ; \
 		done; \
 	else \
@@ -56,8 +55,16 @@ verify_tekton_pipelines_available:
 verify-argocd-available:
 	@$(call ensure_operator_installed,"openshift-gitops-operator","./bootstrap/openshift-gitops-operator")
 
+set_argo_project:
+	@oc apply -k bootstrap/argocd-project
 
-prepare_general_pipeline: verify_tekton_pipelines_available prepare_github_credentials verify-argocd-available
+output_argo:
+	@echo "Argo admin credential"
+	@oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
+	@echo "Argo admin console url"
+	@oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops
+
+prepare_general_pipeline: verify_tekton_pipelines_available prepare_github_credentials verify-argocd-available set_argo_project
 
 prepare_github_credentials: 
 	@oc apply -f ./github-credentials.yaml
@@ -91,7 +98,21 @@ run_pipeline_commonservices:
 
 pipeline_commonservices: set_namespace prepare_pipeline_commonservices run_pipeline_commonservices
 
-prepare: prepare_general_pipeline  set-entitlement-key prepare-ibm-catalog output_details
+# Different operators used in the solution 
+# ----------------------
+install_es_operator:
+	@$(call ensure_operator_installed,"ibm-eventstreams","./bootstrap/ibm-eventstreams")
+
+install_mq_operator:
+	@$(call ensure_operator_installed,"ibm-mq","./bootstrap/ibm-mq")
+
+install_apic_operator:
+	@$(call ensure_operator_installed,"ibm-apiconnect","./bootstrap/ibm-apiconnect")
+
+prepare: prepare_general_pipeline  set-entitlement-key prepare-ibm-catalog 
+
+install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_operator install_apic_operator
+
 
 
 output_details:

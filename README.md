@@ -205,6 +205,9 @@ The pipelines are using a service account, named `pipeline`, in the `rt-inventor
     ```sh
     export KEY=<yourentitlementkey>
     ```
+* create YAML files for git secret based on template
+- `github-credentials.yaml`
+    - based on [`template-github-credentials.yaml`](./template-github-credentials.yaml) - github personal access token with access to clone this repo - which should be created in the namespace where the pipelines will run
 
 * If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, ibm catalog: 
 
@@ -232,31 +235,9 @@ a list of pods like:
 
 
   ```sh
-  ./bootstrap/scripts/installIBMOperators.sh
-  # Results
-  subscription.operators.coreos.com/ibm-eventstreams created
-  Waiting for operator ibm-eventstreams to be deployed...
-  ......................................Done
-  subscription.operators.coreos.com/ibm-mq created
-  Waiting for operator ibm-mq to be deployed..................Done
-  subscription.operators.coreos.com/ibm-apiconnect created
-  Waiting for operator ibm-apiconnect to be deployed...Done
+  make install_cp4i_operators
   ```
  
-* Create an ArgoCD project named `rt-inventory`
-
-   ```sh
-   oc apply -k bootstrap/argocd-project
-   # Result
-   appproject.argoproj.io/rt-inventory created
-   ```
-
-* To get the `admin` user's password use the command
-
-    ```sh
-    oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
-    ```
-
 * Get the ArgoCD User Interface URL and open a web browser
 
    ```sh
