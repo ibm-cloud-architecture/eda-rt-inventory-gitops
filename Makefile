@@ -102,6 +102,9 @@ pipeline_commonservices: set_namespace prepare_pipeline_commonservices run_pipel
 
 # Different operators used in the solution 
 # ----------------------
+install_nav_operator:
+	@$(call ensure_operator_installed,"ibm-integration-platform-navigator","./bootstrap/ibm-integration-platform-navigator")
+
 install_es_operator:
 	@$(call ensure_operator_installed,"ibm-eventstreams","./bootstrap/ibm-eventstreams")
 

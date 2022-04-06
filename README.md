@@ -215,7 +215,7 @@ The pipelines are using a service account, named `pipeline`, in the `rt-inventor
     cos.service.crn: <cos-credential.field.iam_serviceid_crn>
   ```
 
-* If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, IBM image catalog: 
+* If not done already, use the following command to install GitOps and Pipeline operators, entitlement key, and IBM image catalog: 
 
   ```sh
    make prepare
@@ -234,8 +234,7 @@ a list of pods like:
     openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
   ```
 
-* Deploy IBM product Operators (Event Streams, MQ...) to monitor `All Namespaces`:
-
+* Deploy different IBM product Operators (Event Streams, MQ...) to monitor `All Namespaces`:
 
   ```sh
   make install_cp4i_operators
