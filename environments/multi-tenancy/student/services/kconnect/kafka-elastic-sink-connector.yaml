@@ -1,0 +1,20 @@
+apiVersion: eventstreams.ibm.com/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: elastic-sink
+  labels:
+    eventstreams.ibm.com/cluster: eda-kconnect-cluster
+spec:
+  class: com.ibm.eventstreams.connect.elasticsink.ElasticSinkConnector
+  tasksMax: 1
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    topics: eda-demo.orders
+    es.connection: elasticsearch-es-http.eda-order-demo.svc:9200
+    es.document.builder: com.ibm.eventstreams.connect.elasticsink.builders.JsonDocumentBuilder
+    es.index.builder: com.ibm.eventstreams.connect.elasticsink.builders.DefaultIndexBuilder
+    es.identifier.builder: com.ibm.eventstreams.connect.elasticsink.builders.DefaultIdentifierBuilder
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: false

@@ -130,6 +130,8 @@ start_cos_sink:
 
 all: prepare install_cp4i_operators start_argocd_apps
 
+# Lab target: assume CoC environment with CP4I already installed
+
 output_details:
 	@echo "Install complete.\n\n"
 	@echo "Openshift admin credential"

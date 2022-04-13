@@ -1,0 +1,21 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: kconnect-api-route
+  namespace: rt-inventory-dev
+  labels:
+    app.kubernetes.io/instance: eda-kconnect-cluster
+    app.kubernetes.io/managed-by: eventstreams-cluster-operator
+    app.kubernetes.io/name: kafka-connect
+    app.kubernetes.io/part-of: eventstreams-eda-kconnect-cluster
+    eventstreams.ibm.com/cluster: eda-kconnect-cluster
+    eventstreams.ibm.com/kind: KafkaConnect
+    eventstreams.ibm.com/name: eda-kconnect-cluster-connect-api
+spec:
+  to:
+    kind: Service
+    name: eda-kconnect-cluster-connect-api
+    weight: 100
+  port:
+    targetPort: rest-api
+  wildcardPolicy: None

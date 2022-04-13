@@ -7,10 +7,11 @@ with boostraping some important operators deployments like the OpenShift GitOps 
 
 This GitOps supports bootstrapping the solution as a Day 1 operation, with the deployment of operators, secrets, pipelines... and then Day 2 operations, as once the solution is deployed, all changes to the configurations are done in this repository and propagated by ArgoCD to the runtime cluster.
 
-In this Gitops you can do different approaches to deploy the real-time inventory solution:
+In this Gitops you can use different approaches to deploy the real-time inventory solution:
 
 * [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-openshift-cluster)
 * [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
+* [Deploy the solution on a CMC CoC environment, with multi-tenant approach](#gitops-for-multi-tenants)
 * [Run locally with docker](#run-the-solution-locally)
 
 ## Real-time inventory scenario presentation
@@ -377,3 +378,18 @@ a list of pods like:
    oc apply -k config/cp4i-deploy
    ```
 
+## Gitops for multi-tenants
+
+This is another interesting deployment where some of the products are shared between teams. We will use this deployment to conduct labs on this demo.
+
+Here is a diagram to illustrate the deployment:
+
+![]()
+
+Some particularities:
+
+* Event Streams is in its own project, so topics, users follow a naming convention for deployment. 
+
+```sh
+make multi-tenants
+```
