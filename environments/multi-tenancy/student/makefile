@@ -35,3 +35,5 @@ prepare-argocd:
 	@cd ./argocd/ && ./updateStudent.sh 
 
 argocd: verify-argocd-available define-argocd-project
+	@oc apply -k argocd/
+	

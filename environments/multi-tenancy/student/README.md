@@ -102,9 +102,23 @@ We propose two ways to do this lab, one using a script that will run everything 
 
 1. Bootstrap Argocd 
 
+    * Automatic
+
+    ```sh
+    make argocd
     ```
-    
+
+1. To get the `admin` user's password use the command
+
+    ```sh
+    oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
     ```
+
+1. Get the ArgoCD User Interface URL and open a web browser
+
+   ```sh
+   chrome https://$(oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops)
+   ```
 
 
 

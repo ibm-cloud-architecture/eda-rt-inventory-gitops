@@ -1,7 +1,7 @@
 apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaUser
 metadata:
-  name: std1-tls-user
+  name: std-1-tls-user
   namespace:  cp4i-eventstreams
   labels:
     eventstreams.ibm.com/cluster: es-demo
