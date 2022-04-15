@@ -1,9 +1,10 @@
 # Lab to learn how to deploy a event-driven solution
 
-In this lab you will learn how to modify the configuration of the different services of a real-time invnetory demo and fow to deploy it
-using OpenShift Gitops.
+In this lab, you will learn how to modify the configuration of the different services of a real-time inventory demo and how to deploy the solution
+using OpenShift GitOps and a GitOps approach.
 
-Each Student will have received a unique identifier and need to modify current settings in this folder with the student id. All the current configurations are for `student_1`.
+Each Student will have received a unique identifier and will modify the current settings in this folder with their student id. 
+All the current configurations are currently set for `student_1`.
 
 We assume the following are pre-set in you OpenShift cluster:
 
@@ -32,7 +33,7 @@ As we are using GitOps, you need to have the source of the configuration into yo
     git clone https://github.com/<github-account>/eda-rt-inventory-gitops
     ```
 
-1. Verify the GitOps Operator is installed.
+1. Verify the OpenShift GitOps Operator is installed on your OpenShift cluster.
 
     Work in the `eda-rt-inventory-gitops/environments/multi-tenancy/student` folder.
 
@@ -66,11 +67,11 @@ The blue components should have been deployed with the Cloud Pak for Integration
 
 *If you are student-1 there is nothing to do, you were lucky...*
 
-We propose two ways to do this lab, one using a script that will run everything automatically, one more step by step to understand the modification to be done manually.
+We propose two ways to do this lab, one using a script that will run all the update automatically, or one using a step-by-step approach where student should be able review the existing configuration and understand the modification to be done.
 
-1. The demonstration will run on its own namespace. The `env/base` folder includes the definition of the namespace, roles, role binding needed to deploy the demonstration. You need to modify those yaml file according to your student id. Two main naming conventions are used: student-2 and std-2 prefix. So the namespace for Student-2 will be `sdt-2-rt-inventory` namespace. 
+1. The demonstration will run on its own namespace. The `env/base` folder includes the definition of the namespace, roles, role binding needed to deploy the demonstration. This is a classical way to isolate apps in kubernetes. You need to modify those yaml files according to your student id. Two main naming conventions are used: `student-XX` for user name id XX, and `std-XX` prefix. So the namespace for Student-2 will be `sdt-2-rt-inventory` namespace. 
 
-    * Automatic way
+    * **Automatic way:**
 
     ```sh
     export USER_NAME=student-2
@@ -79,12 +80,12 @@ We propose two ways to do this lab, one using a script that will run everything 
     make prepare_ns
     ```
 
-    * Manual way: go over each of the following files `argocd-admin.yaml, service-account.yaml, cp-secret.yaml,	role.yaml, rt-inventory-dev-rolebinding.yaml`  in `env/base` folder to change the namespace value and for the `cp-secret.yaml` modify the `jq -r '.metadata.namespace="std-1-rt-inventory"'` in line 16 with the expected namespace.
+    * **Manual way:** go over each of the following files `argocd-admin.yaml, service-account.yaml, cp-secret.yaml,	role.yaml, rt-inventory-dev-rolebinding.yaml`  in `env/base` folder to change the namespace value and for the `cp-secret.yaml` modify the `jq -r '.metadata.namespace="std-1-rt-inventory"'` in line 16 with the expected namespace. The `cp-secret` job help to copy entitlement-key so we can run MQ Broker in the same namespace as the solution. 
 
 
-1. Prepare the ArgoCD app and project: Each student will have his/her own project in ArgoCD.
+1. Prepare the ArgoCD app and project: Each student will have his/her own project within ArgoCD.
 
-    * Automatic way
+    * **Automatic way:**
 
     ```sh
     # same exported variables as before
@@ -93,19 +94,19 @@ We propose two ways to do this lab, one using a script that will run everything 
 
     * Manual way: update the namespace, project, and repoURL elements in the `argocd/*.yaml` files.
 
-1. Commit and push your change to your gitops repository
+1. Commit and push your changes to your gitops repository
 
     ```sh
     git commit -am "update configuration for my student id"
     git push 
     ```
 
-1. Bootstrap Argocd 
-
-    * Automatic
+1. Bootstrap Argocd:  
 
     ```sh
     make argocd
+    # Or use 
+    oc apply -f
     ```
 
 1. To get the `admin` user's password use the command

@@ -2,3 +2,5 @@ resources:
   - ./es-topics.yaml
   - ./scram-user.yaml
   - ./tls-user.yaml
+  - ./cp-ca-secret.yaml
+  - ./cp-tls-usr-secret.yaml

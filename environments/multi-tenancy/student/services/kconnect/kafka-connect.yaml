@@ -1,20 +1,20 @@
 apiVersion: eventstreams.ibm.com/v1beta1
 kind: KafkaConnect
 metadata:
-  name: std-1-kconnect-cluster
+  name: std-1-connect-cluster
   annotations:
     eventstreams.ibm.com/use-connector-resources: "true"
 spec:
   version: 2.8.1
   replicas: 1
-  bootstrapServers: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
+  bootstrapServers: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
   template:
     pod:
       imagePullSecrets: []
       metadata:
         annotations:
-          productChargedContainers: eda-kconnect-cluster-connect
+          productChargedContainers: std-1-connect-cluster-connect
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
@@ -25,46 +25,23 @@ spec:
           cloudpakVersion: 2021.4.1
           productCloudpakRatio: "2:1"
   config:
-    group.id: connect-cluster
-    offset.storage.topic: connect-cluster-offsets
-    config.storage.topic: connect-cluster-configs
-    status.storage.topic: connect-cluster-status
-    config.storage.replication.factor: 3
-    offset.storage.replication.factor: 3
-    status.storage.replication.factor: 3
-  externalConfiguration:
-    env:
-      - name: IBM_COS_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: cos-creds
-            key: cos.api.key
-      - name: IBM_COS_BUCKET_LOCATION
-        valueFrom:
-          secretKeyRef:
-            name: cos-creds
-            key: cos.bucket.location
-      - name: IBM_COS_BUCKET_NAME
-        valueFrom:
-          secretKeyRef:
-            name: cos-creds
-            key: cos.bucket.name
-      - name: IBM_COS_RESILIENCY
-        valueFrom:
-          secretKeyRef:
-            name: cos-creds
-            key: cos.bucket.resiliency
-      - name: IBM_COS_CRM
-        valueFrom:
-          secretKeyRef:
-            name: cos-creds
-            key: cos.service.crn
-#  tls:
-#    trustedCertificates:
-#      - secretName: quickstart-cluster-ca-cert
-#        certificate: ca.crt
-#  authentication:
-#    type: scram-sha-512
+    group.id: std-1-connect-cluster
+    offset.storage.topic: std-1-connect-cluster-offsets
+    config.storage.topic: std-1-connect-cluster-configs
+    status.storage.topic: std-1-connect-cluster-status
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+  tls:
+    trustedCertificates:
+      - secretName: es-demo-cluster-ca-cert
+        certificate: ca.crt
+  authentication:
+     type: tls
+     certificateAndKey:
+       certificate: user.crt
+       key: user.key
+       secretName: std-1-tls-user
 #    username: my-connect-user
 #    passwordSecret:
 #      secretName: my-connect-user

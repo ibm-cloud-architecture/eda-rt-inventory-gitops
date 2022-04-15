@@ -8,20 +8,20 @@ Go to the Event Streams User Interface by using OpenShift credentials. Then sele
 Click on the Set up button for the `Set up a Kafka Connect environment` option and download the zip file. The Zip
 includes a `kafka-connect.yaml` to define the Kafka Connect cluster and a Dockerfile to build custom images.
 
-This task was already done as we have the `kafka-connect.yaml` file in this folder. The dockerfile was moved to `kconnect` folder as well as `my-plugins` folder.
+The previous task was already done as we have the `kafka-connect.yaml` file in this folder. The docker image
+was pre-built with the needed jars
 
 The following lines were changed to reflect where the container will run and which new image to use.
 
 ```yaml
 metadata:
-  name: eda-kconnect-cluster
+  name: es-demi-kconnect-cluster
 spec:
-  bootstrapServers: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
+  bootstrapServers: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
 ```
 
-For maintenance purpose, when new Event Streams product version will be released, the `metadata.annotations` need to be modified to reflect new `productID`,  
-`cloudpakVersion` and `cloudpakId`.
+For maintenance purpose, when new Event Streams product version will be released, the `metadata.annotations` need to be modified to reflect new `productID`,  `cloudpakVersion` and `cloudpakId`.
 
 ```
 metadata:

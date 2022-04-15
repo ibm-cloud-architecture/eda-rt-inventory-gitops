@@ -46,20 +46,22 @@ spec:
           value: /deployments/certs/server/ca.p12
         - name: KAFKA_SSL_TRUSTSTORE_TYPE
           value: PKCS12
+        - name: KAFKA_SSL_KEYSTORE_FILE_LOCATION
+          value: /deployments/certs/user/user.p12
+        - name: KAFKA_SSL_KEYSTORE_TYPE
+          value: PKCS12
         - name: KAFKA_SECURITY_PROTOCOL
-          value: PLAINTEXT
-        - name: KAFKA_USER
-          value: tls-user
+          value: SSL
         - name: KAFKA_CERT_PWD
           valueFrom:
             secretKeyRef:
               key: ca.password
-              name: dev-cluster-ca-cert
+              name: es-demo-cluster-ca-cert
         - name: USER_CERT_PWD
           valueFrom:
             secretKeyRef:
               key: user.password
-              name: tls-user
+              name: std-1-tls-user
         envFrom:
         - configMapRef:
             name: store-inventory-cm
@@ -104,8 +106,8 @@ spec:
       - name: kafka-cert
         secret:
           optional: true
-          secretName: dev-cluster-ca-cert
+          secretName: es-demo-cluster-ca-cert
       - name: user-cert
         secret:
           optional: true
-          secretName: tls-user
+          secretName: std-1-tls-user

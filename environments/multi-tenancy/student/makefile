@@ -1,4 +1,5 @@
-
+# Makefile to support bootstrapping GitOps and deploy apps with GitOps
+# or having single target to do in one click without GitOps to monitor the git.
 
 
 # Reusable functions
@@ -21,19 +22,68 @@ ensure_operator_installed = \
 		echo $$OPERATORNAME "Installed"; \
 	fi
 
+# ---------------------------------------------------
+# GitOps targets
+# ---------------------------------------------------
 verify-argocd-available:
 	@$(call ensure_operator_installed,"openshift-gitops-operator","../../../bootstrap/openshift-gitops-operator")
 
-define-argocd-project:
+# Create a project in ArgoCD to isolate student
+def-argocd-project:
 	@oc apply -f argocd/argo-project.yaml
-
-prepare_ns:
-	@cd ./env/base/ && ./updateStudent.sh 
 
 prepare-argocd: 
 	@echo $$PREFIX $$GIT_REPO_NAME
 	@cd ./argocd/ && ./updateStudent.sh 
 
-argocd: verify-argocd-available define-argocd-project
+argocd: verify-argocd-available def-argocd-project
 	@oc apply -k argocd/
-	
+
+# ------------------------------------------------------
+# Solution deployment targets
+# ------------------------------------------------------
+
+eventstreams-config:
+	@oc apply -k services/ibm-eventstreams/overlays
+
+# Prepare student dedicated namespace
+prepare_ns:
+	@oc apply -k env/overlays
+
+mq-config:
+	@oc apply -k services/ibm-mq/overlays
+
+kconnect:
+	@oc apply -k ./services/kconnect
+
+mq-kconnector:
+	@oc apply -f ./apps/mq-source/kafka-mq-src-connector.yaml
+
+# ----------- app specific -------------
+store-simulator:
+	@oc apply -k ./apps/store-simulator/
+
+store-inventory:
+	@oc apply -k ./apps/store-inventory/
+
+item-inventory:
+	@oc apply -k ./apps/item-inventory/
+
+all-no-gitops: prepare_ns \
+	eventstreams-config \
+	mq-config \
+	kconnect \
+	mq-kconnect \
+	mq-kconnector \
+	store-simulator \
+	store-inventory\
+	item-inventory 
+
+clean-all:
+	@oc delete -k ./apps/item-inventory/
+	@oc delete -k ./apps/store-inventory/
+	@oc delete -k ./apps/store-simulator/
+	@oc delete -k ./services/kconnect
+	@oc delete -k ./services/ibm-mq/overlays
+	@oc delete -k ./services/ibm-eventstreams/overlays
+
