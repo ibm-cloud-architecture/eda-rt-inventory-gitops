@@ -20,10 +20,31 @@ spec:
     internalTls: TLSv1.2
   strimziOverrides:
     entityOperator: 
-      topicOperator: {}
-      userOperator: {}
+      topicOperator:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 3Gi
+          requests:
+            cpu: 90m
+            memory: 2Gi
+      userOperator:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1500Mi
+          requests:
+            cpu: 203m
+            memory: 650Mi
     kafka:
       replicas: 3
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: "1"
+        limits:
+          memory: 6Gi
+          cpu: "2"
       authorization:
         type: runas
       config:
@@ -41,6 +62,9 @@ spec:
           type: route
           authentication:
             type: scram-sha-512
+        tls:
+          authentication:
+            type: tls
       storage:
         type: ephemeral
     zookeeper:

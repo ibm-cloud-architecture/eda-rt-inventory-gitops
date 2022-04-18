@@ -8,7 +8,14 @@ metadata:
 spec:
   partitions: 3 
   replicas: 3
-
+  config:
+    min.insync.replicas: 2
+    cleanup.policy: delete
+    retention.ms: 604800000
+    segment.ms: 604800000
+    file.delete.delay.ms: 60000
+    max.message.bytes: 1048588
+    message.timestamp.type: LogAppendTime
 ---
 
 apiVersion: eventstreams.ibm.com/v1beta1
@@ -21,7 +28,10 @@ metadata:
 spec:
   partitions: 1
   replicas: 3
-
+  config:
+    min.insync.replicas: 1
+    cleanup.policy: compact
+    delete.retention.ms: 86400000
 ---
 
 apiVersion: eventstreams.ibm.com/v1beta1
