@@ -1,4 +1,4 @@
 resources:
-- argocd-admin.yaml
 - rt-inventory-stage-environment.yaml
+- kconnect-cluster-ns.yaml
 - ibm-ek-sealedsecret.yaml

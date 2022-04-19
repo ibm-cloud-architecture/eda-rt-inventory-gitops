@@ -32,6 +32,7 @@ spec:
     config.storage.replication.factor: 3
     offset.storage.replication.factor: 3
     status.storage.replication.factor: 3
+    
   externalConfiguration:
     env:
       - name: IBM_COS_API_KEY

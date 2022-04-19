@@ -18,9 +18,12 @@ spec:
     mq.queue: ITEMS
     mq.user.name: ""
     mq.password: ""
+    # The maximum number of messages in a batch. A batch uses a single unit of work. Default 250
+    mq.bath.size: 250
+    producer.override.acks: 1
     topic: items
     key.converter: org.apache.kafka.connect.storage.StringConverter
-    value.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.converters.ByteArrayConverter
     mq.record.builder: com.ibm.eventstreams.connect.mqsource.builders.DefaultRecordBuilder
     mq.connection.mode: client
     mq.message.body.jms: true

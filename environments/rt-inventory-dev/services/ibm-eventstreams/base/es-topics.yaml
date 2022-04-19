@@ -44,3 +44,7 @@ metadata:
 spec:
   partitions: 1
   replicas: 3
+  config:
+    min.insync.replicas: 1
+    cleanup.policy: compact
+    delete.retention.ms: 86400000
