@@ -1,4 +1,5 @@
 resources:
 - es-demo-ns.yaml
+- argocd-admin.yaml
 - es-demo.yaml
 - es-topic.yaml
