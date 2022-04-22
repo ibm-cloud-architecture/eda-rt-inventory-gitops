@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: dev-kafka
+  namespace: rt-inventory-dev
+spec:
+  podMetricsEndpoints:
+  - port: tcp-prometheus
+    scheme: http
+  selector:
+    matchLabels:
+      eventstreams.ibm.com/cluster: dev
+      eventstreams.ibm.com/kind: Kafka
+      eventstreams.ibm.com/name: dev-kafka
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: dev-metrics
+  namespace: rt-inventory-dev
+spec:
+  podMetricsEndpoints:
+  - port: metrics
+    scheme: http
+  selector:
+    matchLabels:
+      eventstreams.ibm.com/name: dev-ibm-es-metrics

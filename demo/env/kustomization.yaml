@@ -1,0 +1,4 @@
+resources:
+- es-demo-ns.yaml
+- es-demo.yaml
+- es-topic.yaml

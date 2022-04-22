@@ -130,14 +130,59 @@ start_cos_sink:
 
 all: prepare install_cp4i_operators start_argocd_apps
 
-# Lab target: assume CoC environment with CP4I already installed
+# ---------------------------------------------------------------
+# assume CoC environment with CP4I already installed. 
+# Use rt-inventory-dev namespace, event streams in cp4i-eventstreams
+# ---------------------------------------------------------------
+mt-prepare-ns:
+	@oc apply -k ./environments/multi-tenancy/rt-inventory-dev/
+	@oc project rt-inventory-dev
 
-output_details:
+mt-eventstreams-config:
+	@oc apply -k ./environments/multi-tenancy/cp4i-eventstreams/overlays
+
+mq-config:
+	@oc apply -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
+
+mt-kconnect:
+	@oc apply -k ./environments/multi-tenancy/kconnect -n rt-inventory-dev
+
+mt-mq-kconnector:
+	@oc apply -f ./environments/multi-tenancy/apps/mq-source/kafka-mq-src-connector.yaml -n rt-inventory-dev
+# ----------- app specific -------------
+mt-store-simulator:
+	@oc apply -k ./environments/multi-tenancy/apps/store-simulator/
+
+mt-store-inventory:
+	@oc apply -k ./environments/multi-tenancy/apps/store-inventory/
+
+mt-item-inventory:
+	@oc apply -k ./environments/multi-tenancy/apps/item-inventory/
+
+multi-tenants: \
+	mt-prepare-ns \
+	mt-eventstreams-config \
+	mq-config \
+	mt-kconnect \
+	mt-mq-kconnector \
+	mt-store-simulator \
+	mt-store-inventory \
+	mt-item-inventory 
+
+clean-multi-tenants:
+	@oc delete -k ./environments/multi-tenancy/apps/item-inventory/
+	@oc delete -k ./environments/multi-tenancy/apps/store-inventory/
+	@oc delete -k ./environments/multi-tenancy/apps/store-simulator/
+	@oc delete -k  multi-tenancy/kconnect
+	@oc delete -k environments/rt-inventory-dev/services/ibm-mq/overlays
+	@oc delete -k  multi-tenancy/cp4i-eventstreams/overlays
+
+output-details:
 	@echo "Install complete.\n\n"
 	@echo "Openshift admin credential"
 	@oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
 	@echo "\nMQ Console console url"
-	@oc get route store-mq-ibm-mq-web -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
+	@oc get queuemanager store-mq -o jsonpath='{.status.adminUiUrl}'  -n $(DEV_NS)
 	@echo "\n\nEvent Streams Console console url"
 	@oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
 	@echo "\n\nStore simulator url\n"

@@ -6,8 +6,6 @@ data:
   APP_VERSION: 0.0.10
   APP_ITEM_INVENTORY_TOPIC: item.inventory
   APP_ITEM_TOPIC: items
+  KAFKA_APPLICATION_ID: eda-item-aggregator
   KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
   QUARKUS_KAFKA_STREAMS_TOPICS: items,item.inventory
-  QUARKUS_KAFKA_HEALTH_ENABLED: "false"
-  QUARKUS_KAFKA_STREAMS_HEALTH_ENABLED: "false"
-  QUARKUS_KAFKA_CONNECTOR_HEALTH_ENABLED: "false"

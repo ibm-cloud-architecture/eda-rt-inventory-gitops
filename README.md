@@ -1,19 +1,23 @@
 # Real time inventory demo GitOps
 
-This repository uses OpenShift GitOps to manage the deployment of the real-time inventory solution. The GitOps approach is an adaptation of [Red Hat's KAM practices](https://developers.redhat.com/articles/2021/07/21/bootstrap-gitops-red-hat-openshift-pipelines-and-kam-cli#a_gitops_approach_to_application_deployment) enhanced
-with boostraping some important operators deployments like the OpenShift GitOps Operator and OpenShift Pipelines Operator installation if not done yet.
+This repository uses OpenShift GitOps to manage the deployment of a real-time inventory demonstration / proof of concept. The GitOps approach is an adaptation of [Red Hat's KAM practices](https://developers.redhat.com/articles/2021/07/21/bootstrap-gitops-red-hat-openshift-pipelines-and-kam-cli#a_gitops_approach_to_application_deployment) enhanced
+to be able to boostrap some important operators like the OpenShift GitOps Operator and OpenShift Pipelines Operator and Cloud Pak for integration operators.
 
+## Why to consider
+
+This project can be a good foundation to discuss GitOps deployment, and reuse scripts, makefile... to deploy event-driven solution.
 ## What is covered
 
-This GitOps supports bootstrapping the solution as a Day 1 operation, with the deployment of operators, secrets, pipelines... and then Day 2 operations, as once the solution is deployed, all changes to the configurations are done in this repository and propagated by ArgoCD to the runtime cluster.
+This GitOps supports bootstrapping the solution as a Day 1 operation, with the deployment of operators, secrets, pipelines... and then Day 2 operations, as once the solution is deployed, all changes to the configurations are done in this repository, manage with the Git PR process and changes are propagated by ArgoCD to the runtime cluster.
 
-In this Gitops you can use different approaches to deploy the real-time inventory solution:
+In this Gitops you can use different approaches to deploy the real-time inventory solution depending of your goals.
 
-* [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-openshift-cluster)
+* You want to play with the demo, so [run it locally to your laptop using docker](#run-the-solution-locally). It uses Event Streams and MQ docker images. You can run it in different mode, depending of the sinks you want to add.
+* [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-openshift-cluster), this will take few hours to deploy as some Operators may take time. 
 * [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
-* [Deploy the solution on a CMC CoC environment, with multi-tenant approach](#gitops-for-multi-tenants)
-* [Run locally with docker](#run-the-solution-locally)
+* Deploy the solution on a CMC CoC environment, which mean different name space per product, so for example Event Streams is in [multi-tenant](#gitops-for-multi-tenants).
 
+You are not forced to use ArgoCD, you can just use the makefile and make to deploy the solution.
 ## Real-time inventory scenario presentation
 
 This scenario implements a simple real-time inventory management solution based on some real life MVPs we developed in 2020. 
@@ -170,7 +174,7 @@ kam bootstrap \
 
 ## GitOps from a new OpenShift Cluster
 
-The GitOps approach is using the [catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product-specific operator subscription definitions, where product instance definitions are part of this [real-time inventory solution GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository. This corresponds to the yellow rectangles in the figure below:
+The GitOps approach is using the [EDA catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product-specific operator subscription definitions, where product instance definitions are part of this [real-time inventory solution GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository. This corresponds to the yellow rectangles in the figure below:
 
 ![](./docs/images/gitops-catalog.png)
 
@@ -380,16 +384,24 @@ a list of pods like:
 
 ## Gitops for multi-tenants
 
-This is another interesting deployment where some of the products are shared between teams. We will use this deployment to conduct labs on this demo.
+This is another interesting deployment where some of the products are shared between teams.
 
 Here is a diagram to illustrate the deployment:
 
-![]()
+![](./docs/images/gitops-multi-tenants.png)
 
 Some particularities:
 
-* Event Streams is in its own project, so topics, users follow a naming convention for deployment. 
+* Event Streams is in its own project, so topics, users follow a naming convention for deployment to avoid colision with other teams / solutions
+* MQ broker runs local to the solution namespace. (rt-inventory has its own MQ Broker)
+
 
 ```sh
 make multi-tenants
+```
+
+* Get Store Simulation URL and access to the console:
+
+```
+chrome $()
 ```

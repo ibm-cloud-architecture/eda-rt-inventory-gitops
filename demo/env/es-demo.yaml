@@ -1,0 +1,61 @@
+﻿apiVersion: eventstreams.ibm.com/v1beta1
+kind: EventStreams
+metadata:
+  name: demo
+  namespace: es-demo-day2
+spec:
+  version: 10.5.0
+  license:
+    accept: true
+    use: CloudPakForIntegrationNonProduction
+  requestIbmServices:
+    iam: false
+    monitoring: false
+  adminApi: {}
+  adminUI: {}
+  security:
+    internalTls: TLSv1.2
+  strimziOverrides:
+    entityOperator: 
+      topicOperator:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 3Gi
+          requests:
+            cpu: 90m
+            memory: 2Gi
+      userOperator:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1500Mi
+          requests:
+            cpu: 203m
+            memory: 650Mi
+    kafka:
+      replicas: 1
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: "1"
+        limits:
+          memory: 6Gi
+          cpu: "2"
+      authorization:
+        type: runas
+      config:
+        inter.broker.protocol.version: '2.8'
+        interceptor.class.names: com.ibm.eventstreams.interceptors.metrics.ProducerMetricsInterceptor
+        log.cleaner.threads: 6
+        log.message.format.version: '2.8'
+        num.io.threads: 24
+        num.network.threads: 9
+      listeners:
+        plain: {}
+      storage:
+        type: ephemeral
+    zookeeper:
+      replicas: 1
+      storage:
+        type: ephemeral

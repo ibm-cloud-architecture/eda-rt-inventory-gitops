@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: item-inventory-cm
+data:
+  APP_VERSION: 0.0.10
+  APP_ITEM_INVENTORY_TOPIC: eda-rt-item.inventory
+  APP_ITEMS_TOPIC: eda-rt-items
+  KAFKA_APPLICATION_ID: eda-item-aggregator
+  KAFKA_SECURITY_PROTOCOL: SSL
+  KAFKA_BOOTSTRAP_SERVERS: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
+  

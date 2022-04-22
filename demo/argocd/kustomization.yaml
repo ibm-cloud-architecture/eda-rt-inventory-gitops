@@ -1,0 +1,3 @@
+resources:
+- demo-argo.yaml
+- es-demo-env.yaml

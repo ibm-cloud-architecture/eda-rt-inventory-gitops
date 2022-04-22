@@ -1,0 +1,3 @@
+# Demo of Argo
+
+This is a folder just to demonstrate simplest gitops to modify a topic, user, ...
