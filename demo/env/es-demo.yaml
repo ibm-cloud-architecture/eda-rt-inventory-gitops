@@ -12,7 +12,6 @@ spec:
     iam: false
     monitoring: false
   adminApi: {}
-  adminUI: {}
   collector: {}
   security:
     internalTls: NONE
