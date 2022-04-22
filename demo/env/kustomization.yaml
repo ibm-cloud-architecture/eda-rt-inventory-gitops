@@ -1,5 +1,7 @@
 resources:
 - es-demo-ns.yaml
+- service-account.yaml
 - argocd-admin.yaml
+- cp-secret.yaml
 - es-demo.yaml
 - es-topic.yaml

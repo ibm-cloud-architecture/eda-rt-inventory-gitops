@@ -3,7 +3,7 @@ kind: KafkaTopic
 metadata:
   name: demo-topic
   labels:
-    eventstreams.ibm.com/cluster: dev
+    eventstreams.ibm.com/cluster: demo
 spec:
   partitions: 1 
   replicas: 1
