@@ -20,7 +20,7 @@ spec:
       topicOperator: {}
       userOperator: {}
     kafka:
-      replicas: 2
+      replicas: 1
       authorization:
         type: runas
       config:
