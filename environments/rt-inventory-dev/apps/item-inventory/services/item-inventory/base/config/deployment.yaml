@@ -51,7 +51,7 @@ spec:
         - name: KAFKA_SSL_KEYSTORE_TYPE
           value: PKCS12
         - name: KAFKA_SECURITY_PROTOCOL
-          value: PLAINTEXT
+          value: SSL
         - name: KAFKA_USER
           value: tls-user
         - name: KAFKA_CERT_PWD

@@ -25,7 +25,7 @@ Be sure to have:
 1. Deploy the IBM product catalog - (Not needed if `cp4i` already deployed)
 
     ```sh
-    ./bootstrap/scripts/installIBMCatalog.sh
+    make  prepare_ibm_catalog
     ```
 
 
@@ -48,7 +48,7 @@ with the entitlement key. - (Not needed if `cp4i` already deployed)
     # Verify if some operator are present
     oc get -n openshift-operators subscription ibm-eventstreams 
     # install them if not
-    ./bootstrap/scripts/installIBMOperators.sh
+    make install_es_operator install_mq_operator
     ```
 
 1. Copy IBM Entitlement secrets to the `rt-inventory-lab` project - (Not needed if `cp4i` already deployed)

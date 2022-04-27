@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/version
+  value: 10.4.0

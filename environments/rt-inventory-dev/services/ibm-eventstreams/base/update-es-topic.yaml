@@ -1,0 +1,18 @@
+apiVersion: eventstreams.ibm.com/v1beta1
+kind: KafkaTopic
+metadata:
+  name: rt-items
+  namespace: rt-inventory-dev
+  labels:
+    eventstreams.ibm.com/cluster: dev
+spec:
+  partitions: 5 
+  replicas: 3
+  config:
+    min.insync.replicas: 2
+    cleanup.policy: delete
+    retention.ms: 604800000
+    segment.ms: 604800000
+    file.delete.delay.ms: 60000
+    max.message.bytes: 1048588
+    message.timestamp.type: LogAppendTime

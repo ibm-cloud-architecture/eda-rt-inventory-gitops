@@ -204,6 +204,8 @@ The pipelines are using a service account, named `pipeline`, in the `rt-inventor
 
 ### Bootstrap GitOps
 
+The current GitOps will run on OpenShift 4.8.
+
 * Login to the OpenShift Console, and get login token to be able to use `oc cli`
 * Obtain your [IBM license entitlement key](https://github.com/IBM/cloudpak-gitops/blob/main/docs/install.md#obtain-an-entitlement-key) and export as KEY environment variables
 
@@ -245,6 +247,8 @@ a list of pods like:
   make install_cp4i_operators
   ```
  
+  The IBM common services deployment can take more than 30 minutes.
+  
 * Get the ArgoCD User Interface URL and open a web browser:
 
    ```sh

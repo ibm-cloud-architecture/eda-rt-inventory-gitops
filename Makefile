@@ -2,6 +2,10 @@
 .PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace prepare_github_credentials
 .PHONY: install_es_operator install_mq_operator install_apic_operator output_details
 
+# Setting global variables
+CICD_NS = rt-inventory-cicd
+DEV_NS = rt-inventory-dev
+ES_VERSION = v10.5
 # integration from Dale Dane work
 #
 # Reusable functions
@@ -42,18 +46,19 @@ ensure_operator_installed = \
 
 # command definitions for cicd
 # -------------------------------
-CICD_NS = rt-inventory-cicd
 verify_tekton_pipelines_available:
 	@echo "-----------------------------------------------------------------"	
 	@echo "Installing pipelines operator and dedicated project for pipelines"
 	@echo "-----------------------------------------------------------------"
 	@$(call ensure_operator_installed,"openshift-pipelines-operator","./bootstrap/openshift-pipelines-operator")
+
+apply_tekton_tasks:
 	@oc apply -k ./bootstrap/pipelines/00-common/cicd
 	@oc apply -k ./bootstrap/pipelines/00-common/tasks
 	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml -n $(CICD_NS)
 	@oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/maven/0.2/maven.yaml -n $(CICD_NS)
 
-verify-argocd-available:
+verify_argocd:
 	@$(call ensure_operator_installed,"openshift-gitops-operator","./bootstrap/openshift-gitops-operator")
 
 set_argo_project:
@@ -65,10 +70,17 @@ output_argo:
 	@echo "Argo admin console url"
 	@oc get route openshift-gitops-server -o jsonpath='{.status.ingress[].host}'  -n openshift-gitops
 
-prepare_general_pipeline: verify_tekton_pipelines_available prepare_github_credentials verify-argocd-available set_argo_project
+prepare_general_pipeline: verify_tekton_pipelines_available \
+	create_cicd_project \
+	prepare_github_credentials \
+	verify_argocd \
+	set_argo_project
 
 prepare_github_credentials: 
 	@oc apply -f ./github-credentials.yaml
+
+create_cicd_project:
+	@oc new-project $(CICD_NS)
 
 set_namespace:
 	@oc project $(CICD_NS)
@@ -76,10 +88,10 @@ set_namespace:
 # IBM subscriptions
 # -----------------
 
-set-entitlement-key:
+set_entitlement_key:
 	@oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-server=cp.icr.io --namespace=openshift-operators --docker-password=$(KEY)
 
-prepare-ibm-catalog:
+prepare_ibm_catalog:
 	@echo "------------------------------------------------------------"
 	@echo "Installing the IBM Catalog into the cluster..."
 	@echo "------------------------------------------------------------"
@@ -100,6 +112,16 @@ run_pipeline_commonservices:
 
 pipeline_commonservices: set_namespace prepare_pipeline_commonservices run_pipeline_commonservices
 
+
+# -------------------------------------------------------
+# Entry points
+# -------------------------------------------------------
+prepare: prepare_general_pipeline  set_entitlement_key prepare_ibm_catalog 
+
+all: prepare install_cp4i_operators start_argocd_apps
+
+install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_operator install_apic_operator
+
 # Different operators used in the solution 
 # ----------------------
 install_nav_operator:
@@ -114,62 +136,59 @@ install_mq_operator:
 install_apic_operator:
 	@$(call ensure_operator_installed,"ibm-apiconnect","./bootstrap/ibm-apiconnect")
 
-prepare: prepare_general_pipeline  set-entitlement-key prepare-ibm-catalog 
-
-install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_operator install_apic_operator
-
 start_argocd_apps:
 	@oc apply -k ./config/argocd
 
-DEV_NS = rt-inventory-dev
+clean_argocd_apps:
+	@oc delete -k ./config/argocd
+
+
 start_mq_source:
 	@oc apply -f environments/rt-inventory-dev/apps/mq-source/kafka-mq-src-connector.yaml -n $(DEV_NS)
 
 start_cos_sink:
 	@oc apply -f environments/rt-inventory-dev/apps/cos-sink/kafka-cos-sink-connector.yaml -n $(DEV_NS)
 
-all: prepare install_cp4i_operators start_argocd_apps
-
 # ---------------------------------------------------------------
 # assume CoC environment with CP4I already installed. 
 # Use rt-inventory-dev namespace, event streams in cp4i-eventstreams
 # ---------------------------------------------------------------
-mt-prepare-ns:
+mt_prepare_ns:
 	@oc apply -k ./environments/multi-tenancy/rt-inventory-dev/
 	@oc project rt-inventory-dev
 
-mt-eventstreams-config:
+mt_eventstreams_config:
 	@oc apply -k ./environments/multi-tenancy/cp4i-eventstreams/overlays
 
-mq-config:
+mq_config:
 	@oc apply -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
 
-mt-kconnect:
+mt_kconnect:
 	@oc apply -k ./environments/multi-tenancy/kconnect -n rt-inventory-dev
 
-mt-mq-kconnector:
+mt_mq_kconnector:
 	@oc apply -f ./environments/multi-tenancy/apps/mq-source/kafka-mq-src-connector.yaml -n rt-inventory-dev
 # ----------- app specific -------------
-mt-store-simulator:
+mt_store_simulator:
 	@oc apply -k ./environments/multi-tenancy/apps/store-simulator/
 
-mt-store-inventory:
+mt_store_inventory:
 	@oc apply -k ./environments/multi-tenancy/apps/store-inventory/
 
-mt-item-inventory:
+mt_item_inventory:
 	@oc apply -k ./environments/multi-tenancy/apps/item-inventory/
 
-multi-tenants: \
-	mt-prepare-ns \
-	mt-eventstreams-config \
-	mq-config \
-	mt-kconnect \
-	mt-mq-kconnector \
-	mt-store-simulator \
-	mt-store-inventory \
-	mt-item-inventory 
+multi_tenants: \
+	mt_prepare_ns \
+	mt_eventstreams_config \
+	mq_config \
+	mt_kconnect \
+	mt_mq_kconnector \
+	mt_store_simulator \
+	mt_store_inventory \
+	mt_item_inventory 
 
-clean-multi-tenants:
+clean_multi_tenants:
 	@oc delete -k ./environments/multi-tenancy/apps/item-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-simulator/
@@ -177,7 +196,7 @@ clean-multi-tenants:
 	@oc delete -k environments/rt-inventory-dev/services/ibm-mq/overlays
 	@oc delete -k  multi-tenancy/cp4i-eventstreams/overlays
 
-output-details:
+output_details:
 	@echo "Install complete.\n\n"
 	@echo "Openshift admin credential"
 	@oc extract secret/openshift-gitops-cluster -n openshift-gitops --to=-
@@ -187,3 +206,38 @@ output-details:
 	@oc get route dev-ibm-es-ui -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
 	@echo "\n\nStore simulator url\n"
 	@oc get route store-simulator -o jsonpath='{.status.ingress[].host}'  -n $(DEV_NS)
+
+# --------------------------
+# RT inventory in dev namespace
+# --------------------------
+prepare_dev_ns:
+	@oc apply -k ./environments/rt-inventory-dev/env/overlays
+	@oc project $(DEV_NS)
+
+eventstreams_config:
+	@oc apply -k ./environments/rt-inventory-dev/services/ibm-eventstreams/overlays/$(ES_VERSION)
+
+rt_store_simulator:
+	@oc apply -k ./environments/rt-inventory-dev/apps/store-simulator/
+
+rt_store_inventory:
+	@oc apply -k ./environments/rt-inventory-dev/apps/store-inventory/
+
+rt_item_inventory:
+	@oc apply -k ./environments/rt-inventory-dev/apps/item-inventory/
+
+deploy_rt_inventory: prepare_dev_ns \
+	eventstreams_config \
+	rt_store_inventory \
+	rt_item_inventory \
+	rt_store_simulator
+
+clean_rt_inventory:
+	@oc project rt-inventory-dev
+	@oc delete -k ./environments/rt-inventory-dev/apps/item-inventory
+	@oc delete -k ./environments/rt-inventory-dev/apps/store-inventory
+	@oc delete -k ./environments/rt-inventory-dev/apps/store-simulator
+	@oc delete -k ./environments/rt-inventory-dev/services/kconnect
+	@oc delete -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
+	@oc delete -k ./environments/rt-inventory-dev/services/ibm-eventstreams
+	
