@@ -11,6 +11,8 @@ spec:
   - https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
   # Only permit applications to deploy to the following namespace in the same cluster
   destinations:
+  - namespace: cp4i
+    server: https://kubernetes.default.svc
   - namespace: rt-inventory-dev
     server: https://kubernetes.default.svc
   - namespace: rt-inventory-stage
@@ -18,6 +20,8 @@ spec:
   - namespace: openshift-gitops
     server: https://kubernetes.default.svc
   - namespace: openshift-operators
+    server: https://kubernetes.default.svc
+  - namespace: openshift-monitoring
     server: https://kubernetes.default.svc
   clusterResourceWhitelist:
   - group: "*"
@@ -27,6 +31,6 @@ spec:
   - name: read-only
     description: Read-only privileges to this project
     policies:
-    - p, proj:rt-inventory:read-only, applications, get, rt-inventory/*, allow
+    - p, proj:rt-inventory:read-only, applications, get, openshift-monitoring/*, cp4i/*, rt-inventory/*, allow
     groups:
     - argocd-admins
