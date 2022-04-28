@@ -116,11 +116,11 @@ pipeline_commonservices: set_namespace prepare_pipeline_commonservices run_pipel
 # -------------------------------------------------------
 # Entry points
 # -------------------------------------------------------
-prepare: prepare_general_pipeline  set_entitlement_key prepare_ibm_catalog 
+prepare: prepare_ibm_catalog set_entitlement_key  
 
 all: prepare install_cp4i_operators start_argocd_apps
 
-install_cp4i_operators: pipeline_commonservices install_es_operator install_mq_operator install_apic_operator
+install_cp4i_operators: install_nav_operator install_es_operator install_mq_operator install_apic_operator
 
 # Different operators used in the solution 
 # ----------------------

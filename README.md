@@ -6,6 +6,29 @@ to be able to boostrap some important operators like the OpenShift GitOps Operat
 ## Why to consider
 
 This project can be a good foundation to discuss GitOps deployment, and reuse scripts, makefile... to deploy event-driven solution.
+
+The installation approach is to deploy operators to manage All Namespacess, at cluster scope. So only one Platform UI can be installed per cluster. A single instance of IBM Cloud Pak foundational services is installed in the ibm-common-services namespace.
+
+The following operators may be installed from this GitOps:
+
+* name:ibm-integration-platform-navigator
+* name:ibm-integration-asset-repository
+* name:ibm-integration-operations-dashboard
+* name:ibm-eventstreams
+* name:ibm-mq
+
+The entitlement key secret will be copied to each namespace where some of the Cloud Pak integration products are deployed, using a kubernetes job.
+## Pre-requisites
+
+All the CLI commands must be performed by a Cluster administrator.
+You need `oc cli` and the `jq` JSON stream editor installed.
+
+You need an OpenShift cluster available with storage capabilities to support Event Streams deployments like block storage configured to use the XFS or ext4 file system, as described in [Event Streams storage](https://ibm.github.io/event-streams/installing/prerequisites/#data-storage-requirements).
+
+You need to have one volume per broker and zookeeper instances.
+ 
+See also the [interactive Installation Guide for cloud pak for integration](https://www.ibm.com/docs/guide/viewer/public/cloud-paks/cp-integration/2021.4?interact=installing-cloud-pak-for-integration&utm_source=guide). 
+
 ## What is covered
 
 This GitOps supports bootstrapping the solution as a Day 1 operation, with the deployment of operators, secrets, pipelines... and then Day 2 operations, as once the solution is deployed, all changes to the configurations are done in this repository, manage with the Git PR process and changes are propagated by ArgoCD to the runtime cluster.
@@ -13,9 +36,9 @@ This GitOps supports bootstrapping the solution as a Day 1 operation, with the d
 In this Gitops you can use different approaches to deploy the real-time inventory solution depending of your goals.
 
 * You want to play with the demo, so [run it locally to your laptop using docker](#run-the-solution-locally). It uses Event Streams and MQ docker images. You can run it in different mode, depending of the sinks you want to add.
-* [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-openshift-cluster), this will take few hours to deploy as some Operators may take time. 
+* [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-a-new-openshift-cluster), this will take few hours to deploy as some Operator and Operand deployments may take time. 
 * [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
-* Deploy the solution on a CMC CoC environment, which mean different name space per product, so for example Event Streams is in [multi-tenant](#gitops-for-multi-tenants).
+* Deploy the solution on a CMC CoC environment, which means different namespaces per product, so for example Event Streams is in `cp4i-eventstreams`. See instruction in [multi-tenant section](#gitops-for-multi-tenants).
 
 You are not forced to use ArgoCD, you can just use the makefile and make to deploy the solution.
 ## Real-time inventory scenario presentation
@@ -32,18 +55,18 @@ components deployed by this GitOps:
 ![](./docs/images/mq-es-demo.png)
 
 
-* The store simulator injects directly sell or restock events to Kafka to the `items` topic
-* The store simulator can also generate messages to IBM MQ using JMS API or to RabbitMQ using AMQP protocol
-* When messages are sourced to Queues, then a Kafka Source Connector is used to propagate message to `items` topics.
+* The store simulator send sell or restock messages to MQ ITEMS queue, which are picked up by Kafka source connector to publish to kafka `items` topic. 
+* The store simulator send directly to Kafka to the `items` topic
 * The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
 * The Store-aggregator computes aggregate at the store level for each items.
-
+* Sink connector can write to Cloud Object Storage buckets
+* Sink connector can write to Elastic Search
 
 ## Two different streaming approaches
 
 We propose two approaches to develop the streaming processing. 
 
-* One using Kafka Streams 
+* One using Kafka Streams with two applications
 * One using Apache Flink
 
 ### Kafka Streams implementation
@@ -129,7 +152,7 @@ Kafdrop UI to see messages in `items`, `store.inventory` and `item.inventory` to
 
   ![](./docs/images/store-inventory-content.png)
 
-* If using ElasticSearch go to Kibana UI at []()
+* If using ElasticSearch go to Kibana UI at [localhost:5601](http://localhost:5601)
 
 * Stop the demo
 
@@ -170,16 +193,16 @@ kam bootstrap \
 
 * Added a bootstrap folder to define gitops and Cloud Pak for integration capabilities operator declarations and to create an ArgoCD project
 * Defined a script to install IBM Catalogs and Cloud Pak for Integration components 
-* Added scripts to deploy the gitops, pipelines operators using Makefile.
+* Added Makefile and scripts to deploy the gitops, pipelines operators and different elements.
 
 ## GitOps from a new OpenShift Cluster
 
-The GitOps approach is using the [EDA catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product-specific operator subscription definitions, where product instance definitions are part of this [real-time inventory solution GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository. This corresponds to the yellow rectangles in the figure below:
+The GitOps approach is using the [EDA catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog) to keep product-specific operator subscriptions, where product instance definitions are part of this [real-time inventory solution GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository. This corresponds to the yellow rectangles in the figure below:
 
 ![](./docs/images/gitops-catalog.png)
 
 
-### What is deployed
+### What is deployed in this demonstration
 
 The development project includes event-streams, MQ, schema registry... 
 
@@ -328,35 +351,23 @@ The expected set of ArgoCD apps looks like:
 
 TBD 
 
-## GitOps from CP4I deployment
+## Deploy in existing CP4I deployment
 
-In this section we suppose CP4I is already deployed in a unique `cp4i` namespace. So somewhere someone has already deployed the infrastructure, to deploy the components as multi tenants. (This is represented as the green rectangles in the figure below)
+In this section we suppose CP4I is already deployed in `cp4i` namespace. So somewhere someone has already deployed the infrastructure, and other components as multi tenants. (This is represented as the green rectangles in the figure below)
 
 ![](./docs/images/gitops-multi-tenants.png)
 
-So the focus is on the solution component deployment.
-
-### Bootstrap GitOps
+So the focus is on the solution component deployment:
+## Bootstrap GitOps
 
 * Login to the OpenShift Console, and get login token to be able to use `oc cli`
-* If not done already, use the script to install GitOps and Pipeline operators: 
+* If not done already, use the script to install GitOps and Pipeline operators:
 
   ```sh
-    ./bootstrap/scripts/installGitOpsOperators.sh
+  # 
+  make verify_argocd
   ```
     
-  Once the operators are running the command: `oc get pods -n openshift-gitops` should return
-a list of pods like:
-
-  ```sh
-    NAME                                                          READY   STATUS    RESTARTS   AGE
-    openshift-gitops-application-controller-0                     1/1     Running   0          4h5m
-    openshift-gitops-applicationset-controller-6948bcf87c-jdv2x   1/1     Running   0          4h5m
-    openshift-gitops-dex-server-64cbd8d7bd-76czz                  1/1     Running   0          4h5m
-    openshift-gitops-redis-7867d74fb4-dssr2                       1/1     Running   0          4h5m
-    openshift-gitops-repo-server-6dc777c845-gdjhr                 1/1     Running   0          4h5m
-    openshift-gitops-server-7957cc47d9-cmxvw                      1/1     Running   0          4h5m
-  ```
 
 * Create an ArgoCD project named `rt-inventory`
 
@@ -388,24 +399,24 @@ a list of pods like:
 
 ## Gitops for multi-tenants
 
-This is another interesting deployment where some of the products are shared between teams.
+This is another interesting deployment where some of the products are shared between teams like Event Streams in `cp4i-eventstreams` project.
 
-Here is a diagram to illustrate the deployment:
+Here is a diagram to illustrate this multi-tenant deployment:
 
 ![](./docs/images/gitops-multi-tenants.png)
 
 Some particularities:
 
 * Event Streams is in its own project, so topics, users follow a naming convention for deployment to avoid colision with other teams / solutions
-* MQ broker runs local to the solution namespace. (rt-inventory has its own MQ Broker)
+* MQ broker runs local to the solution namespace. (`rt-inventory-dev` has its own MQ Broker)
 
 
 ```sh
 make multi-tenants
 ```
 
-* Get Store Simulation URL and access to the console:
+* Get Store Simulator URL and execute the demonstration script:
 
-```
-chrome $()
+```sh
+chrome $(oc get routes store-simulator -o jsonpath='{.status.ingress[].host};)
 ```
