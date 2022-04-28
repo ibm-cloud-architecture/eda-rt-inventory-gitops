@@ -1,6 +1,7 @@
 resources:
 - argo-app.yaml
 # - cicd-app.yaml
+- cp4i-env.yaml
 - cp4i-platform-navigator.yaml
 - rt-inventory-dev-env-app.yaml
 - rt-inventory-dev-mq-services-app.yaml

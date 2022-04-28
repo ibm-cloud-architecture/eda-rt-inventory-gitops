@@ -1,7 +1,5 @@
 
 resources:
-  - ./cp4i-namespace.yaml
-  - ./service-account.yaml
   - ./cp-secret.yaml
   - ./monitoring-cm.yaml
   - ./cp4i-navigator.yaml

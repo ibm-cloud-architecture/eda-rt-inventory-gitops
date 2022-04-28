@@ -301,17 +301,18 @@ The expected set of ArgoCD apps looks like:
 
 ### Potential errors
 
-????- "ConfigMap ibm-common-services-status in **kube-public** to be ready"
-  * While the Event Streams cluster is created: An unexpected exception was encountered: Exceeded timeout of 1200000ms while waiting for ConfigMap resource **ibm-common-services-status** in namespace **kube-public** to be ready. More detail can be found in the Event Streams Operator log.
-  * This is an issue known as of 10.5.  Restart the ES operator pod
-  * See also https://github.ibm.com/mhub/qp-planning/issues/7383
+* "ConfigMap ibm-common-services-status in **kube-public** to be ready"
+    
+    * While the Event Streams cluster is created: An unexpected exception was encountered: Exceeded timeout of 1200000ms while waiting for ConfigMap resource **ibm-common-services-status** in namespace **kube-public** to be ready. More detail can be found in the Event Streams Operator log.
+    * This is an issue known as of 10.5.  Restart the ES operator pod
+    * See also https://github.ibm.com/mhub/qp-planning/issues/7383
 
 ### Configure connector
 
 * Go to the dev project: `oc project rt-inventory-dev`
 * Deploy the sink kafka connector for cloud object storage:
 
-  * Modify the file `kafka-cos-sink-connector.yaml` in `environments/rt-inventory-dev/services/kconnect`, by replacing the following line from the cloud object storage credentials:
+  * Modify the file `kafka-cos-sink-connector.yaml` in `environments/rt-inventory-dev/apps/cos-sink`, by replacing the following line from the cloud object storage credentials:
 
   ```yaml
     cos.api.key: IBM_COS_API_KEY
@@ -321,12 +322,12 @@ The expected set of ArgoCD apps looks like:
     cos.service.crn: "IBM_COS_CRM"
   ```
 
-  * Then deploy the connector: `oc apply -f environments/rt-inventory-dev/services/kconnect/kafka-cos-sink-connector.yaml `
+  * Then deploy the connector: `oc apply -f environments/rt-inventory-dev/apps/cos-sink/kafka-cos-sink-connector.yaml `
 
 * Deploy the MQ source connector
 
   ```sh
-  oc apply -f environments/rt-inventory-dev/services/kconnect/mq-source.json
+  oc apply -f environments/rt-inventory-dev/apps/mq-source/kafka-mq-src-connector.json
   ```
 
 * Access to the Simulator User Interface via:
@@ -347,9 +348,18 @@ The expected set of ArgoCD apps looks like:
   chrome https://$(oc get route store-mq-ibm-mq-qm -o jsonpath='{.status.ingress[].host}')
   ```
 
-## Deploy without ArgoCD apps
+### Deploy without ArgoCD apps
 
-TBD 
+The makefile will support the minimum commands, depending on what is your current environment:
+
+```sh
+# If needed :prepare entitlementkey,  catalog 
+make prepare
+# If needed install cp4i different operators
+make install_cp4i_operators
+# Deploy the dev environment
+make deploy_rt_inventory
+```
 
 ## Deploy in existing CP4I deployment
 
