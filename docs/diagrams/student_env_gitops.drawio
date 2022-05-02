@@ -1,11 +1,11 @@
 <mxfile host="65bd71144e">
     <diagram id="DI6zT22FTgyFtFcUrmey" name="Page-1">
-        <mxGraphModel dx="742" dy="381" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1237" dy="635" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="2" value="OpenShift Cluster" style="swimlane;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
-                    <mxGeometry x="20" y="60" width="660" height="470" as="geometry"/>
+                    <mxGeometry x="20" y="80" width="830" height="470" as="geometry"/>
                 </mxCell>
                 <mxCell id="3" value="openshift-operators" style="swimlane;fillColor=#fad9d5;strokeColor=#ae4132;" parent="2" vertex="1">
                     <mxGeometry x="20" y="30" width="610" height="100" as="geometry"/>
@@ -60,6 +60,21 @@
                 </mxCell>
                 <mxCell id="37" value="EventStreams-schema registry" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="30" vertex="1">
                     <mxGeometry x="460" y="40" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="openshift-gitops" style="swimlane;fillColor=#fad9d5;strokeColor=#ae4132;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="150" width="180" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px ; font-stretch: normal ; font-size: 11px ; line-height: normal ; font-family: &amp;#34;menlo&amp;#34;&quot;&gt;&lt;span class=&quot;s1&quot;&gt;student_1&lt;/span&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px ; font-stretch: normal ; font-size: 11px ; line-height: normal ; font-family: &amp;#34;menlo&amp;#34;&quot;&gt;&lt;span class=&quot;s1&quot;&gt;argocd-apps&lt;/span&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#FFFFFF;strokeColor=#2D7600;" parent="27" vertex="1">
+                    <mxGeometry x="40" y="50" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="38" target="29">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="git gitops repository" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" vertex="1" parent="1">
+                    <mxGeometry x="700" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="29" target="8">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
