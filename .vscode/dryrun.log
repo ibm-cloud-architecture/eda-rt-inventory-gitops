@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/jeromeboyer/Code/EDA-2021/rt-inventory/eda-rt-inventory-gitops'
+echo "-----------------------------------------------------------------"	
+echo "Installing pipelines operator and dedicated project for pipelines"
+echo "-----------------------------------------------------------------"
+OPERATORNAME="openshift-pipelines-operator"; OPERATORINSTALLER="./bootstrap/openshift-pipelines-operator"; ISOPERATORINSTALLED=$(oc get subscription -n openshift-operators  -o go-template='{{len .items}}' --field-selector metadata.name=$OPERATORNAME); if [ $ISOPERATORINSTALLED -eq 0 ]; then oc apply -k $OPERATORINSTALLER ; QUERY="{.items[0].status.phase}"; sleep 30 ; OPERATORSTATUS=""; while [ "$OPERATORSTATUS" != "Complete" ]; do OPERATORSTATUS=$(oc get installplan -n openshift-operators -l operators.coreos.com/$OPERATORNAME.openshift-operators -o jsonpath="$QUERY"); echo $OPERATORSTATUS; sleep 90 ; done; else echo $OPERATORNAME "Installed"; fi
+make: Leaving directory `/Users/jeromeboyer/Code/EDA-2021/rt-inventory/eda-rt-inventory-gitops'
+ 

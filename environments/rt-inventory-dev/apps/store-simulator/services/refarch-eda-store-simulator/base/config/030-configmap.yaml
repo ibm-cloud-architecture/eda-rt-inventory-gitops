@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: store-simulator-cm
 data:
-  APP_VERSION: 0.0.10
+  APP_VERSION: 0.0.13
   APP_TARGET_MESSAGING: kafka,IBMMQ
   KAFKA_BOOTSTRAP_SERVERS: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
-  KAFKA_TOPIC_NAME: rt-items
+  MP_MESSAGING_OUTGOING_ITEMS_TOPIC: rt-items
   KAFKA_SECURITY_PROTOCOL: PLAINTEXT
   USER_CERT_PWD: none
   MQ_HOST: store-mq-ibm-mq.rt-inventory-dev.svc

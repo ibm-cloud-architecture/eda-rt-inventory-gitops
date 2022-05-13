@@ -5,7 +5,7 @@
 # Setting global variables
 CICD_NS = rt-inventory-cicd
 DEV_NS = rt-inventory-dev
-ES_VERSION = v10.5
+ES_VERSION = v11.0
 # integration from Dale Dane work
 #
 # Reusable functions
@@ -226,11 +226,13 @@ rt_store_inventory:
 rt_item_inventory:
 	@oc apply -k ./environments/rt-inventory-dev/apps/item-inventory/
 
-deploy_rt_inventory: prepare_dev_ns \
-	eventstreams_config \
-	rt_store_inventory \
+apps: 	rt_store_inventory \
 	rt_item_inventory \
 	rt_store_simulator
+
+deploy_rt_inventory: prepare_dev_ns \
+	eventstreams_config \
+	apps
 
 clean_rt_inventory:
 	@oc project rt-inventory-dev
