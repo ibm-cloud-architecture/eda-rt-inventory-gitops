@@ -1,8 +1,8 @@
-apiVersion: eventstreams.ibm.com/v1beta1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaTopic
 metadata:
   name: items
-  namespace: rt-inventory-dev
+  namespace: rt-inventory-staging
   labels:
     eventstreams.ibm.com/cluster: prod
 spec:
@@ -18,11 +18,11 @@ spec:
     message.timestamp.type: LogAppendTime
 ---
 
-apiVersion: eventstreams.ibm.com/v1beta1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaTopic
 metadata:
   name: item.inventory
-  namespace: rt-inventory-dev
+  namespace: rt-inventory-staging
   labels:
     eventstreams.ibm.com/cluster: prod
 spec:
@@ -34,11 +34,11 @@ spec:
     delete.retention.ms: 86400000
 ---
 
-apiVersion: eventstreams.ibm.com/v1beta1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaTopic
 metadata:
   name: store.inventory
-  namespace: rt-inventory-dev
+  namespace: rt-inventory-staging
   labels:
     eventstreams.ibm.com/cluster: prod
 spec:

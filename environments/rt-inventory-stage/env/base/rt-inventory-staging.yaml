@@ -4,6 +4,6 @@ metadata:
   annotations:
     app.openshift.io/vcs-uri: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git?ref=HEAD
   creationTimestamp: null
-  name: rt-inventory-stage
+  name: rt-inventory-staging
 spec: {}
 status: {}

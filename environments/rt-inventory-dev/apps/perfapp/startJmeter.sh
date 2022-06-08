@@ -1,0 +1,1 @@
+oc new-app --docker-image=quay.io/ibmcase/jmeter-kafka --name=jmeter-kafka -e "JMETER_THREADS=300" -e "BOOTSTRAP_SERVERS=dev-kafka-bootstrap.rt-inventory-dev.svc:9092" -e "PROMETHEUS_PORT=8080" -e "PROMETHEUS_HOST=0.0.0.0" -e "SAMPLER_LABEL=test-1k" -e "BATCH_SIZE=3700" -e "HEAP=-Xms512m -Xmx4096m" -e "RAMUP_PERIOD=60" -e "LOOP_COUNT=-1" -e "KAFKA_TOPIC=perf-p1r3" -l app=jmeter

@@ -1,6 +1,6 @@
 .PHONY: verify_tekton_pipelines_available prepare_general_pipeline verify-argocd-available
 .PHONY: prepare prepare-ibm-catalog pipeline_commonservices  set-entitlement-key run_pipeline_commonservices set_namespace prepare_github_credentials
-.PHONY: install_es_operator install_mq_operator install_apic_operator output_details
+.PHONY: install_es_operator install_mq_operator install_apic_operator output_details 	eventstreams_config
 
 # Setting global variables
 CICD_NS = rt-inventory-cicd

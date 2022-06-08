@@ -1,4 +1,4 @@
 resources:
-- rt-inventory-stage-environment.yaml
-- kconnect-cluster-ns.yaml
-- ibm-ek-sealedsecret.yaml
+- rt-inventory-staging.yaml
+- service-account.yaml
+- cp-secret.yaml

@@ -16,7 +16,7 @@ metadata:
 data:
   config.yaml: |
     prometheus: 
-      retention: 24h 
+      retention: 12h 
       resources:
         requests:
           cpu: 200m 

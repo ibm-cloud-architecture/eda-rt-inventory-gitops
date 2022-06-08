@@ -1,8 +1,8 @@
-apiVersion: eventstreams.ibm.com/v1beta1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaUser
 metadata:
   name: admin-user
-  namespace:  rt-inventory-dev
+  namespace:  rt-inventory-staging
   labels:
     eventstreams.ibm.com/cluster: dev
 spec:

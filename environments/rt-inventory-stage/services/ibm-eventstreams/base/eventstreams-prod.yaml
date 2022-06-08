@@ -1,10 +1,10 @@
-﻿apiVersion: eventstreams.ibm.com/v1beta1
+﻿apiVersion: eventstreams.ibm.com/v1beta2
 kind: EventStreams
 metadata:
   name: prod
-  namespace: rt-inventory-stage
+  namespace: rt-inventory-staging
 spec:
-  version: 10.5.0
+  version: 11.0.1
   license:
     accept: true
     use: CloudPakForIntegrationProduction
@@ -13,17 +13,17 @@ spec:
     monitoring: true
   adminApi: {}
   adminUI: {}
-  apicurioRegistry: {}
+  apicurioRegistry:
+    livenessProbe:
+      initialDelaySeconds: 120
   collector: {}
   restProducer: {}
-  security:
-    internalTls: TLSv1.2
   strimziOverrides:
     entityOperator: 
       topicOperator:
         resources:
           limits:
-            cpu: "1"
+            cpu: 500m
             memory: 3Gi
           requests:
             cpu: 90m
@@ -31,7 +31,7 @@ spec:
       userOperator:
         resources:
           limits:
-            cpu: "1"
+            cpu: 500m
             memory: 1500Mi
           requests:
             cpu: 203m
@@ -43,36 +43,63 @@ spec:
         topologyKey: topology.kubernetes.io/zone
       resources:
         requests:
-          memory: 4Gi
-          cpu: "1"
+          cpu: 4000m
+          memory: 8096Mi
         limits:
-          memory: 6Gi
-          cpu: "2"
+          cpu: 4000m
+          memory: 8096Mi
       authorization:
-        type: runas
+        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
+        supportsAdminApi: true
+        type: custom
       config:
-        inter.broker.protocol.version: '2.8'
+        inter.broker.protocol.version: '3.0'
         interceptor.class.names: com.ibm.eventstreams.interceptors.metrics.ProducerMetricsInterceptor
-        log.cleaner.threads: 6
-        log.message.format.version: '2.8'
-        num.io.threads: 24
         num.network.threads: 9
+        log.cleaner.threads: 6
+        num.io.threads: 24
         num.replica.fetchers: 3
+        min.insync.replicas: 2
+        log.message.format.version: '3.0'
         offsets.topic.replication.factor: 3
-        ssl.enabled.protocols: "TLSv1.2"
-        ssl.protocol: "TLSv1.2"
+        default.replication.factor: 3
       listeners:
-        tls:
+        - name: plain
+          type: internal
+          port: 9092
+          tls: false
+        - name: external
+          port: 9094
+          type: route
+          tls: true
+          authentication:
+            type: scram-sha-512
+        - name: tls
+          port: 9093
+          type: internal
+          tls: true
           authentication:
             type: tls
       storage:
         type: persistent-claim
         size: 10Gi
-        class: ibmc-block-gold
+        class: ocs-storagecluster-ceph-rbd
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: kafka-metrics-config.yaml
+            name: metrics-config
     zookeeper:
       replicas: 3
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: zookeeper-metrics-config.yaml
+            name: metrics-config
       storage:
         type: persistent-claim
         size: 4Gi
-        class: ibmc-block-gold
+        class: ocs-storagecluster-ceph-rbd
     cruiseControl: {}

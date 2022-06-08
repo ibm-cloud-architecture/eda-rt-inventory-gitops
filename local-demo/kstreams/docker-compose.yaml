@@ -19,7 +19,7 @@ services:
         MQ_APP_PASSWORD: passw0rd
         MQ_ENABLE_METRICS: "true"
   zookeeper:
-    image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.1
     container_name: zookeeper
     hostname: zookeeper
     command: [
@@ -32,7 +32,7 @@ services:
       LOG_DIR: /tmp/logs
 
   kafka:
-    image: cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.1
     container_name: kafka
     hostname: kafka
     command: [
