@@ -1,0 +1,93 @@
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaMirrorMaker2
+metadata:
+  name: mm2
+  namespace: rt-inventory-stg  
+spec:
+  version: 3.0.1
+  replicas: 1
+  connectCluster: es-tgt
+  logging:
+    loggers:
+      connect.root.logger.level: INFO
+    type: inline
+  template:
+    pod:
+      metadata:
+        annotations:
+          cloudpakId: c8b82d189e7545f0892db9ef2731b90d
+          productVersion: 11.0.0
+          productID: 2a79e49111f44ec3acd89608e56138f5
+          cloudpakName: IBM Cloud Pak for Integration
+          cloudpakVersion: 2022.1.1
+          productChargedContainers: mm2-mirrormaker2
+          productCloudpakRatio: '2:1'
+          productName: IBM Event Streams for Non Production
+          eventstreams.production.type: CloudPakForIntegrationNonProduction
+          productMetric: VIRTUAL_PROCESSOR_CORE
+  clusters:
+    - alias: es-src
+      authentication:
+        passwordSecret:
+          password: password
+          secretName: rt-inv-dev-user
+        type: scram-sha-512
+        username: rt-inv-dev-user
+      bootstrapServers: rt-inventory-dev-kafka-bootstrap-rt-inventory-dev.itzroks-4b4a.us-south.containers.appdomain.cloud:443
+      config:
+        ssl.endpoint.identification.algorithm: https      
+        config.storage.replication.factor: 1
+        offset.storage.replication.factor: 1
+        status.storage.replication.factor: 1
+      tls:
+        trustedCertificates:
+          - certificate: ca.crt
+            secretName: rt-inventory-dev-cluster-ca-cert
+    - alias: es-tgt
+      authentication:
+        passwordSecret:
+          password: password
+          secretName: rt-inv-stg-user
+        type: scram-sha-512
+        username: rt-inv-stg-user
+      bootstrapServers: rt-inventory-stg-kafka-bootstrap-rt-inventory-stg.itzroks-4b4b.us-south.containers.appdomain.cloud:443
+      config:
+        ssl.endpoint.identification.algorithm: https      
+        config.storage.replication.factor: 3
+        offset.storage.replication.factor: 3
+        status.storage.replication.factor: 3    
+      tls:
+        trustedCertificates:
+          - certificate: ca.crt
+            secretName: rt-inventory-stg-cluster-ca-cert
+  mirrors:
+    - sourceCluster: es-src
+      targetCluster: es-tgt 
+      sourceConnector:
+        config:
+          # the replication factor that will be used for
+          #  all topics created on the "target" Kafka cluster
+          replication.factor: 3
+          # don't try to copy permissions across from the "origin"
+          #  cluster to the "target" cluster
+          sync.topic.acls.enabled: "false"          
+          replication.policy.separator: ""
+          replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
+          offset-syncs.topic.replication.factor: 3
+          refresh.topics.interval.seconds : 10
+      checkpointConnector:
+        config:
+          checkpoints.topic.replication.factor: 3
+          refresh.groups.interval.seconds: 5
+          # migrates the consumer group offsets
+          emit.checkpoints.enabled: true
+          sync.group.offsets.enabled: true
+          sync.group.offsets.interval.seconds: 5
+          emit.checkpoints.interval.seconds: 5
+          # ensures that consumer group offsets on the "target" cluster
+          #  are correctly mapped to consumer groups on the "origin" cluster
+          replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
+          replication.policy.separator: ""          
+      topicsPattern: "items, store.inventory, items.inventory"
+      topicsExcludePattern: ".apicurio"
+      groupsPattern: ".*" 
