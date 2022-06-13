@@ -1,18 +1,21 @@
 # Project information
-site_name: Kafka Mirror Maker 2
-repo_url: https://github.com/[YOUR_GITHUB_ID]/[YOUR-REPOSITORY-NAME]
+site_name: IBM - EDA - Real-time inventory demo
+repo_url: https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops
 
 
 # Navigation
 nav:
-  - Mirror Maker 2: index.md
+  - Introduction: index.md
+  - Demonstration script: demo-script.md
+  - GitOps approach: gitops/index.md
+  - Mirror Maker 2: mm2/index.md
 
 # Theme
 theme: 
   name: material
   palette:
     scheme: default
-    primary: 'blue'
+    primary: 'black'
   language: en
   features:
       - content.code.annotate

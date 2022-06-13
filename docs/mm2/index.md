@@ -4,7 +4,7 @@
 
 ### Overview
 
-This demo presents how to leverage Mirror Maker 2 between two Kafka clusters running on OpenShift. It uses two IBM Event Streams instances on both sides and utilizes miroring feature that ships as part of IBM Event Streams Operator API's.
+This demo presents how to leverage Mirror Maker 2 between two Kafka clusters running on OpenShift. It uses two IBM Event Streams instances on both sides and utilizes mirroring feature that ships as part of IBM Event Streams Operator API's.
 
 * Cluster 1 (Active): This will be our source cluster (Source). In this case it can be a Development environment where consumers and producers are connected.
 * Cluster 2 (Passive): This will be our target cluster (Target). In this case it can be a Staging environment where no consumers or producers are connected.
@@ -13,7 +13,7 @@ Upon failover, consumers will be connected to the newly promoted cluster (Cluste
 
 Mirror Maker 2 is a continuous background mirroring process and can be run in its own namespace. However, for the purposes of this demo, it will be created within the destination namespace, in our case `rt-inventory-stg` and connect to the source Kafka cluser, in our case it is in `rt-inventory-dev` namespace.
 
-![Architecture](images/mm2-arch.jpeg)
+![Architecture](./images/mm2-arch.jpeg)
 
 ### Pre-requisites
 
@@ -73,7 +73,7 @@ Mirror Maker 2 is a continuous background mirroring process and can be run in it
 
 ![MM2 Create](images/mm2-create.jpeg)
 
-- Select Configure via YAML view to use the [yaml file](configs/mm2-config.yaml) provided in this demo.
+- Select Configure via YAML view to use the [yaml file](mm2/mm2-config.yaml) provided in this demo.
 
 ![MM2 Yaml](images/mm2-yaml.jpeg)
 
@@ -181,12 +181,12 @@ spec:
 - In few seconds, check the status of `KafkaMirrorMaker2` instance from Kafka Mirror Maker 2 Tab.
 - The status should be `Condition: Ready`.
 
-![MM2 Status](images/mm2-status.jpeg)
+![MM2 Status](./images/mm2-status.jpeg)
 
 - `KafkaMirrorMaker2` instance created `mm2` will deploy different resources that can be checked from its `Resources` Tab.
 - You might need to check the created `Pod` resource log for errors or warnings.
 
-![MM2 Status](images/mm2-resources.jpeg)
+![MM2 Status](./images/mm2-resources.jpeg)
 
 - Now, the created instance `mm2` will start to mirror (replicate) the Kafka topics' events, and offsets from source to the target cluster.
 - Only Kafka topics specified in `topicsPattern` will be replicated and topics specified in `topicsExcludePattern` will be excluded.
@@ -196,13 +196,13 @@ spec:
 - Access the EventStreams instance `rt-inventory-stg` Admin UI to verify that the replication is working.
 - From the side menu, select Topics to see the list of Kafka topics created on our Target cluster (Staging Environment).
 
-![MM2 Status](images/mm2-topics.jpeg)
+![MM2 Status](./images/mm2-topics.jpeg)
 
 - You can see that `items`, `items.inventory`, and `store.inventory` Kafka topics were created and events are being replicated.
 - Kafka Topics named `mirrormaker2-cluster-xxx` are used internally by our `KafkaMirrorMaker2` instance to keep track of configs, offsets, and replication status.
 - Click on `items` topic then visit the Messages Tab to see that the events are being replicated as they arrive to the Source cluster. The next section will demonstrate how to produce sample events to the Source cluster.
 
-![MM2 Status](images/mm2-events.jpeg)
+![MM2 Status](./images/mm2-events.jpeg)
 
 ### Producing Events (Source)
 
@@ -217,7 +217,7 @@ pip install confluent-kafka
 Perform the following steps to setup the producer sample application:
 
 1. On your local machine, create a new directory named `producer`.
-2. Download and save [`SendItems.py`](scripts/SendItems.py) and [`sendItems.sh`](scripts/sendItems.sh) files inside `producer` directory.
+2. Download and save [`SendItems.py`](../../demo/mm2/scripts/SendItems.py) and [`sendItems.sh`](../../demo/mm2/scripts/sendItems.sh) files inside `producer` directory.
 3. Move the Source cluster PEM certificate file `es-src-cert.pem` to the same directory.
 4. Edit the `sendItems.sh` script to set the environment variables of Source cluster connectivity configs.
     * Change the `KAFKA_BROKERS` variable to the Source cluster bootstrap address.
@@ -252,7 +252,7 @@ These checkpoints will be used by our Kafka consumer script to start consuming f
 The same way we used to setup the Producer application, we need to perform the following steps to setup the Consumer application:
 
 1. On your local machine, create a new directory named `consumer`.
-2. Download and save [`ReceiveItems.py`](scripts/ReceiveItems.py) and [`receiveItems.sh`](scripts/receiveItems.sh) files inside `consumer` directory.
+2. Download and save [`ReceiveItems.py`](../../demo/mm2/scripts/ReceiveItems.py) and [`receiveItems.sh`](../../demo/mm2/scripts/receiveItems.sh) files inside `consumer` directory.
 3. Move the Target cluster PEM certificate file `es-tgt-cert.pem` to the same directory.
 4. Edit the `receiveItems.sh` script to set the environment variables of Target cluster connectivity configs.
     * Change the `KAFKA_BROKERS` variable to the Target cluster bootstrap address.
@@ -282,7 +282,7 @@ python ReceiveItems.py $1
 
         To check the current and offset lag, you can use Event Streams UI on Target cluster.
    
-![MM2 Consumer  ](images/mm2-consumer.jpeg)
+![MM2 Consumer  ](./images/mm2-consumer.jpeg)
 
 We can see that the consumer application has started to read from the last committed offset.
 

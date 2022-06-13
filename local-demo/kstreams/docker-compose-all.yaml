@@ -65,7 +65,9 @@ services:
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       APP_TARGET_MESSAGING: IBMMQ,Kafka
+      KAFKA_TOPIC_NAME: items
       KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_SASL_MECHANISM: PLAIN
       KAFKA_CERT_PWD: ""
       USER_CERT_PWD: ""
       MQ_QMGR: QM1
@@ -85,6 +87,8 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       KAFKA_CERT_PWD: ""
       USER_CERT_PWD: ""
+      KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_SASL_MECHANISM: PLAIN
   storeInventory:
     image: quay.io/ibmcase/store-aggregator
     container_name: store-aggregator
@@ -95,6 +99,8 @@ services:
       - "8082:8080"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_SASL_MECHANISM: PLAIN
       KAFKA_CERT_PWD: ""
       USER_CERT_PWD: ""
   addTopics:
