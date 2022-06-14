@@ -88,11 +88,11 @@ The entitlement key secret will be copied to each namespace where some of the Cl
 ## Choose a runtime option
 
 
-* [Run on your laptop](/#run-the-solution-locally)
-* [Use GitOps on a new OpenShift Cluster](gitops/#gitops-on-new-openshift-cluster)
-* [Use Gitops on existing Cloud Pak Integration (multi-tenant)](.gitops/#deploy-in-an-existing-cp4i-deployment)
-* [Wihout GitOps, just yaml, on a new OpenShift Cluster](/#deploy-on-a-brand-new-openshift-cluster)
-* [Wihout GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](/#deploy-on-a-brand-new-openshift-cluster)
+* [Run on your laptop](./#run-the-solution-locally)
+* [Use GitOps on a new OpenShift Cluster](./gitops/#gitops-on-new-openshift-cluster)
+* [Use Gitops on existing Cloud Pak Integration (multi-tenant)](./gitops/#deploy-in-an-existing-cp4i-deployment)
+* [Wihout GitOps, just yaml, on a new OpenShift Cluster](./#deploy-on-a-brand-new-openshift-cluster)
+* [Wihout GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](./#deploy-on-a-brand-new-openshift-cluster)
 
 ## A non gitops approach
 

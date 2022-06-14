@@ -1,3 +1,4 @@
+site/
 /kconnect/my-plugins/*.jar
 /environments/rt-inventory-dev/services/kconnect/jb-kafka*
 /local-demo/kconnect/.com*

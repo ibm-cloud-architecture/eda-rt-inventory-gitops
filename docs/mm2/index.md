@@ -73,7 +73,7 @@ Mirror Maker 2 is a continuous background mirroring process and can be run in it
 
 ![MM2 Create](images/mm2-create.jpeg)
 
-- Select Configure via YAML view to use the [yaml file](mm2/mm2-config.yaml) provided in this demo.
+- Select Configure via YAML view to use the [yaml file](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/environments/rt-inventory-stage/services/mm2/mm2-config.yaml) provided in this demo.
 
 ![MM2 Yaml](images/mm2-yaml.jpeg)
 
@@ -217,7 +217,7 @@ pip install confluent-kafka
 Perform the following steps to setup the producer sample application:
 
 1. On your local machine, create a new directory named `producer`.
-2. Download and save [`SendItems.py`](../../demo/mm2/scripts/SendItems.py) and [`sendItems.sh`](../../demo/mm2/scripts/sendItems.sh) files inside `producer` directory.
+2. Download and save [`SendItems.py`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/demo/mm2/scripts/SendItems.py) and [`sendItems.sh`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/demo/mm2/scripts/sendItems.sh) files inside `producer` directory.
 3. Move the Source cluster PEM certificate file `es-src-cert.pem` to the same directory.
 4. Edit the `sendItems.sh` script to set the environment variables of Source cluster connectivity configs.
     * Change the `KAFKA_BROKERS` variable to the Source cluster bootstrap address.
@@ -252,7 +252,7 @@ These checkpoints will be used by our Kafka consumer script to start consuming f
 The same way we used to setup the Producer application, we need to perform the following steps to setup the Consumer application:
 
 1. On your local machine, create a new directory named `consumer`.
-2. Download and save [`ReceiveItems.py`](../../demo/mm2/scripts/ReceiveItems.py) and [`receiveItems.sh`](../../demo/mm2/scripts/receiveItems.sh) files inside `consumer` directory.
+2. Download and save [`ReceiveItems.py`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/demo/mm2/scripts/ReceiveItems.py) and [`receiveItems.sh`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/demo/mm2/scripts/receiveItems.sh) files inside `consumer` directory.
 3. Move the Target cluster PEM certificate file `es-tgt-cert.pem` to the same directory.
 4. Edit the `receiveItems.sh` script to set the environment variables of Target cluster connectivity configs.
     * Change the `KAFKA_BROKERS` variable to the Target cluster bootstrap address.

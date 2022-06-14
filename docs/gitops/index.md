@@ -8,7 +8,7 @@ In this Gitops you can use different approaches to deploy the real-time inventor
 
 * You want to play with the demo, so [run it locally to your laptop using docker](#run-the-solution-locally). It uses Event Streams and MQ docker images. You can run it in different mode, depending of the sinks you want to add.
 * [Start from an OpenShift Cluster without any Cloud Pak for Integration components](#gitops-from-a-new-openshift-cluster), this will take few hours to deploy as some Operator and Operand deployments may take time. 
-* [Start from a Cloud Pak for integration deployed in cp4i project](#gitops-from-cp4i-deployment)
+* [Start from a Cloud Pak for integration deployed in cp4i project](./#gitops-from-cp4i-deployment)
 * Deploy the solution on a CMC CoC environment, which means different namespaces per product, so for example Event Streams is in `cp4i-eventstreams`. See instruction in [multi-tenant section](#gitops-for-multi-tenants).
 
 You are not forced to use ArgoCD, you can just use the makefile and `make` CLI to deploy the solution.
@@ -83,8 +83,8 @@ The current GitOps will run on OpenShift 4.8.
     export KEY=<yourentitlementkey>
     ```
 
-* create `github-credentials.yaml` file for the git secret based on [`template-github-credentials.yaml`](./template-github-credentials.yaml). Use your github personal access token. It will be used by the pipeline runs.
-* create a Secret for your IBM Cloud Object Storage credential. Use the on [`template-cos-credentials.yaml`](./template-cos-credentials.yaml) and modify the following parameters: 
+* create `github-credentials.yaml` file for the git secret based on [`template-github-credentials.yaml`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/template-github-credentials.yaml). Use your github personal access token. It will be used by the pipeline runs.
+* create a Secret for your IBM Cloud Object Storage credential. Use the on [`template-cos-credentials.yaml`](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/template-cos-credentials.yaml) and modify the following parameters: 
 
   ```yaml
     cos.api.key: <cos-credential.field.apikey>
@@ -200,7 +200,7 @@ The expected set of ArgoCD apps looks like:
 
 In this section we suppose CP4I is already deployed in `cp4i` namespace, event streams in `cp4i-eventstreams` project. So somewhere someone has already deployed the infrastructure, and other components as multi tenants. (This is represented as the green rectangles in the figure below)
 
-![](./docs/images/gitops-multi-tenants.png)
+![](./images/gitops-multi-tenants.png)
 
 
 ## Bootstrap GitOps
