@@ -101,9 +101,9 @@ The entitlement key secret will be copied to each namespace where some of the Cl
 The makefile will support the minimum commands, depending on what is your current environment:
 
 ```sh
-# If needed :prepare entitlementkey,  catalog 
+# [optional]: prepare entitlementkey,  IBM catalog 
 make prepare
-# If needed install cp4i different operators
+# [optional]: install the  different cp4i operators
 make install_cp4i_operators
 # Deploy the dev environment
 make deploy_rt_inventory

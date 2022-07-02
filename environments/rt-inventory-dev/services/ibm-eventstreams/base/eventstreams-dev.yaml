@@ -49,7 +49,9 @@ spec:
           memory: 12Gi
           cpu: "4"
       authorization:
-        type: runas
+        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
+        supportsAdminApi: true
+        type: custom
       config:
         inter.broker.protocol.version: '2.8'
         interceptor.class.names: com.ibm.eventstreams.interceptors.metrics.ProducerMetricsInterceptor
@@ -59,6 +61,7 @@ spec:
         num.network.threads: 9
         num.replica.fetchers: 3
         offsets.topic.replication.factor: 3
+        default.replication.factor: 3
         min.insync.replicas: 2
       listeners:
         - name: plain
@@ -77,9 +80,25 @@ spec:
           tls: true
           authentication:
             type: tls
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: kafka-metrics-config.yaml
+            name: metrics-config
       storage:
-        type: ephemeral
+        class: ocs-storagecluster-ceph-rbd
+        size: 1000Gi
+        type: persistent-claim
     zookeeper:
       replicas: 3
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: zookeeper-metrics-config.yaml
+            name: metrics-config
       storage:
-        type: ephemeral
+        class: ocs-storagecluster-ceph-rbd
+        size: 2Gi
+        type: persistent-claim
