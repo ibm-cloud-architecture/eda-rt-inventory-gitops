@@ -19,7 +19,7 @@ services:
         MQ_APP_PASSWORD: passw0rd
         MQ_ENABLE_METRICS: "true"
   zookeeper:
-    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.1
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.2
     container_name: zookeeper
     hostname: zookeeper
     command: [
@@ -32,7 +32,7 @@ services:
       LOG_DIR: /tmp/logs
 
   kafka:
-    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.1
+    image: cp.icr.io/cp/ibm-eventstreams-kafka:11.0.2
     container_name: kafka
     hostname: kafka
     command: [
@@ -57,7 +57,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   addTopics:
-    image:  cp.icr.io/cp/ibm-eventstreams-kafka:10.5.0
+    image:  cp.icr.io/cp/ibm-eventstreams-kafka:11.0.2
     depends_on:
       - kafka
     entrypoint: [ "bash",  "-c", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create  --if-not-exists --replication-factor 1 --partitions 1 --topic items 

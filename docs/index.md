@@ -91,8 +91,8 @@ The entitlement key secret will be copied to each namespace where some of the Cl
 * [Run on your laptop](./#run-the-solution-locally)
 * [Use GitOps on a new OpenShift Cluster](./gitops/#gitops-on-new-openshift-cluster)
 * [Use Gitops on existing Cloud Pak Integration (multi-tenant)](./gitops/#deploy-in-an-existing-cp4i-deployment)
-* [Wihout GitOps, just yaml, on a new OpenShift Cluster](./#deploy-on-a-brand-new-openshift-cluster)
-* [Wihout GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](./#deploy-on-a-brand-new-openshift-cluster)
+* [Without GitOps, just yaml, on a new OpenShift Cluster](./#deploy-on-a-brand-new-openshift-cluster)
+* [Without GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](./#deploy-on-multi-tenant-environment)
 
 ## A non gitops approach
 
@@ -123,9 +123,9 @@ make deploy_rt_inventory
 git clone https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops.git
 ```
 
-You need an OpenShift cluster available with storage capabilities to support Event Streams deployments like block storage configured to use the XFS or ext4 file system, as described in [Event Streams storage](https://ibm.github.io/event-streams/installing/prerequisites/#data-storage-requirements).
+For OpenShift deployment, you need access to a cluster with storage capabilities to support Event Streams deployments like block storage configured to use the XFS or ext4 file system, as described in [Event Streams storage](https://ibm.github.io/event-streams/installing/prerequisites/#data-storage-requirements).
 
-You need to have one volume per broker and zookeeper instances.
+You need to have at least one volume per broker and one per zookeeper instance.
  
 See also the [interactive Installation Guide for cloud pak for integration](https://www.ibm.com/docs/guide/viewer/public/cloud-paks/cp-integration/2021.4?interact=installing-cloud-pak-for-integration&utm_source=guide). 
 
@@ -148,10 +148,10 @@ See [the refarch-eda-item-inventory-sql-flink repository](https://github.com/ibm
 
 ## Run the solution locally
 
-As a developer or technical seller you could demonstrate this scenario on your laptop. You an run MQ, EventStreams in docker too.
-The docker images used in this solution are in public registry ([Quay.io](https://recovery.quay.io/organization/ibmcase)).
+As a developer or technical seller, you could demonstrate this scenario on your laptop using MQ and Event Streams docker images.
+The docker images for each custom microservices used in this solution are in public registry ([Quay.io](https://recovery.quay.io/organization/ibmcase)).
 
-Under this repository the `local-demo/kstream` folder has different docker compose files to have different components running:
+Under this repository the `local-demo/kstream` folder has different docker compose files to run different components:
 
 * [docker-compose.yaml](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/tree/main/local-demo/kstreams/docker-compose.yaml) for Event Streams, IBM MQ, Kafka Connector 
 the Store Simulator App, the Item aggregator App, the Store aggregator App, and KafDrop to get a user interface to Kafka.
@@ -173,7 +173,7 @@ cd local-demo/kstreams
 docker-compose up -d
 ```
 
-* As another alternate without MQ and elastic search:
+* As another alternate without MQ and elasticSearch:
 
 ```sh
 cd local-demo/kstreams

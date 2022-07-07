@@ -241,5 +241,5 @@ clean_rt_inventory:
 	@oc delete -k ./environments/rt-inventory-dev/apps/store-simulator
 	@oc delete -k ./environments/rt-inventory-dev/services/kconnect
 	@oc delete -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
-	@oc delete -k ./environments/rt-inventory-dev/services/ibm-eventstreams
+	@oc delete -k ./environments/rt-inventory-dev/services/ibm-eventstreams/overlays
 	

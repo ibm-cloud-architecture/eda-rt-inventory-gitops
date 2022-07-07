@@ -47,7 +47,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: store-simulator-cm
-          image: quay.io/ibmcase/eda-store-simulator
+          image: quay.io/ibmcase/eda-store-simulator:0.0.15
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
