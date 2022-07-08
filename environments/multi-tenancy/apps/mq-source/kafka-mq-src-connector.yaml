@@ -1,4 +1,4 @@
-apiVersion: eventstreams.ibm.com/v1alpha1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaConnector
 metadata:
   name: mq-source
@@ -19,7 +19,6 @@ spec:
     mq.user.name: ""
     mq.password: ""
     topic: eda-rt-items
-    producer.override.acks: 1
     key.converter: org.apache.kafka.connect.storage.StringConverter
     value.converter: org.apache.kafka.connect.storage.StringConverter
     mq.record.builder: com.ibm.eventstreams.connect.mqsource.builders.DefaultRecordBuilder

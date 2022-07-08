@@ -158,13 +158,13 @@ mt_prepare_ns:
 	@oc project rt-inventory-dev
 
 mt_eventstreams_config:
-	@oc apply -k ./environments/multi-tenancy/cp4i-eventstreams/overlays
+	@oc apply -k ./environments/multi-tenancy/services/cp4i-eventstreams/overlays
 
 mq_config:
 	@oc apply -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
 
 mt_kconnect:
-	@oc apply -k ./environments/multi-tenancy/kconnect -n rt-inventory-dev
+	@oc apply -k ./environments/multi-tenancy/services/kconnect/overlays -n rt-inventory-dev
 
 mt_mq_kconnector:
 	@oc apply -f ./environments/multi-tenancy/apps/mq-source/kafka-mq-src-connector.yaml -n rt-inventory-dev
@@ -188,13 +188,18 @@ multi_tenants: \
 	mt_store_inventory \
 	mt_item_inventory 
 
-clean_multi_tenants:
+clean_multi_tenants: clean_jobs 
 	@oc delete -k ./environments/multi-tenancy/apps/item-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-simulator/
-	@oc delete -k  multi-tenancy/kconnect
+	@oc delete -k  multi-tenancy/services/kconnect/overlays
 	@oc delete -k environments/rt-inventory-dev/services/ibm-mq/overlays
-	@oc delete -k  multi-tenancy/cp4i-eventstreams/overlays
+	@oc delete -k  multi-tenancy/services/cp4i-eventstreams/overlays
+
+clean_jobs:
+	@oc delete job cpsecret 
+	@oc delete job cp-ca-secret 
+	@oc delete job cp-tls-usr-secret
 
 output_details:
 	@echo "Install complete.\n\n"

@@ -4,9 +4,10 @@ metadata:
   name: dbench-pv-claim
 spec:
   # storageClassName: ssd
-  storageClassName: ocs-storagecluster-ceph-rbd
+  # storageClassName: ocs-storagecluster-ceph-rbd
+
   # storageClassName: gp2
-  # storageClassName: local-storage
+  storageClassName: localblock-sc
   # storageClassName: ibmc-block-bronze
   # storageClassName: ibmc-block-silver
   # storageClassName: ibmc-block-gold
@@ -14,7 +15,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 10Gi
 ---
 apiVersion: batch/v1
 kind: Job

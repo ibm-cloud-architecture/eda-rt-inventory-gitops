@@ -1,16 +1,24 @@
-apiVersion: eventstreams.ibm.com/v1beta1
+apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaConnect
 metadata:
   name: eda-connect-cluster
   annotations:
     eventstreams.ibm.com/use-connector-resources: "true"
 spec:
-  version: 2.8.1
-  replicas: 1
+  version: 3.0.2
+  replicas: 2
   bootstrapServers: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
   template:
     pod:
+      tmpDirSizeLimit: 100Mi
       imagePullSecrets: []
       metadata:
         annotations:
@@ -18,21 +26,20 @@ spec:
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: 10.5.0
+          productVersion: 11.0.3
           productMetric: VIRTUAL_PROCESSOR_CORE
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
-          cloudpakVersion: 2021.4.1
+          cloudpakVersion: 2022.1.1
           productCloudpakRatio: "2:1"
   config:
     group.id: eda-connect-cluster
     offset.storage.topic: eda-connect-cluster-offsets
     config.storage.topic: eda-connect-cluster-configs
     status.storage.topic: eda-connect-cluster-status
-    config.storage.replication.factor: 1
-    offset.storage.replication.factor: 1
-    status.storage.replication.factor: 1
-    connector.client.config.override.policy: All
+    config.storage.replication.factor: 3
+    offset.storage.replication.factor: 3
+    status.storage.replication.factor: 3
   tls:
     trustedCertificates:
       - secretName: es-demo-cluster-ca-cert
