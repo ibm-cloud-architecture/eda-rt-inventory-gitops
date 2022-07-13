@@ -188,13 +188,13 @@ multi_tenants: \
 	mt_store_inventory \
 	mt_item_inventory 
 
-clean_multi_tenants: clean_jobs 
+clean_multi_tenants:  clean_jobs 
 	@oc delete -k ./environments/multi-tenancy/apps/item-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-inventory/
 	@oc delete -k ./environments/multi-tenancy/apps/store-simulator/
-	@oc delete -k  multi-tenancy/services/kconnect/overlays
-	@oc delete -k environments/rt-inventory-dev/services/ibm-mq/overlays
-	@oc delete -k  multi-tenancy/services/cp4i-eventstreams/overlays
+	@oc delete -k  ./environments/multi-tenancy/services/kconnect/overlays
+	@oc delete -k ./environments/rt-inventory-dev/services/ibm-mq/overlays
+	@oc delete -k  ./environments/multi-tenancy/services/cp4i-eventstreams/overlays
 
 clean_jobs:
 	@oc delete job cpsecret 
