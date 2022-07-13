@@ -31,6 +31,17 @@ mvn clean package
 mv target/kafka-connect-elastic-sink-*with-dependencies.jar ../my-plugins
 ```
 
+## Get Apicurio registry client
+
+```sh
+cp ~/.m2/repository/io/apicurio/apicurio-registry-client/2.2.4.Final/apicurio-registry-client-2.2.4.Final.jar ./my-plugins
+cp ~/.m2/repository/io/apicurio/apicurio-registry-common/2.2.4.Final/apicurio-registry-common-2.2.4.Final.jar ./my-plugins
+cp ~/.m2/repository/io/apicurio/apicurio-common-rest-client-common/0.1.11.Final/apicurio-common-rest-client-common-0.1.11.Final.jar ./my-plugins
+cp ~/.m2/repository/io/apicurio/apicurio-common-rest-client-vertx/0.1.11.Final/apicurio-common-rest-client-vertx-0.1.11.Final.jar  ./my-plugins
+cp ~/.m2/repository/io/apicurio/apicurio-registry-serde-common/2.2.4.Final/apicurio-registry-serde-common-2.2.4.Final.jar  ./my-plugins
+cp ~/.m2/repository/io/apicurio/apicurio-registry-serdes-avro-serde/2.2.4.Final/apicurio-registry-serdes-avro-serde-2.2.4.Final.jar  ./my-plugins
+```
+
 ## Update the custom image
 
 ```sh

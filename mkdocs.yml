@@ -9,6 +9,7 @@ nav:
   - Demonstration script: demo-script.md
   - GitOps approach: gitops/index.md
   - Mirror Maker 2: mm2/index.md
+  - Back to EDA: https://ibm-cloud-architecture.github.io/refarch-eda/
 
 # Theme
 theme: 
