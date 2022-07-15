@@ -1,18 +1,30 @@
-# Real-time inventory demo
+# Real-time inventory demonstration
 
-This repository uses OpenShift GitOps to manage the deployment of the real-time inventory demonstration. The GitOps approach is an adaptation of [Red Hat's KAM practices](https://developers.redhat.com/articles/2021/07/21/bootstrap-gitops-red-hat-openshift-pipelines-and-kam-cli#a_gitops_approach_to_application_deployment) enhanced
-to be able to boostrap some important operators like the OpenShift GitOps Operator and OpenShift Pipelines Operator and Cloud Pak for integration operators.
+This repository uses OpenShift GitOps to manage the deployment of the real-time inventory demonstration. 
+
+## What you will learn
+
+* Use Quarkus, with reactive programming API like Mutiny, and Kafka API to produce messages to Kafka
+* Same Quarkus app can generate messages to RabbitMQ using the AMQP API
+* Same Quarkus app can generate messages to IBM MQ using JMS
+* Use Quarkus and Kafka Streams to compute aggregates to build an inventory view from the stream of sale order events
+* Use IBM Event Streams, Kafka Connector
+* Use the RabbitMQ source connector from IBM Event messaging open source contribution
+* Use the IBM MQ source connector from IBM Event messaging open source contribution
 
 ## Why to consider
 
-This project can be a good foundation to discuss GitOps deployment, and reuse scripts, makefile... to deploy event-driven solution.
+This project can be a good foundation to discuss GitOps deployment, and reuse scripts, makefile... to deploy any event-driven solution.
 
-As a developer you will use Microprofile reactive messaging, Kafka Streams API, Quarkus and OpenLiberty. IBM MQ source Kafka connector from IBM Event messaging github, Elastic search sink connector. 
+As a developer you will use Microprofile reactive messaging, Kafka Streams API, Quarkus and OpenLiberty. Kafka IBM MQ source connector from IBM Event messaging github, Elastic search sink connector...
 
 ## Use Case Overview
 
 Today, a lot of companies which are managing item / product inventory are facing real challenges to get a close to real-time view of item availability
 and global inventory view. The solution can be very complex to implement while integrating Enterprise Resource Planning products and other custom legacy systems. 
+
+![](./images/hl-solution.png)
+
 Any new solutions are adopting events as a source to exchange data, to put less pressure on existing ERP servers, and to get better visibility 
 into inventory positions while bringing agility to develop new solution with streaming components.
 
@@ -41,80 +53,27 @@ Diagram source: [rt-inventory diagram](https://github.com/ibm-cloud-architecture
 
 1. The [store simulator application](https://github.com/ibm-cloud-architecture/refarch-eda-store-simulator) is a Quarkus based microservice, used to generate item sales 
 to different possible messaging middlewares ( RabbitMQ, IBM MQ or directly to IBM Event Streams). 
-If you want to browse the code, the main readme of this project includes how to package and run the app with docker compose. A code explanation
+If you want to browse the code, the main [readme of this project](https://github.com/ibm-cloud-architecture/refarch-eda-store-simulator) includes how to package and run the app with docker compose. A code explanation
 section may give you some ideas to developers. The docker image is [quay.io/ibmcase/eda-store-simulator/](https://quay.io/ibmcase/eda-store-simulator) and can be used for demonstration.
 1. The item inventory aggregator is a stateful application, done with Kafka Stream API. The source code is in [the refarch-eda-item-inventory project](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory). 
 Consider this more as a black box in the context of the scenario, it consumes items events, aggregate them, expose APIs on top of Kafka Streams interactive queries and publishes inventory events on `item.inventory` topic. 
 As a developer you may want to understand the Kafka Stream programming with the [following labs](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/kafka-streams/), and then considering looking at the classes: [ItemProcessingAgent.java](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory/blob/master/src/main/java/ibm/gse/eda/inventory/domain/ItemProcessingAgent.java).
 1. The store inventory aggregator is a Kafka Stream application, also done with Kafka Stream API. The source code is in [the refarch-eda-store-inventory project](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory). The output is in `store.inventory` topic. 
-1. The MQ to Kafka, Kafka connect cluster is defined in the [eda-rt-inventory-GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository under the [kconnect](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/tree/main/kconnect) folder, and the source connector in [environments/rt-inventory-dev/apps/mq-source](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/environments/rt-inventory-dev/apps/mq-source)
+1. When messages are sourced to Queues, then a Kafka Source Connector is used to propagate message to `items` topics. The MQ to Kafka Kafka connect cluster is defined in the [eda-rt-inventory-GitOps](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops) repository under the [kconnect](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/tree/main/kconnect) folder, and the source connector in [environments/rt-inventory-dev/apps/mq-source](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/environments/rt-inventory-dev/apps/mq-source)
 1. The Kafka to Cloud Object Storage Kafka (S3 bucket) connector is defined in the [environments/rt-inventory-dev/apps/cos-sink folder](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/environments/rt-inventory-dev/apps/cos-sink/kafka-cos-sink-connector.yaml).
 1. The Sink connector to Elastic Search is defined in [environments/rt-inventory-dev/apps/elastic-sink folder](https://github.com/ibm-cloud-architecture/eda-rt-inventory-gitops/blob/main/environments/rt-inventory-dev/apps/elastic-sink/kafka-elastic-sink-connector.yaml).
 
 [Kafka Connect](https://ibm-cloud-architecture.github.io/refarch-eda/technology/kafka-connect/) is used to integrate external systems into Kafka. For example external systems can inject item sale messages to queue, from which a first MQ source Kafka connector publishes the messages to the `items` Kafka topic. Items sold events are processed by a series of streaming microservices which publishes aggregation results to different topics.
 Those topics content could be which will be used by Sink connectors to send records to other external systems.
 
-## A GitOps approach for solution deployment
 
-As any cloud-native and kubernetes based solution, we use continuous integration and continuous deployment practices. From a demonstration point of view, the most interesting part is
-to execute continuous deployment using a [GitOps approach](/use-cases/gitops/). This GitOps repository
-(represented as the yellow rectangle in figure below) defines the ArgoCD apps used 
-to monitor and deploy the different microservices, streaming processing apps,
-and the different IBM products needed: Event Streams, MQ, API management, event-end-point management. The figure belows presents the adopted strategy:
+ ![1](./images/kconnect-overview.png)
 
-![](./images/gitops-catalog.png)
+## General pre-requisites
 
-The [gitops catalog repository](https://github.com/ibm-cloud-architecture/eda-gitops-catalog.git), represented with a blue rectangle, defines the different operator subscriptions
-for the IBM Cloud Pak for Integration components. Centralizing to one repository such operator subscriptions enforces reuse between solutions.
-
-### Components for GitOps demo
-
-From a Gitops point of view, the solution may deploy the following components: 
-
-<img src="./images/hl-view.png" alt="hl view" width="500"/>
-
-The installation approach is to deploy operators to manage All Namespaces, at the `cluster scope. So only one Platform UI can be installed per cluster. A single instance of IBM Cloud Pak foundational services is installed in the `ibm-common-services` namespace.
-
-The following operators may be installed from this GitOps:
-
-* name:ibm-integration-platform-navigator
-* name:ibm-integration-asset-repository
-* name:ibm-integration-operations-dashboard
-* name:ibm-eventstreams
-* name:ibm-mq
-
-The entitlement key secret will be copied to each namespace where some of the Cloud Pak integration products are deployed, using a kubernetes job.
-
-## Choose a runtime option
-
-
-* [Run on your laptop](./#run-the-solution-locally)
-* [Use GitOps on a new OpenShift Cluster](./gitops/#gitops-on-new-openshift-cluster)
-* [Use Gitops on existing Cloud Pak Integration (multi-tenant)](./gitops/#deploy-in-an-existing-cp4i-deployment)
-* [Without GitOps, just yaml, on a new OpenShift Cluster](./#deploy-on-a-brand-new-openshift-cluster)
-* [Without GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](./#deploy-on-multi-tenant-environment)
-
-## A non gitops approach
-
-### Deploy on a brand new OpenShift cluster
-
-The makefile will support the minimum commands, depending on what is your current environment:
-
-```sh
-# [optional]: prepare entitlementkey,  IBM catalog 
-make prepare
-# [optional]: install the  different cp4i operators
-make install_cp4i_operators
-# Deploy the dev environment
-make deploy_rt_inventory
-```
-
-### Deploy on multi-tenant environment
-
-
-## Pre-requisites for all options
-
-* All the CLI commands must be performed by a Cluster administrator. You need `oc cli` and the `jq` JSON stream editor installed.
+* Get access to an OpenShift Cluster. All the CLI commands must be performed by a Cluster administrator. You need `oc cli` and the `jq` JSON stream editor installed.
+* [OpenShift CLI](https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/getting-started-cli.html) on your local environment.
+* [jq](https://stedolan.github.io/jq/) on your local environment.
 * [Docker](https://docs.docker.com/) and docker compose to run the solution locally.
 * [git CLI](https://git-scm.com/downloads).
 * Clone this repository
@@ -129,6 +88,45 @@ You need to have at least one volume per broker and one per zookeeper instance.
  
 See also the [interactive Installation Guide for cloud pak for integration](https://www.ibm.com/docs/guide/viewer/public/cloud-paks/cp-integration/2021.4?interact=installing-cloud-pak-for-integration&utm_source=guide). 
 
+## A GitOps approach for solution deployment
+
+As any cloud-native and kubernetes based solution, we use continuous integration and continuous deployment practices. From a demonstration point of view, the most interesting part is to execute continuous deployment using a [GitOps approach](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/gitops/) as presented in the EDA reference. 
+
+See the specific explanation in [this section.](./gitops/index.md)
+
+## Choose a runtime option
+
+We try to make the business scenario, easily demonstrable by enablind developer's laptop execution with docker compose or use a simple free OpenShift Cluster on IBM cloud.
+
+* [Run on your laptop](./#run-the-solution-locally)
+* [Use GitOps on a new OpenShift Cluster](./gitops/#gitops-on-new-openshift-cluster)
+* [Use Gitops on existing Cloud Pak Integration (multi-tenant)](./gitops/#deploy-in-an-existing-cp4i-deployment)
+* [Without GitOps, just yaml, on a new OpenShift Cluster](./#deploy-on-a-brand-new-openshift-cluster)
+* [Without GitOps, just yaml, on existing Cloud Pak Integration (multi-tenant)](./#deploy-on-multi-tenant-environment)
+
+## A non gitops approach
+
+### Deploy on a brand new OpenShift cluster
+
+The makefile in this repository supports the minimum commands to use to deploy the different components:
+
+```sh
+# [optional]: prepare entitlementkey,  IBM catalog 
+make prepare
+# [optional]: install the  different cp4i operators
+make install_cp4i_operators
+# Deploy the dev environment
+make deploy_rt_inventory
+```
+
+### Deploy on multi-tenant environment
+
+The same makefile supports also to deploy to an existing Cloud Pak for Integration deployment with Event Streams being part of a namespace named `cp4i-eventstreams`:
+
+```sh
+# Deploy all apps in rt-inventory-dev but use cp4i-eventstreams
+make multi_tenants
+```
 
 ## Two different streaming approaches
 

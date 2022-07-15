@@ -29,7 +29,10 @@ components deployed by this GitOps:
 
     ![](./images/home-page.png)
 
-1. Look at existing stores, using the top right `STORES` menu. This is just for viewing the data. 
+    The simulator will send random sell events for the stores as listed in the Stores table (the content may change in future release).
+
+
+1. Look at existing stores, using the top right `STORES` menu. This is just for viewing the data. No action can be done on this screen.
 
     ![](./images/stores-view.png)
 
