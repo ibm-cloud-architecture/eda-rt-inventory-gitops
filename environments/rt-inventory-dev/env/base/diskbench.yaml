@@ -4,10 +4,10 @@ metadata:
   name: dbench-pv-claim
 spec:
   # storageClassName: ssd
-  # storageClassName: ocs-storagecluster-ceph-rbd
+  storageClassName: ocs-storagecluster-ceph-rbd
 
   # storageClassName: gp2
-  storageClassName: localblock-sc
+  # storageClassName: localblock-sc
   # storageClassName: ibmc-block-bronze
   # storageClassName: ibmc-block-silver
   # storageClassName: ibmc-block-gold
@@ -28,6 +28,8 @@ spec:
       - name: dbench
         image: zayashv/dbench:latest
         imagePullPolicy: Always
+        nodeSelector:
+          kubernetes.io/hostname: worker10.ahsoka.coc-ibm.com
         env:
           - name: DBENCH_MOUNTPOINT
             value: /data
@@ -42,7 +44,7 @@ spec:
         volumeMounts:
         - name: dbench-pv
           mountPath: /data
-      restartPolicy: Never
+      restartPolicy: Never  
       volumes:
       - name: dbench-pv
         persistentVolumeClaim:

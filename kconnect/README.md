@@ -45,10 +45,12 @@ cp ~/.m2/repository/io/apicurio/apicurio-registry-serdes-avro-serde/2.2.4.Final/
 ## Update the custom image
 
 ```sh
-IMAGE_NAME=quay.io/ibmcase/eda-kconnect-cluster-image 
-TAG=latest
+export IMAGE_NAME=quay.io/ibmcase/eda-kconnect-cluster-image 
+export TAG=latest
 docker build -t ${IMAGE_NAME}:${TAG} .
+docker tag ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:latest
 docker push ${IMAGE_NAME}:${TAG}
+docker push ${IMAGE_NAME}:latest
 ```
 
 ## Verify

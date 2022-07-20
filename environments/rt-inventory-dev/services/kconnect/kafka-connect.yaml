@@ -31,6 +31,7 @@ spec:
     status.storage.topic: connect-cluster-status
     config.storage.replication.factor: 3
     offset.storage.replication.factor: 3
+    offset.storage.cleanup.policy: compact
     status.storage.replication.factor: 3
     
   externalConfiguration:
