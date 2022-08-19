@@ -4,3 +4,4 @@ resources:
   - ./tls-user.yaml
   - ./cp-ca-secret.yaml
   - ./cp-tls-usr-secret.yaml
+  - ./cp-scram-usr-secret.yaml

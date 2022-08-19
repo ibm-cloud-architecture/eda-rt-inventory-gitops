@@ -1,7 +1,7 @@
 apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaConnect
 metadata:
-  name: eda-kconnect-cluster
+  name: rti-kconnect-cluster
   annotations:
     eventstreams.ibm.com/use-connector-resources: "true"
 spec:
@@ -9,26 +9,34 @@ spec:
   replicas: 1
   bootstrapServers: dev-kafka-bootstrap.rt-inventory-dev.svc:9092
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
   template:
     pod:
+      tmpDirSizeLimit: 100Mi
       imagePullSecrets: []
       metadata:
         annotations:
-          productChargedContainers: eda-kconnect-cluster-connect
+          productChargedContainers: rti-kconnect-cluster-connect
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: 11.0.2
+          productVersion: 11.0.3
           productMetric: VIRTUAL_PROCESSOR_CORE
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
           cloudpakVersion: 2022.2.1
           productCloudpakRatio: "2:1"
   config:
-    group.id: connect-cluster
-    offset.storage.topic: connect-cluster-offsets
-    config.storage.topic: connect-cluster-configs
-    status.storage.topic: connect-cluster-status
+    group.id: rti-connect-cluster
+    offset.storage.topic: rti-connect-cluster-offsets
+    config.storage.topic: rti-connect-cluster-configs
+    status.storage.topic: rti-connect-cluster-status
     config.storage.replication.factor: 3
     offset.storage.replication.factor: 3
     offset.storage.cleanup.policy: compact

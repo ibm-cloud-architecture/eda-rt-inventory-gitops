@@ -42,7 +42,9 @@ spec:
             - name: KAFKA_SSL_KEYSTORE_TYPE
               value: PKCS12
             - name: KAFKA_SECURITY_PROTOCOL
-              value: SSL
+              value: SASL_SSL
+            - name: KAFKA_SASL_MECHANISM
+              value: SCRAM-SHA-512
             - name: KAFKA_SSL_PROTOCOL
               value: TLSv1.2
             - name: KAFKA_CERT_PWD
@@ -55,6 +57,11 @@ spec:
                 secretKeyRef:
                   key: user.password
                   name: eda-tls-user
+            - name: KAFKA_SASL_JAAS_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  key: sasl.jaas.config
+                  name: eda-scram-user
           envFrom:
             - configMapRef:
                 name: store-simulator-cm

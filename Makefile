@@ -178,15 +178,17 @@ mt_store_inventory:
 mt_item_inventory:
 	@oc apply -k ./environments/multi-tenancy/apps/item-inventory/
 
+mt_apps: mt_store_simulator \
+	mt_store_inventory \
+	mt_item_inventory
+
 multi_tenants: \
 	mt_prepare_ns \
 	mt_eventstreams_config \
 	mq_config \
 	mt_kconnect \
 	mt_mq_kconnector \
-	mt_store_simulator \
-	mt_store_inventory \
-	mt_item_inventory 
+	mt_apps 
 
 clean_multi_tenants:  clean_jobs 
 	@oc delete -k ./environments/multi-tenancy/apps/item-inventory/
@@ -200,6 +202,7 @@ clean_jobs:
 	@oc delete job cpsecret 
 	@oc delete job cp-ca-secret 
 	@oc delete job cp-tls-usr-secret
+	@oc delete job cp-scram-usr-secret
 
 output_details:
 	@echo "Install complete.\n\n"
