@@ -10,33 +10,37 @@ components deployed by this GitOps:
 
 ![](./images/mq-es-demo.png)
 
-* The store simulator send sell or restock messages to MQ ITEMS queue, which are picked up by Kafka source connector to publish to kafka `items` topic. 
-* The store simulator send directly to Kafka to the `items` topic
-* The Item-aggregator component computes items inventory cross stores, so aggregate at the item_ID level. 
-* The Store-aggregator computes aggregate at the store level for each items.
+* The store simulator sends sell or restock messages to MQ ITEMS queue, which are picked up by Kafka MQ source connector to publish to kafka `items` topic. 
+* As an alternate demo, the store simulator may send directly to Kafka to the `items` topic
+* The Item-aggregator component computes items inventory cross stores, so aggregate at the `item_ID` level. 
+* The Store-aggregator computes aggregates at the store level for each items.
 * Sink connector can write to Cloud Object Storage buckets
-* Sink connector can write to Elastic Search
+* Sink connector can write to ElasticSearch
 
+!!! Warning
+    As of now, the sink connectors to ElasticSearch and COS are not configured in the standard demonstration.
 ## Demonstration script
+
+### Use store simulator
 
 1. Get the Store simulator route using the following command and start a Web Browser
 
     ```sh
-    chrome $(oc get routes store-simulator  -o jsonpath="{.spec.host}")
+    chrome http://$(oc get routes store-simulator  -o jsonpath="{.spec.host}")
     ```
 
-    You should reach the Home page of the simulator
+    You should reach the Home page of the simulator - (Version number may be different)
 
     ![](./images/home-page.png)
 
-    The simulator will send random sell events for the stores as listed in the Stores table (the content may change in future release).
+    The simulator will send different sell events for the stores as listed in the Stores table. The list of stores is as of now static, and does not have any special semantic, except the store ID that will be used in the generated messages.  
 
 
 1. Look at existing stores, using the top right `STORES` menu. This is just for viewing the data. No action can be done on this screen.
 
     ![](./images/stores-view.png)
 
-1. Go to the SIMULATOR menu, and start the controlled scenario which will send predefined records:
+1. Go to the SIMULATOR tab, and start the controlled scenario which will send the following predefined records:
 
     ![](./images/simulator-ctl.png)
 
@@ -55,15 +59,31 @@ components deployed by this GitOps:
     | Store 1 | Item_3 | -5 |
 
 
-    once started a table should be displayed to present the records sent to Kafka.
+    once started a table should be displayed to present the records sent to MQ (or Kafka).
 
     ![](./images/send-msgs.png) 
 
-1. Verify messages are in queue -  Access the MQ Console admin: 
+### Verify MQ queue
+
+!!!- "Info"
+    The deployment of the solution has created a MQ source connector and a Kafka Connector cluster. It is possible to start and stop the MQ source connector with the following command from your laptop:
 
     ```sh
-    chrome http://$(oc get routes store-mq-ibm-mq-web  -o jsonpath="{.spec.host}")
+    # Stop the connector
+    oc delete -f environments/multi-tenancy/apps/mq-source/kafka-mq-src-connector.yaml 
+    # Start
+    oc apply -f environments/multi-tenancy/apps/mq-source/kafka-mq-src-connector.yaml 
     ```
+
+1. If Kafka connector is not running, you will be able to verify the messages are in MQ queue -  Access the MQ Console using the Cloud Pak for integration navigator and messaging: 
+
+    * Go to an URL like: https://cpd-cp4i.apps.rey.coc-ibm.com/zen/#/homepage
+
+    ![](./images/cp4i-nav.png)
+
+    * Select Messaging on the left menu and `store-mq` instance
+
+    ![](./images/cp4i-messagings.png)
 
     * Go to the the Queue manager admin console and select the QM1 Queue manager 
 
@@ -78,6 +98,25 @@ components deployed by this GitOps:
 
     ![](./images/one-msg-queue.png)
 
+### Verify messages in Event Streams
+
+1. If the Kafka MQ source connector is running then the messages published to MQ are immediatly processed and sent to the `items` topic.
+
+    ![](./images/items-topic.png)
+
+1. As the two aggregator applications are also processing the item events, you should get messages in the  `item.inventory` topic:
+
+    ![](./images/item-inv-topic.png)
+
+    and the `store.inventory`
+
+    ![](./images/store-inv-topic.png)
+
+1. You can also verify the current consumer groups subscribing to the `items` topic:
+
+    ![](./images/consumer-groups.png)
+
+### Using interactive queries
 
 1. Let assess if we can see the item stock cross stores: using the `item-aggregator` route, something like ` item-aggregator-rt-inventory.....us-east.containers.appdomain.cloud ` but completed with '/q/swagger-ui' as we want to access the API
   
@@ -108,6 +147,10 @@ components deployed by this GitOps:
 
     ![](./images/store-stock-req.png)
 
-    The response should look like:
 
-    ![](./images/store-stock-response.png)
+## Continuous message generation
+
+Using the simulator it is possible to send n messages with random payload or send continuously by selecting one of the options:
+
+![](./images/random-msgs.png)
+

@@ -178,7 +178,9 @@ cd local-demo/kstreams
 docker-compose -f docker-compose-kafka.yaml up -d
 ```
 
-The demonstration script is the [same as described in this chapter](./demo-script.md), except that we use Kafdrop to visualize the content of Event Streams topics. 
+### Demonstration script for local
+
+The demonstration script is the [same as the one described in this chapter](./demo-script.md), except that we use Kafdrop to visualize the content of Event Streams topics. 
 
 Use the simulator the console is: [http://localhost:8080/#/](http://localhost:8080/).
 

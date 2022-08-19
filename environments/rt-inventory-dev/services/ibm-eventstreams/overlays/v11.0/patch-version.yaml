@@ -1,6 +1,6 @@
 - op: replace
   path: /spec/version
-  value: 11.0.2
+  value: 11.0.3
 - op: replace
   path: /spec/strimziOverrides/kafka/config/inter.broker.protocol.version
   value: '3.2'
