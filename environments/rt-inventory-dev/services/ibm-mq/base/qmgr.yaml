@@ -10,6 +10,8 @@ spec:
     use: NonProduction
   queueManager:
     name: QM1
+    availability:
+      type: NativeHA
     mqsc:
       - configMap:
           name: mq-mqsc-config
@@ -25,8 +27,9 @@ spec:
     route:
       enabled: true
     storage:
+      defaultClass: ocs-storagecluster-ceph-rbd
       queueManager:
-        type: ephemeral
+        type: persistent-claim
   template:
     pod:
       containers:
