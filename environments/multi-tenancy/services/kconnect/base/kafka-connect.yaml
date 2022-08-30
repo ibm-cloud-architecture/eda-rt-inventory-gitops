@@ -5,7 +5,7 @@ metadata:
   annotations:
     eventstreams.ibm.com/use-connector-resources: "true"
 spec:
-  version: 3.2,0
+  version: 3.2.0
   replicas: 2
   bootstrapServers: es-demo-kafka-bootstrap.cp4i-eventstreams.svc:9093
   image: quay.io/ibmcase/eda-kconnect-cluster-image:latest
@@ -26,7 +26,7 @@ spec:
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: 11.0.3
+          productVersion: 11.0.2
           productMetric: VIRTUAL_PROCESSOR_CORE
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration

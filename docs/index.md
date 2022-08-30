@@ -137,7 +137,7 @@ We propose two approaches to develop the streaming processing.
 
 ### Kafka Streams implementation
 
-* The Item-aggregator, based on Kafka Stream APIs, is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
+* The Item-aggregator, based on Kafka Stream APIs, is in this project: [refarch-eda-item-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-item-inventory)
 * The Store-aggregator, also based on Kafka Stream APIs, is in this project: [refarch-eda-store-inventory](https://github.com/ibm-cloud-architecture/refarch-eda-store-inventory)
 
 ### Fink implementation
